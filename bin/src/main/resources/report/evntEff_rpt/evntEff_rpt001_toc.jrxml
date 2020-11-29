@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evntEff_rpt001_toc" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="6e74177b-d551-4a75-ae51-6cdde3f284ce">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Title" hTextAlign="Right" hImageAlign="Right" fontSize="32">
+		<box>
+			<topPen lineWidth="1.0"/>
+		</box>
+	</style>
+	<style name="Heading1" fontSize="16" isBold="true">
+		<box>
+			<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<style name="HeadingLabel1" style="Heading1"/>
+	<style name="HeadingIndex1" style="Heading1"/>
+	<style name="Heading2" fontSize="16">
+		<box>
+			<bottomPen lineWidth="0.5" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<style name="HeadingLabel2" style="Heading2"/>
+	<style name="HeadingIndex2" style="Heading2"/>
+	<style name="Heading3" fontSize="12">
+		<box>
+			<bottomPen lineWidth="0.0" lineStyle="Dashed"/>
+		</box>
+	</style>
+	<style name="HeadingLabel3" style="Heading3"/>
+	<style name="HeadingIndex3" style="Heading3"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<detail>
+		<band height="766" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<rectangle>
+				<reportElement x="40" y="110" width="515" height="656" backcolor="#DEDEDE" uuid="be13eeab-6f9b-4ff2-9a03-f7db78a25be2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineColor="rgba(0, 0, 0, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="110" width="515" height="72" uuid="4c9fefdb-af46-43c3-8c1e-a3c1be57c75b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[< 목차 >]]></text>
+			</staticText>
+			<line>
+				<reportElement x="70" y="674" width="455" height="1" uuid="ec575e7f-e65e-4b9b-bf2a-2bb13ee531bb">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="70" y="687" width="455" height="32" uuid="c20b6487-31e5-4814-8fc3-b9f3e7f32331">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<text><![CDATA[본 자료에 수록된 내용은 신뢰할만한 자료 및 분석프로그램을 통해 얻어진 결과입니다. 그러나 어떠한 경우에도 본 자료는 법적 책임소재에 대한 증빙자료로 사용될 수 없습니다.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="170" width="395" height="21" forecolor="#005480" uuid="95902cd8-7f28-4aec-aed5-d2954836a9ae"/>
+				<textElement textAlignment="Left">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제1장 분석 개요]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="290" width="395" height="21" forecolor="#005480" uuid="58f5e3ff-d05c-4b78-aec2-a92402711182"/>
+				<textElement textAlignment="Left">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제2장 매출액 분석]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="410" width="395" height="21" forecolor="#005480" uuid="16ebf091-cce3-4f8b-a55c-d8756f533088">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제3장 방문객 특성]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="530" width="395" height="21" forecolor="#005480" uuid="5cbb7b4f-fa3f-4ca3-9d7c-9fd30c0df4be">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제4장 방문객 소비]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="199" width="395" height="21" forecolor="#333333" uuid="67f58693-dde5-433d-8c9e-e251ab0d7a88"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1. 분석 범위]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="224" width="395" height="21" forecolor="#333333" uuid="6896d41c-6e72-4365-a0bf-95c11db5e9bd"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.용어 정의]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="250" width="395" height="21" forecolor="#333333" uuid="3373f6a4-0434-49c5-a7d4-e9863d3bb2da">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.분석 업종]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="322" width="395" height="21" forecolor="#333333" uuid="8690cbe6-3969-4eae-85d3-2fd8719b6fd7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.이벤트기간 매출액 변화]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="348" width="395" height="21" forecolor="#333333" uuid="6fb4f8f3-00e5-419a-b1ed-0ee375ce392c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.행정동별 매출액 변화]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="373" width="395" height="21" forecolor="#333333" uuid="ca9fd560-ce2f-4d7f-a777-b7963de58271">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.업종별 매출액 변화]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="443" width="395" height="21" forecolor="#333333" uuid="20cbb839-48d1-4423-b5fe-5c482ce254af"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.행정동별 방문객 수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="470" width="395" height="21" forecolor="#333333" uuid="14d42b96-c70a-4a68-b9ab-868f8996e8a6"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.성/연령별 방문객 수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="497" width="395" height="21" forecolor="#333333" uuid="2874095f-6d21-482c-9a52-eb93dee0e0c3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.방문객 유입지역]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="562" width="395" height="21" forecolor="#333333" uuid="6162cb32-b8c9-48ca-b2f1-ee8d008b8801"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1.행정동별 방문객 소비]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="588" width="395" height="21" forecolor="#333333" uuid="760dc46f-f8e7-4e9b-8388-130264968020"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2.업종별 방문객 소비]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="614" width="395" height="21" forecolor="#333333" uuid="4f28470c-4b41-4f2d-8fa8-0f5236bd18de"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3.시간대별 방문객 소비]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="170" width="20" height="21" forecolor="#005480" uuid="1a8ca4d8-032c-4599-9667-e4eca7278fa2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="199" width="20" height="21" uuid="47c84019-8d92-4ac7-adfc-7af9d69f98e2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="250" width="20" height="21" uuid="c0e2ceae-8582-4ed6-a94a-d247650abe68">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="224" width="20" height="21" uuid="69abf3ad-d84c-43b7-8b65-cf3b5c5be4a8">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="322" width="20" height="21" uuid="422c1d9b-7f28-481e-8e86-2c0fc68bb554">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="348" width="20" height="21" uuid="f27d4bb4-8fc2-41d4-b5ed-29e7a2fdc622">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="373" width="20" height="21" uuid="b115ab2c-6424-41cd-96e4-5f8be4f2beee">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="290" width="20" height="21" forecolor="#005480" uuid="86ad88df-61a2-4bec-930e-50921a821ebc">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="410" width="20" height="21" forecolor="#005480" uuid="84e8704e-6a3f-40ba-a9fd-e1ed62c82740">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="443" width="20" height="21" uuid="b5750890-9976-4fe7-9815-ddd50ad8f643">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="470" width="20" height="21" uuid="5b331356-10fb-4418-a659-537ed5ddfd15">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="497" width="20" height="21" uuid="73f2f1b5-292f-4894-9a08-82ea517e77ed">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="530" width="20" height="21" forecolor="#005480" uuid="72f62494-d1db-4b1a-95e6-1a635e7e8e51">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="562" width="20" height="21" uuid="ae109f0f-ab70-41e5-8481-de08a47f3bb1">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="588" width="20" height="21" uuid="d4d1ff1a-9beb-4b7f-b1f4-a7f6ded1f3f8">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[12]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="475" y="614" width="20" height="21" uuid="0b695b67-29d7-4834-bb5a-8a7e535d7b84">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="12"/>
+				</textElement>
+				<text><![CDATA[12]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

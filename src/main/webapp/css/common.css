@@ -1,0 +1,130 @@
+
+/* tit_caption */
+.tit_caption {margin:20px 0 5px 0; font-size:18px; font-weight:bold; color:#555;}
+
+/* article_graph */
+.article_graph {}
+
+/* form */
+input.inp_full {width:100%;}
+
+/**/
+.group_btn {}
+.group_btn button {}
+
+/* board ==================================================================================================== */
+.brd_wrap {clear:both; margin:20px 0 30px;}
+
+/* brd_write ============================== */
+.brd_write {border-top:2px solid #666;}
+.brd_write th {padding:8px 10px 8px 10px; border-right:1px solid #CCC; border-bottom:1px solid #CCC; border-left:1px solid #CCC; text-align:left; background:#EEE;}
+.brd_write td {padding:8px 10px 8px 10px; border-bottom:1px solid #CCC;}
+.brd_write .rdoBx {}
+.brd_write .rdoBx label {margin:0 20px 0 5px;}
+.brd_write .chkBx {}
+.brd_write .chkBx label {margin:0 20px 0 5px;}
+.brd_write textarea {width:100%; height:50px; margin-top:-4px;}
+.brd_write input.inpName {width:100%; height:18px; line-height:18px; padding-left:5px; border:1px solid #CCC;}
+.brd_write label {margin-right:20px;}
+.brd_write label input[type="radio"] {margin-right:5px;}
+
+/* brd_list ============================== */
+.brd_list {border-top:2px solid #666;}
+.brd_list thead th {padding:10px 8px 8px 8px; border-bottom:1px solid #CCC; border-left:1px solid #CCC; color:#555; text-align:center; background:#EEE;}
+.brd_list thead th:first-child {border-left:none;}
+.brd_list tbody td {padding:10px 10px 8px 10px; border-bottom:1px solid #CCC; text-align:center;}
+.brd_list tbody td.txt_lf {text-align:left; padding-left:5px;}
+.brd_list tbody td.txt_rg {text-align:right; padding-right:5px;}
+.brd_list tbody td a {color:#038bff; border-bottom:1px solid #038bff;}
+.brd_list tbody td strong {color:#FF0000;}
+/* brd_bdr */
+.brd_list.brd_bdr {}
+.brd_list.brd_bdr thead th {border:1px solid #CCC; border-top:none; border-left:none;}
+.brd_list.brd_bdr tbody td {border:1px solid #CCC; border-top:none; border-left:none;}
+/* paginate */
+.paginate {clear:both; margin:10px 0; text-align:center;}
+.paginate a {vertical-align:top;}
+.paginate .firs {display:inline-block; width:16px; height:11px; padding:2px 0; margin:6px 3px 0; background:url("../../webapp/images/board/spr_paginate.gif") no-repeat 0 -40px;}
+.paginate .prev {display:inline-block; width:8px; height:11px; padding:2px 0; margin:6px 3px 0; background:url("../../webapp/images/board/spr_paginate.gif") no-repeat -20px -40px;}
+.paginate .next {display:inline-block; width:8px; height:11px; padding:2px 0; margin:6px 3px 0; background:url("../../webapp/images/board/spr_paginate.gif") no-repeat -40px -40px;}
+.paginate .last {display:inline-block; width:16px; height:11px; padding:2px 0; margin:6px 3px 0; background:url("../../webapp/images/board/spr_paginate.gif") no-repeat -60px -40px;}
+.paginate .firs:hover {background-position:0 -60px;}
+.paginate .prev:hover {background-position:-20px -60px;}
+.paginate .next:hover {background-position:-40px -60px;}
+.paginate .last:hover {background-position:-60px -60px;}
+.paginate .pg_lst {margin:0 10px;}
+.paginate .pg_lst strong {display:inline-block; width:22px; height:22px; line-height:24px; margin:0 4px; border:1px solid #1092f7; font-weight:bold; text-decoration:underline; color:#1092f7;}
+.paginate .pg_lst a {display:inline-block; width:22px; height:22px; line-height:24px; margin:0 4px; border:1px solid #cccccc;}
+.paginate .pg_lst a:hover { border:1px solid #1092f7; text-decoration:underline; color:#1092f7;}
+
+/* 테이블 공통 ============================== */
+/* 테이블 상하단 버튼 ========== */
+.brd_btn {*zoom:1;}
+.brd_btn:after {content:""; display:block; clear:both;}
+.brd_btn.brd_top {margin:0 0 5px;}
+.brd_btn.brd_btm {margin:5px 0 0;}
+/* 중앙버튼 */
+.brd_btn .group_cnt {margin:20px 0 10px 0; text-align:center;}
+.brd_btn .group_cnt ul li {display:inline-block; margin-right:5px;}
+/* 좌측버튼 */
+.brd_btn .group_lft {float:left;}
+.brd_btn .group_lft ul li {float:left; margin-right:5px;}
+/* 우측버튼 */
+.brd_btn .group_rgt {float:right;}
+.brd_btn .group_rgt ul li {float:left; margin-left:5px;}
+/* 버튼유형 */
+.brd_btn a.btn_confirm {display:inline-block; height:38px; line-height:38px; padding:0 20px; border:1px solid #1092f7; color:#FFF; background:#1092f7;}
+.brd_btn a.btn_cancel  {display:inline-block; height:38px; line-height:38px; padding:0 20px; border:1px solid #999999; color:#555; background:#FFF;}
+.brd_btn.brd_top a.btn_confirm {height:24px; line-height:24px;}
+.brd_btn.brd_top a.btn_cancel  {height:24px; line-height:24px;}
+
+
+
+
+
+/* ui 달력 ==================================================================================================== */
+/* 폼, 버튼 ==================== */
+.pop_calendar.hasDatepicker {width:80px;}
+.ui-datepicker-trigger {margin:1px 0 0 3px; cursor:pointer;}
+/* ui-datepicker ================================================== */
+div.ui-datepicker {display:none; width:226px; padding:3px 2px; border:1px solid #AAA; border-radius:3px; background:#FFF;}
+/* header ==================== */
+div.ui-datepicker div.ui-datepicker-header {border-radius:3px; background:#58595b;}
+/* 버튼 */
+div.ui-datepicker div.ui-datepicker-header a.ui-datepicker-prev {float:left; margin:4px 5px;}
+div.ui-datepicker div.ui-datepicker-header a.ui-datepicker-next {float:right; margin:4px 5px;}
+div.ui-datepicker div.ui-datepicker-header a span {display:block; width:7px; height:12px; padding:5px; text-indent:-9999em; cursor:pointer;}
+div.ui-datepicker div.ui-datepicker-header a.ui-datepicker-prev span.ui-icon {background:url("/images/board/calendar_btn_prev.gif") no-repeat center center;}
+div.ui-datepicker div.ui-datepicker-header a.ui-datepicker-next span.ui-icon {background:url("/images/board/calendar_btn_next.gif") no-repeat center center;}
+/* 날짜 */
+div.ui-datepicker div.ui-datepicker-header div.ui-datepicker-title {height:31px; line-height:32px; font-size:13px; font-weight:bold; color:#FFF; text-align:center;}
+div.ui-datepicker div.ui-datepicker-header div.ui-datepicker-title span {}
+div.ui-datepicker div.ui-datepicker-header div.ui-datepicker-title span.ui-datepicker-year {}
+div.ui-datepicker div.ui-datepicker-header div.ui-datepicker-title span.ui-datepicker-month {}
+/* 달력 ==================== */
+div.ui-datepicker table.ui-datepicker-calendar {width:100%;}
+/* 요일 */
+div.ui-datepicker table.ui-datepicker-calendar thead tr th {padding:.8em .4em .7em; font-weight:bold; color:#666;}
+div.ui-datepicker table.ui-datepicker-calendar thead tr th.ui-datepicker-week-end {}
+/* 날짜 */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td {padding:1px; color:#666; text-align:center;}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-week-end {color:#ff0000;}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-other-month {}
+/* 오늘+선택 */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-datepicker-days-cell-over {}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a {display:block; padding:.3em .2em .2em;}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-default {}
+/* 마우스 오버 */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-hover {}
+/* 선택 */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-active {}
+/* 이전 다음 달의 일*/
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-priority-secondary {color:#b2b2b2;}
+/* 오늘 */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-highlight {border:1px solid #aa9cda; background:#f3f0ff;}
+/* 하단버튼 ==================== */
+div.ui-datepicker div.ui-datepicker-buttonpane {padding:7px 4px 3px; margin-top:7px;  border-top:1px solid #d4d4d4; *zoom:1;}
+div.ui-datepicker div.ui-datepicker-buttonpane:after {content:""; display:block; clear:both;}
+div.ui-datepicker div.ui-datepicker-buttonpane button {height:22px; line-height:20px; padding:0 5px; border-radius:3px; font-size:12px; font-weight:bold; color:#FFF; cursor:pointer; background:#7e8083;}
+div.ui-datepicker div.ui-datepicker-buttonpane button.ui-datepicker-current {float:left;}
+div.ui-datepicker div.ui-datepicker-buttonpane button.ui-datepicker-close {float:right;}

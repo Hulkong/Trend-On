@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Wave Backcover" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c50b24eb-eb33-413f-8e75-e7e20a5341fd">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="trendOnHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.trendOnHost]]></fieldDescription>
+	</field>
+	<title>
+		<band height="842" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="595" height="842" forecolor="#FFFFFF" backcolor="#E28864" uuid="94ebccea-4480-4549-b31f-79abf3c2b2f2">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="0" width="595" height="842" forecolor="#FFFFFF" backcolor="#E28864" uuid="bb2b7ed3-6a50-4106-9076-23dee8001271">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="40" y="40" width="515" height="4" forecolor="rgba(0, 0, 0, 0.0)" uuid="f5d4d7fe-b43d-45e3-b6d3-6984ee8299d7">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="40" y="40" width="515" height="4" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="71175fa4-26f8-4391-ba99-16847f7cd176">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="74" width="168" height="76" forecolor="#FFFFFF" uuid="32fdbcb9-2879-44fa-9c97-a6e1963b7797">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="15" isBold="true"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[빅데이터를 활용한
+이벤트 효과
+분석 보고서]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="40" y="168" width="86" height="1" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="57e47db7-11f5-482c-81c7-9ff2a4c205fa">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="203" width="120" height="18" forecolor="#FFFFFF" uuid="46cfa021-354e-46aa-827d-e5e03b695fe3">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="15" isBold="true"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[Trend-ON]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="225" width="120" height="18" forecolor="#FFFFFF" uuid="f86b431c-aaa8-45d2-8e81-1e9dc85951fa">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="15" isBold="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="203" width="379" height="66" forecolor="#FFFFFF" uuid="8673df52-6955-4e71-9eeb-5667a15eeb0d">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Justified">
+					<font fontName="나눔고딕" size="13"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<text><![CDATA[결과를 넘어, 가치를 전달하는 Trend-ON 서비스는 빅데이터 분석을통해 지역 경제 현황, 정책효과, 이슈에 대하여 빠르고 정확한 정보를 제공합니다.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="40" y="802" width="136" height="1" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="67f42d33-6595-4dc4-afd9-6b40e59d9cf3">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="219" y="802" width="334" height="1" forecolor="#FFFFFF" backcolor="#FFFFFF" uuid="e4b547c2-e69d-4be9-b320-2ad73adeb68c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="400" y="808" width="154" height="14" forecolor="#FFFFFF" uuid="a6d6fcc5-f00b-49b4-ae5d-76b089620923"/>
+				<textElement>
+					<font fontName="나눔고딕" size="7"/>
+				</textElement>
+				<text><![CDATA[Copyright ⓒ OPENmate-ON All rights reserved.]]></text>
+			</staticText>
+			<image>
+				<reportElement x="315" y="772" width="84" height="21" uuid="a128f489-a9e2-454e-98e5-113ae7fbd45d">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_mateon-8.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="219" y="777" width="67" height="11" uuid="a7df28e6-e82e-41ed-8b54-9995a8326b96">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_trendon-8.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="185" y="394" width="94" height="18" forecolor="#FFFFFF" uuid="718ab895-4405-477a-ad1b-039f28c78f0e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[경제 24시]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="394" width="94" height="18" forecolor="#FFFFFF" uuid="cf630feb-040d-494d-9875-ee6e6502de8f">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[경제 트렌드]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="445" y="394" width="94" height="18" forecolor="#FFFFFF" uuid="8dfcdada-35ca-4cda-881a-2680b07fc7c1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[이벤트 효과]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="433" width="94" height="76" forecolor="#FFFFFF" uuid="391b3d87-040a-4d4c-960d-3f154b11e8ff">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+					<paragraph lineSpacing="Double" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[시간대별로 소비활동이
+활발하게 일어난 지역을
+확인할 수 있습니다.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="315" y="433" width="94" height="76" forecolor="#FFFFFF" uuid="673e759a-e0e2-4917-8b77-61e91f53f4b0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+					<paragraph lineSpacing="Double" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[월, 분기단위로 지역경제
+변화를 파악할 수 있는 
+정보를 제공합니다.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="445" y="433" width="94" height="76" forecolor="#FFFFFF" uuid="aea746ee-35d1-4781-a9ac-154e163db13b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+					<paragraph lineSpacing="Double" lineSpacingSize="0.0"/>
+				</textElement>
+				<text><![CDATA[읍면동 지역 단위로 경제
+활성화 정책의 효과를
+확인할 수 있습니다.]]></text>
+			</staticText>
+			<image>
+				<reportElement x="208" y="308" width="47" height="47" uuid="98e48acb-e8e6-4bce-ab0b-90273d38fa0f">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_24h.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="340" y="308" width="47" height="47" uuid="1c9c8cf2-523c-4677-9b64-32e8e57cb88b">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_trend.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="471" y="308" width="47" height="47" uuid="20b67561-53fb-4e20-9230-2096f99b55d4">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_calender.png"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="431" y="769" width="122" height="24" uuid="37b24809-e21c-4c19-a035-20094a125775">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/page14_nice-8.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="40" y="720" width="136" height="71" forecolor="#FFFFFF" uuid="8bd3deb7-7308-4ddc-9828-7a6cfdbc4006"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="나눔고딕" size="7"/>
+				</textElement>
+				<text><![CDATA[[04542]
+11th Floor, 100
+Cheonggyecheon-ro Jung-gu, 
+Seoul, Republic of Korea
+
+Tel 02.6956.7541   
+Fax 0505.055.7522]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

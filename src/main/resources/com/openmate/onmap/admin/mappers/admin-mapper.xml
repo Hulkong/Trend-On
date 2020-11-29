@@ -1,0 +1,1563 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.admin.dao.AdminDao">
+
+	<!-- 기관현황 페이지 시작 -->
+    <!-- 기관 현황 총 목록 개수 조회 -->
+    <select id="getTotOrgList" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    	SELECT
+    		 COUNT(*)
+    	  FROM (
+		    	  select 
+		 		distinct a.* 
+		 		, b.*
+		 		, c.cd_nm as use_type_nm
+		        , coalesce(d.tot_acc_cnt, 1, d.tot_acc_cnt)  as tot_acc_cnt 
+		 	from tbcom_org a 
+			inner join (select 
+							 distinct org_id 
+						from tbcom_org_region
+						where 1=1
+						<if test='megaCd != null and megaCd != ""'>
+				         	AND MEGA_CD = #{megaCd}
+						</if>
+						<if test='ctyCd != null and ctyCd != ""'>
+						and cty_cd = (SUBSTRING(#{ctyCd},0, 3)|| '000') or cty_cd = #{ctyCd}
+						</if>
+			) tor on a.org_id = tor.org_id
+			inner join (
+				SELECT contract_id
+					 , org_id
+				     , service_clss
+				     , TO_CHAR(TO_DATE(USE_STR_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_str_date
+					 , TO_CHAR(TO_DATE(USE_EXP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_exp_date
+					 , contract_organ
+					 , contract_nm
+					 , contract_fee
+				  FROM TBCOM_CONTRACT tc
+				  WHERE contract_id =  (
+									      SELECT contract_id 
+										    FROM TBCOM_CONTRACT
+										   where 1=1 
+										     and ORG_ID = tc.org_id
+										   order by 
+											    CASE 
+												 	when service_clss = '1' then 1
+												 	when service_clss = '3' then 2
+												 	when service_clss = '5' then 3
+												 	else 4
+												 end asc, USE_EXP_DATE desc
+										   limit 1
+						  			   )
+		     ) AS B on A.ORG_ID = B.ORG_ID
+		     inner JOIN TBCOMM_CODE AS C 
+				    ON B.SERVICE_CLSS = C.CODE
+				   AND C.CD_ID = 'SERVICE_CLSS'
+		     LEFT OUTER JOIN (SELECT COUNT(*) AS TOT_ACC_CNT, ORG_ID FROM TBCOM_LOG WHERE MENU_NM = '로그인' GROUP BY ORG_ID) AS D on A.ORG_ID = D.ORG_ID 
+			where 1=1
+			<if test='orgNm != null and orgNm != ""'>
+				AND A.ORG_NM LIKE '%' || #{orgNm} || '%'
+			</if>
+			<if test='serviceClss != null and serviceClss != ""'>
+				AND B.SERVICE_CLSS IN (${serviceClss})
+			</if>
+    	  ) AS A
+    </select>
+
+    <!-- 기관 현황 목록 조회 -->
+    <select id="getOrgList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<!-- SELECT a.org_nm
+			 , a.mega_cd
+			 , a.cty_cd
+		     , b.*
+		     , c.cd_nm as use_type_nm
+		     , coalesce(d.tot_acc_cnt, 1, d.tot_acc_cnt)  as tot_acc_cnt
+		  FROM TBCOM_ORG AS A 
+		  LEFT OUTER JOIN (
+				SELECT contract_id
+					 , org_id
+				     , service_clss
+				     , TO_CHAR(TO_DATE(USE_STR_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_str_date
+					 , TO_CHAR(TO_DATE(USE_EXP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_exp_date
+					 , contract_organ
+					 , contract_nm
+					 , contract_fee
+				  FROM TBCOM_CONTRACT tc
+				  WHERE contract_id =  (
+									      SELECT contract_id 
+										    FROM TBCOM_CONTRACT
+										   where 1=1 
+										     and ORG_ID = tc.org_id
+										   order by 
+											    CASE 
+												 	when service_clss = '1' then 1
+												 	when service_clss = '3' then 2
+												 	when service_clss = '5' then 3
+												 	else 4
+												 end asc, USE_EXP_DATE desc
+										   limit 1
+						  			   )
+		        ) AS B
+		    ON A.ORG_ID = B.ORG_ID
+		  LEFT OUTER JOIN TBCOMM_CODE AS C 
+		    ON B.SERVICE_CLSS = C.CODE
+		   AND C.CD_ID = 'SERVICE_CLSS'
+		  LEFT OUTER JOIN (SELECT COUNT(*) AS TOT_ACC_CNT, ORG_ID FROM TBCOM_LOG WHERE MENU_NM = '로그인' GROUP BY ORG_ID) AS D  
+  			ON A.ORG_ID = D.ORG_ID
+		 WHERE 1=1
+		<if test='orgNm != null and orgNm != ""'>
+           AND A.ORG_NM LIKE '%' || #{orgNm} || '%'
+		</if>
+		<if test='megaCd != null and megaCd != ""'>
+           AND A.MEGA_CD = #{megaCd}
+		</if>
+		<if test='ctyCd != null and ctyCd != ""'>
+           AND A.CTY_CD = #{ctyCd}
+		</if>
+		<if test='serviceClss != null and serviceClss != ""'>
+		   AND B.SERVICE_CLSS IN (${serviceClss})
+		</if> -->
+
+   	select * from (	 
+ 	select 
+ 		distinct a.* 
+ 		, b.*
+ 		, c.cd_nm as use_type_nm
+        , coalesce(d.tot_acc_cnt, 1, d.tot_acc_cnt)  as tot_acc_cnt 
+ 	from tbcom_org a 
+	inner join (select 
+					 distinct org_id 
+				from tbcom_org_region
+				where 1=1
+				<if test='megaCd != null and megaCd != ""'>
+		         	AND MEGA_CD = #{megaCd}
+				</if>
+				<if test='ctyCd != null and ctyCd != ""'>
+				and cty_cd = (SUBSTRING(#{ctyCd},0, 3)|| '000') or cty_cd = #{ctyCd}
+				</if>
+	) tor on a.org_id = tor.org_id
+	inner join (
+		SELECT contract_id
+			 , org_id
+		     , service_clss
+		     , TO_CHAR(TO_DATE(USE_STR_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_str_date
+			 , TO_CHAR(TO_DATE(USE_EXP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_exp_date
+			 , contract_organ
+			 , contract_nm
+			 , contract_fee
+		  FROM TBCOM_CONTRACT tc
+		  WHERE contract_id =  (
+							      SELECT contract_id 
+								    FROM TBCOM_CONTRACT
+								   where 1=1 
+								     and ORG_ID = tc.org_id
+								   order by 
+									    CASE 
+										 	when service_clss = '1' then 1
+										 	when service_clss = '3' then 2
+										 	when service_clss = '5' then 3
+										 	else 4
+										 end asc, USE_EXP_DATE desc
+								   limit 1
+				  			   )
+     ) AS B on A.ORG_ID = B.ORG_ID
+     inner JOIN TBCOMM_CODE AS C 
+		    ON B.SERVICE_CLSS = C.CODE
+		   AND C.CD_ID = 'SERVICE_CLSS'
+     LEFT OUTER JOIN (SELECT COUNT(*) AS TOT_ACC_CNT, ORG_ID FROM TBCOM_LOG WHERE MENU_NM = '로그인' GROUP BY ORG_ID) AS D on A.ORG_ID = D.ORG_ID 
+	where 1=1
+	<if test='orgNm != null and orgNm != ""'>
+		AND A.ORG_NM LIKE '%' || #{orgNm} || '%'
+	</if>
+	<if test='serviceClss != null and serviceClss != ""'>
+		AND B.SERVICE_CLSS IN (${serviceClss})
+	</if>
+	) a
+         ORDER BY CASE WHEN SERVICE_CLSS = 'C' THEN 1
+					   WHEN SERVICE_CLSS = 'T' THEN 2
+					   WHEN SERVICE_CLSS = 'CE' THEN 3 
+					   ELSE 4 
+				   END
+	    , USE_STR_DATE DESC, ORG_NM desc
+
+        <if test='limit != null and limit != ""'>
+         LIMIT ${limit}
+   		</if>
+        <if test='offset != null and offset != ""'>
+        OFFSET ${offset}
+   		</if>
+    </select>
+	<!-- 기관현황 페이지 끝 -->
+
+	<!-- 기관 등록 페이지 시작 -->
+	<!-- 유저아이디 중복 조회 -->
+    <select id="checkDupUserId" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+          FROM TBCOM_ORG
+         WHERE 1=1
+	       AND USER_ID = #{userId}
+	    <if test='orgId != null and orgId != ""'>
+	       AND ORG_ID != #{orgId}
+	    </if>
+    </select>
+    
+    <!-- 행정구역 영어이름 조회 -->
+    <select id="getAdmiDistEngNm" parameterType="java.util.HashMap" resultType="java.lang.String">
+        SELECT CONCAT(B.ENG_NM, ' ', A.ENG_NM) AS ENG_NM
+          FROM (
+                SELECT * 
+                  FROM TBCOM_ADMIN_DISTRICT
+                 WHERE 1=1
+				<if test='megaNm != null and megaNm != ""'>
+	               AND MEGA_NM = #{megaNm}
+				</if>
+				<if test='ctyNm != null and ctyNm != ""'>
+                   AND CTY_NM = #{ctyNm}
+				</if>
+                ) AS A 
+          LEFT OUTER JOIN TBCOM_ADMIN_DISTRICT AS B
+            ON A.MEGA_CD = B.MEGA_CD
+           AND B.CTY_CD = ''
+    </select>
+    
+    <!-- 기관 pk 값 조회 -->
+    <select id="getOrgIdPk" parameterType="java.util.HashMap" resultType="java.lang.String">
+    	SELECT MAX(org_id) + 1 FROM tbcom_org;
+    </select>
+    
+    <delete id="deleteOrgRegion" parameterType="java.util.HashMap">
+    	DELETE FROM TBCOM_ORG_REGION WHERE ORG_ID = #{orgId}
+    	
+    </delete>
+    
+	<!-- 기관 저장 -->
+    <insert id="setOrg" useGeneratedKeys="true" keyProperty="orgId">
+		INSERT INTO TBCOM_ORG
+		(
+		  ORG_ID
+		 ,ORG_NM
+		 ,USER_ID
+		 ,PASSWORD
+		 ,IMAGE_KEY
+		 ,MNG_NM
+		 ,MNG_POSITION
+		 ,MNG_DEPT
+		 ,MNG_MOBILE
+		 ,MNG_TEL
+		 ,MNG_EMAIL
+		 ,REGION_TXT
+		 ,MEMO
+		 ,REG_DATE
+		 ,LAST_UPT_DATE
+		 ,MEGA_CD
+		 ,CTY_CD
+		)
+		VALUES
+		(
+		  #{orgId}
+		 ,#{orgNm}
+		 ,#{userId}
+		 ,sha256(#{userId} || '@!'::bytea)
+		 ,#{imageKey}
+		 ,#{mngNm}
+		 ,#{mngPosition}
+		 ,#{mngDept}
+		 ,#{mngMobile}
+		 ,#{mngTel}
+		 ,#{mngEmail}
+		 ,#{regionTxt}
+		 ,#{memo}
+		 ,now()
+		 ,now()
+		 ,#{megaCd}
+		 ,#{ctyCd}
+		)
+    </insert>
+    
+	<!-- 기관 테이블 저장 -->
+    <insert id="setOrgRegion" useGeneratedKeys="true" keyProperty="orgId">
+		INSERT INTO TBCOM_ORG_REGION
+		(
+		  ORG_ID
+		 ,REG_DATE
+		 ,MEGA_CD
+		 ,CTY_CD
+		)
+		VALUES
+		(
+		 #{orgId}
+		 ,now()
+		 ,#{megaCd}
+		 ,#{ctyCd}
+		)
+    </insert>
+    
+    <!-- 기관 계약정보 저장 -->
+    <insert id="setContract" useGeneratedKeys="true" keyProperty="contractId">
+        INSERT INTO TBCOM_CONTRACT
+		(
+		  ORG_ID
+		 ,SERVICE_CLSS
+		 ,USE_STR_DATE
+		 ,USE_EXP_DATE
+		 ,RM
+		 ,CONT_DATE
+		 ,LAST_UPT_DATE 
+		 ,CONTRACT_NM
+		 ,CONTRACT_ORGAN
+		 ,CONTRACT_FEE
+		)
+		VALUES
+		(
+		  #{orgId}
+		 ,#{serviceClss}
+		 ,#{useStrDate}
+		 ,#{useExpDate}
+		 ,#{rm}
+		 ,to_char(now(), 'YYYYMMDD')
+		 ,to_char(now(), 'YYYYMMDD')
+		 ,#{contractNm}
+		 ,#{contractOrgan}
+		 ,#{contractFee}
+		)
+    </insert>
+    
+    <!-- 사용자 권한 저장 -->
+    <insert id="setAuthority">
+        INSERT INTO TBCOM_AUTHORITY
+            (ORG_ID, AUTHORITY)
+        VALUES
+            (#{orgId}, 'ROLE_USER')
+    </insert>
+    
+    <!-- 기관 삭제 -->
+    <delete id="removeOrg">
+        DELETE FROM TBCOM_ORG WHERE ORG_ID = ${orgId} 
+    </delete>
+    
+    <!-- 계약 삭제 -->
+    <delete id="removeContract">
+        DELETE FROM TBCOM_CONTRACT WHERE ORG_ID = ${orgId} 
+    </delete>
+    
+    <!-- 사용자 권한 삭제 -->
+    <delete id="removeAuthority">
+        DELETE FROM TBCOM_AUTHORITY WHERE ORG_ID = ${orgId} 
+    </delete>
+    <!-- 기관 등록 페이지 끝 -->
+
+	<!-- 기관 수정 페이지 시작 -->
+	<!-- 기관 수정 데이터 조회  -->
+    <select id="getOrg" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT a.org_id
+			 , a.mega_cd
+			 , a.cty_cd
+			 , a.org_nm
+			 , a.user_id
+			 , a.mng_nm
+			 , a.mng_position
+			 , a.mng_dept
+			 , a.mng_mobile
+			 , a.mng_tel
+			 , a.mng_email
+			 , a.region_txt
+			 , a.memo
+			 , ARRAY_TO_STRING(ARRAY_AGG(b.mega_cd),',') mega_list
+			 , ARRAY_TO_STRING(ARRAY_AGG(b.cty_cd),',') cty_list
+		 FROM TBCOM_ORG A, TBCOM_ORG_REGION B
+		WHERE 1 = 1
+		  AND A.ORG_ID = ${orgId}
+		  AND A.ORG_ID = B.ORG_ID 
+  		  GROUP BY A.ORG_ID
+  		  order by mega_cd
+    </select>
+
+	<!-- 기관별 이미지 가져오기 -->
+	<select id="getOrgImages" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT a.image_key
+        	 , a.ori_name
+        	 , a.new_name
+        	 , a.type
+		 FROM TBCOM_IMAGE A
+		WHERE 1 = 1
+		  AND A.ORG_ID = ${orgId}
+    </select>
+    
+	<!-- 기관별 이미지 가져오기 -->
+	<select id="getOrgImageInfo" parameterType="java.lang.String" resultType="java.util.HashMap">
+        SELECT a.image_key
+        	 , a.new_name
+        	 , a.type
+        	 , a.path
+        	 , a.path_url
+		 FROM TBCOM_IMAGE A
+		WHERE 1 = 1
+		  AND A.image_key = #{imageKey}
+    </select>
+
+	<!-- 기관 정보 수정 -->
+    <update id="modifiedOrg">
+        UPDATE TBCOM_ORG
+		   SET ORG_NM = #{orgNm}
+			  ,USER_ID = #{userId}
+			  ,IMAGE_KEY = #{imageKey}
+			  ,MNG_NM = #{mngNm}
+			  ,MNG_POSITION = #{mngPosition}
+			  ,MNG_DEPT = #{mngDept}
+			  ,MNG_MOBILE = #{mngMobile}
+			  ,MNG_TEL = #{mngTel}
+			  ,MNG_EMAIL = #{mngEmail}
+			  ,REGION_TXT = #{regionTxt}
+			  ,MEMO = #{memo}
+			  ,LAST_UPT_DATE = now()
+			  <!-- ,MEGA_CD = #{megaCd}
+			  ,CTY_CD = #{ctyCd} -->
+		 WHERE ORG_ID = ${orgId}
+    </update>
+
+    <!-- 해당 기관의 계약 데이터 조회 -->
+    <select id="getContractList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT a.contract_id
+     		 , a.service_clss
+     		 , b.cd_nm
+     		 , TO_CHAR(TO_DATE(USE_STR_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_str_date
+     		 , TO_CHAR(TO_DATE(USE_EXP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_exp_date
+     		 , TO_CHAR(TO_DATE(cont_date, 'YYYYMMDD'), 'YYYY-MM-DD') AS cont_date
+		     , a.contract_organ
+		     , a.contract_nm
+		     , a.contract_fee
+		     , a.rm
+		  FROM TBCOM_CONTRACT AS A
+		  LEFT OUTER JOIN TBCOMM_CODE AS B
+		    ON A.SERVICE_CLSS = B.CODE
+		   AND B.CD_ID = 'SERVICE_CLSS'
+		 WHERE 1=1
+		   AND ORG_ID = ${orgId}
+		 ORDER BY CONTRACT_ID DESC
+    </select>
+    
+    <!-- 해당 계약 데이터 조회 -->
+    <select id="getContract" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT a.service_clss
+     		 , TO_CHAR(TO_DATE(USE_STR_DATE, 'YYYYMMDD'), 'YYYYMMDD') AS use_str_date
+     		 , TO_CHAR(TO_DATE(USE_EXP_DATE, 'YYYYMMDD'), 'YYYYMMDD') AS use_exp_date
+		     , a.contract_organ
+		     , a.contract_nm
+		     , a.contract_fee
+		     , a.rm
+		  FROM TBCOM_CONTRACT AS A
+		 WHERE 1=1
+		   AND A.ORG_ID = ${orgId}
+		   AND A.CONTRACT_ID = ${contractId}
+    </select>
+    
+    <!-- 해당 기관 정보 수정 서비스 사용통계 조회 -->
+    <select id="getOrgSvcStats" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT AA.org_id
+		     , BB.contract_id
+		     , BB.service_clss
+		     , (select cd_nm from TBCOMM_CODE where cd_id = 'SERVICE_CLSS' and CODE = bb.service_clss) as cd_nm
+		     , TO_CHAR(TO_DATE(BB.USE_STR_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_str_date
+     		 , TO_CHAR(TO_DATE(BB.USE_EXP_DATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS use_exp_date
+			 , COALESCE(SUM(CASE WHEN menu_nm = '로그인' THEN AA.NUM END), 0) AS access_cnt
+			 , COALESCE(SUM(CASE WHEN menu_nm = '이벤트효과' THEN AA.NUM END), 0) AS evnt_effect
+			 , COALESCE(SUM(CASE WHEN menu_nm = '경제트렌드' THEN AA.NUM END), 0) AS ecnmy_trnd
+			 , COALESCE(SUM(CASE WHEN menu_nm = '경제 24시' THEN AA.NUM END), 0) AS ecnmy24 
+		  FROM (
+		  		SELECT *
+		  		     , 1 AS NUM
+		  		  FROM TBCOM_LOG
+		  		) AS AA
+		  LEFT OUTER JOIN TBCOM_CONTRACT AS BB
+		    ON AA.ORG_ID = BB.ORG_ID
+		   AND AA.CONTRACT_ID = BB.CONTRACT_ID
+		 WHERE 1=1
+		   AND AA.ORG_ID = ${orgId}
+		   AND BB.CONTRACT_ID IS NOT NULL
+		 GROUP BY AA.ORG_ID, BB.CONTRACT_ID, BB.SERVICE_CLSS, BB.USE_STR_DATE, BB.USE_EXP_DATE
+		 ORDER BY BB.CONTRACT_ID DESC;
+    </select>
+    
+    <!-- 비밀번호 초기회 -->
+    <update id="resetOrgPwd">
+	    <selectKey keyProperty="userId" resultType="String" order="BEFORE">
+	    		SELECT user_id FROM TBCOM_ORG WHERE ORG_ID = ${orgId}
+	    </selectKey>
+        UPDATE TBCOM_ORG
+		   SET PASSWORD = sha256(#{userId} || '@!'::bytea)
+		 WHERE ORG_ID = ${orgId}
+    </update>
+    
+    <!-- 계약정보 수정 (각 계약정보 수정시) -->
+    <update id="modifiedContract">
+    	UPDATE TBCOM_CONTRACT 
+		   SET SERVICE_CLSS = #{serviceClss}
+		     , CONTRACT_ORGAN = #{contractOrgan}
+		     , CONTRACT_NM = #{contractNm}
+		     , CONTRACT_FEE = #{contractFee}
+		     , USE_STR_DATE = #{useStrDate}
+		     , USE_EXP_DATE = #{useExpDate}
+		     , RM = #{rm}
+		     , LAST_UPT_DATE = to_char(now(), 'YYYYMMDD')
+		WHERE 1=1
+		  AND ORG_ID = ${orgId}
+		  AND CONTRACT_ID = ${contractId}
+    </update>
+    <!-- 기관 수정 페이지 끝 -->
+    
+	<!-- 사용신청 현황 페이지 시작 -->
+	<!-- 사용신청 리스트 총갯수 -->
+    <select id="getTotUseApplyList"  parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+	    	SELECT COUNT(*)
+	    	  FROM TBCOM_APPLY
+	    	 WHERE 1=1
+    	       AND ORG_NM IS NOT NULL
+		<if test='orgNm != null and orgNm != ""'>
+	       AND ORG_NM LIKE '%' || #{orgNm} || '%'
+		</if>
+		
+		<if test="mngNm != null and mngNm != ''" >
+		  AND name LIKE '%' || #{mngNm} || '%'
+		</if>
+		
+		<if test="state != null and state != ''" >
+		  AND STATE LIKE '%' || #{state} || '%'
+		</if>
+		
+		<if test="startDt != null and startDt != ''" >
+			<if test="endDt != null and endDt != ''" >
+			  AND to_char(reg_date, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+			</if>
+			
+			<if test="endDt == null or endDt == ''" >
+			<![CDATA[
+			  AND to_char(reg_date, 'YYYYMMDD') >= #{startDt} 
+			]]>
+			</if>
+		</if>
+	
+		<if test="endDt != null and endDt != ''" >
+			<if test="startDt == null or startDt == ''" >
+			<![CDATA[
+		      AND to_char(reg_date, 'YYYYMMDD') <= #{endDt} 
+			]]>
+			</if>
+		</if>
+	
+    </select>
+    
+    <!-- 사용신청 리스트 -->
+    <select id="getUseApplyList"  parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+	    	SELECT no
+	    	 , (SELECT COUNT(*) FROM TBCOM_APPLY WHERE org_nm = T.org_nm) as cnt
+		     , org_nm
+		     , dept
+		     , position
+		     , name
+		     , mobile
+		     , email
+		     , newsletter_yn
+		     , to_char(reg_date, 'YYYYMMDD') AS reg_date
+		     , state
+		     , (SELECT CD_NM FROM TBCOMM_CODE WHERE CD_ID='USE_APPLY_CD' AND CODE = STATE) AS state_msg
+		  FROM TBCOM_APPLY AS T
+		 WHERE 1=1
+		   AND ORG_NM IS NOT NULL
+		<if test='orgNm != null and orgNm != ""'>
+	       AND ORG_NM LIKE '%' || #{orgNm} || '%'
+		</if>
+		
+		<if test="mngNm != null and mngNm != ''" >
+		  AND NAME LIKE '%' || #{mngNm} || '%'
+		</if>
+		
+		<if test="state != null and state != ''" >
+		  AND STATE LIKE '%' || #{state} || '%'
+		</if>
+		
+		<if test="startDt != null and startDt != ''" >
+			<if test="endDt != null and endDt != ''" >
+			  AND to_char(reg_date, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+			</if>
+			
+			<if test="endDt == null or endDt == ''" >
+			<![CDATA[
+			  AND to_char(reg_date, 'YYYYMMDD') >= #{startDt} 
+			]]>
+			</if>
+		</if>
+	
+		<if test="endDt != null and endDt != ''" >
+			<if test="startDt == null or startDt == ''" >
+			<![CDATA[
+		      AND to_char(reg_date, 'YYYYMMDD') <= #{endDt} 
+			]]>
+			</if>
+		</if>
+		
+		 ORDER BY REG_DATE DESC 
+		 <if test='limit != null and limit != ""'>
+         LIMIT ${limit}
+   		</if>
+        <if test='offset != null and offset != ""'>
+        OFFSET ${offset}
+   		</if>
+    </select>
+    
+    <!-- 사용신청 리스트 엑셀 다운로드 -->
+    <select id="getExcelUseApplyList"  parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+    SELECT no
+    	 , (SELECT COUNT(*) FROM TBCOM_APPLY WHERE org_nm = T.org_nm) as cnt
+	     , org_nm
+	     , dept
+	     , position
+	     , name
+	     , mobile
+	     , email
+	     , newsletter_yn
+	     , to_char(reg_date, 'YYYYMMDD') AS reg_date
+	     , state
+	     , (SELECT CD_NM FROM TBCOMM_CODE WHERE CD_ID='USE_APPLY_CD' AND CODE = STATE) AS state_msg
+	  FROM TBCOM_APPLY AS T
+	 WHERE 1=1
+	
+	<if test='orgNm != null and orgNm != ""'>
+       AND ORG_NM LIKE '%' || #{orgNm} || '%'
+	</if>
+	
+	<if test="mngNm != null and mngNm != ''" >
+	  AND NAME LIKE '%' || #{mngNm} || '%'
+	</if>
+	
+	<if test="state != null and state != ''" >
+	  AND STATE LIKE '%' || #{state} || '%'
+	</if>
+	
+	<if test="startDt != null and startDt != ''" >
+		<if test="endDt != null and endDt != ''" >
+		  AND to_char(reg_date, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+		</if>
+		
+		<if test="endDt == null or endDt == ''" >
+		<![CDATA[
+		  AND to_char(reg_date, 'YYYYMMDD') >= #{startDt} 
+		]]>
+		</if>
+	</if>
+
+	<if test="endDt != null and endDt != ''" >
+		<if test="startDt == null or startDt == ''" >
+		<![CDATA[
+	      AND to_char(reg_date, 'YYYYMMDD') <= #{endDt} 
+		]]>
+		</if>
+	</if>
+		
+		 ORDER BY REG_DATE DESC 
+    </select>
+    
+    <!-- 사용신청서 상세보기 -->
+    <select id="getApplyDetail"  parameterType="java.util.HashMap" resultType="java.util.HashMap" >
+    	SELECT * 
+    	  FROM TBCOM_APPLY
+    	 WHERE NO = ${pNo}
+    </select>
+    <!-- 사용신청 현황 페이지 끝 -->
+    
+    <!-- 사용신청 수정 페이지 시작 -->
+	<select id="getUseApply" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	SELECT no
+		 , org_nm
+	     , dept
+	     , position
+	     , name
+	     , mobile
+	     , email
+	     , newsletter_yn
+	     , memo
+	     , state
+	     , mng_nm
+	     , mng_his
+	  FROM TBCOM_APPLY
+	 WHERE NO = ${no}
+	</select>    
+	
+	<!-- 사용 신청서 정보 수정 -->
+    <update id="modifiedUseApplyUpdt">
+    	UPDATE TBCOM_APPLY
+    	   SET ORG_NM = #{orgNm} 
+    	     , NAME = #{name} 
+    	     , DEPT = #{dept}
+    	     , POSITION = #{position}
+    	     , MOBILE = #{mobile}
+    	     , EMAIL = #{email}
+    	     , NEWSLETTER_YN = #{newsletterYn}
+    	     , MEMO = #{memo}	
+    	 WHERE NO = ${no}
+    </update>
+    
+    <!-- 이미지 저장  -->
+	<insert id="setAttachFile" parameterType="java.util.Map">
+		INSERT INTO TBCOM_IMAGE (
+				ORG_ID,
+				ORI_NAME,
+				NEW_NAME,
+				PATH,
+				PATH_URL,
+				TYPE,
+				REG_DATE
+		) VALUES (
+				#{orgId},
+				#{oriName},
+				#{newName},
+				#{path},
+				#{pathUrl},
+				#{type},
+				now()
+		)
+	</insert>
+	
+	<!-- 이미지 수정  -->
+	<update id="updateAttachFile" parameterType="java.util.Map">
+		UPDATE TBCOM_IMAGE 
+		SET 	
+			ORI_NAME = #{oriName},
+			NEW_NAME = #{newName},
+			PATH = #{path},
+			PATH_URL = #{pathUrl},
+			LAST_UPT_DATE = NOW()
+		WHERE 1=1
+		AND IMAGE_KEY = #{imageKey}
+	</update>
+    
+    <!-- 이미지 삭제 -->
+    <delete id="deleteFile" parameterType="java.util.Map">
+    	DELETE FROM TBCOM_IMAGE
+    	WHERE 1=1
+    	AND IMAGE_KEY = #{image_key}
+    </delete>
+    
+    <!-- 사용 신청서 답변 수정 -->
+    <update id="modifiedUseApplyReplyUpdt">
+    	UPDATE TBCOM_APPLY
+    	   SET MNG_NM = #{mngNm} 
+    	     , MNG_HIS = #{mngHis} 
+    	     , STATE = #{state}
+    	 WHERE NO = ${no}
+    </update>
+    <!-- 사용신청 수정 페이지 끝 -->
+    
+	<!-- 서비스 사용통계 페이지 시작 -->
+    <!-- 서비스 사용 통계 전체 -->
+    <select id="getTotSvcStatsList" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    	SELECT COUNT(*) AS TOT_CNT
+    	  FROM (
+				SELECT b.* 
+		        	 , c.org_nm 
+		        	 , d.full_name
+				  FROM (
+				  		SELECT COALESCE(SUM(CASE WHEN menu_nm = '사용자 메인 페이지' THEN A.NUM END), 0) AS access_cnt
+							 , COALESCE(SUM(CASE WHEN menu_nm = '이벤트효과' THEN A.NUM END), 0) AS evnt_effect
+							 , COALESCE(SUM(CASE WHEN menu_nm = '경제트렌드' THEN A.NUM END), 0) AS ecnmy_trnd
+							 , COALESCE(SUM(CASE WHEN menu_nm = '경제 24시' THEN A.NUM END), 0) AS ecnmy24
+						     , a.time
+						     , a.org_id
+						  FROM (
+						        SELECT * 
+						             , 1 as NUM 
+						             <if test='type == "month" '>
+						             , to_char(LOG_TIME, 'YYYY-MM') as time
+						             </if>
+						             <if test='type == "day" '>
+						             , to_char(LOG_TIME, 'YYYY-MM-DD') as time
+						             </if>
+						          FROM TBCOM_LOG 
+						         WHERE 1=1
+						        <if test="startDt != null and startDt != ''" >
+								   <if test="endDt != null and endDt != ''" >
+								   AND to_char(LOG_TIME, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+								   </if>
+									
+								   <if test="endDt == null or endDt == ''" >
+								   <![CDATA[
+								   AND to_char(LOG_TIME, 'YYYYMMDD') >= #{startDt} 
+								   ]]>
+								   </if>
+								</if>
+								
+								<if test="endDt != null and endDt != ''" >
+								   <if test="startDt == null or startDt == ''" >
+								   <![CDATA[
+								   AND to_char(LOG_TIME, 'YYYYMMDD') <= #{endDt} 
+								   ]]>
+							       </if>
+								</if>
+							  ) AS A
+					 	 GROUP BY A.ORG_ID, A.TIME
+				  	) AS B
+				 LEFT OUTER JOIN TBCOM_ORG AS C
+				   ON B.ORG_ID = C.ORG_ID
+				 LEFT OUTER JOIN  TBREGION AS D
+				   ON C.MEGA_CD = D.PARENT_ID
+				  AND C.CTY_CD = D.ID
+				WHERE 1 = 1
+				  AND C.ORG_ID IS NOT NULL
+				  AND C.ORG_NM IS NOT NULL
+				  <if test='orgId != null and orgId != ""'>
+			      AND C.ORG_ID = #{orgId}
+				  </if>
+				
+				ORDER BY C.ORG_ID ASC, B.TIME DESC, B.ACCESS_CNT DESC 
+	         ) A
+    </select>
+
+    <!-- 서비스 사용 통계 -->
+    <select id="getSvcStatsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT b.* 
+        	 , c.org_nm 
+        	 , d.full_name
+		  FROM (
+		  		SELECT COALESCE(SUM(CASE WHEN menu_nm = '사용자 메인 페이지' THEN A.NUM END), 0) AS access_cnt
+					 , COALESCE(SUM(CASE WHEN menu_nm = '이벤트효과' THEN A.NUM END), 0) AS evnt_effect
+					 , COALESCE(SUM(CASE WHEN menu_nm = '경제트렌드' THEN A.NUM END), 0) AS ecnmy_trnd
+					 , COALESCE(SUM(CASE WHEN menu_nm = '경제 24시' THEN A.NUM END), 0) AS ecnmy24
+				     , a.time
+				     , a.org_id
+				  FROM (
+				        SELECT * 
+				             , 1 as NUM 
+				             <if test='type == "month" '>
+				             , to_char(LOG_TIME, 'YYYY-MM') as time
+				             </if>
+				             <if test='type == "day" '>
+				             , to_char(LOG_TIME, 'YYYY-MM-DD') as time
+				             </if>
+				          FROM TBCOM_LOG 
+				         WHERE 1=1
+				        <if test="startDt != null and startDt != ''" >
+						   <if test="endDt != null and endDt != ''" >
+						   AND to_char(LOG_TIME, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+						   </if>
+							
+						   <if test="endDt == null or endDt == ''" >
+						   <![CDATA[
+						   AND to_char(LOG_TIME, 'YYYYMMDD') >= #{startDt} 
+						   ]]>
+						   </if>
+						</if>
+						
+						<if test="endDt != null and endDt != ''" >
+						   <if test="startDt == null or startDt == ''" >
+						   <![CDATA[
+						   AND to_char(LOG_TIME, 'YYYYMMDD') <= #{endDt} 
+						   ]]>
+					       </if>
+						</if>
+					  ) AS A
+			 	 GROUP BY A.ORG_ID, A.TIME
+		  	) AS B
+		 LEFT OUTER JOIN TBCOM_ORG AS C
+		   ON B.ORG_ID = C.ORG_ID
+		 LEFT OUTER JOIN  TBREGION AS D
+		   ON C.MEGA_CD = D.PARENT_ID
+		  AND C.CTY_CD = D.ID
+		WHERE 1 = 1
+		  AND C.ORG_ID IS NOT NULL
+		  AND C.ORG_NM IS NOT NULL
+		  <if test='orgId != null and orgId != ""'>
+	      AND C.ORG_ID = #{orgId}
+		  </if>
+		
+		ORDER BY B.TIME DESC
+		 	   , C.ORG_ID ASC 
+		 	   , B.ACCESS_CNT DESC 
+	<if test='limit != null and limit != ""'>
+        LIMIT ${limit}
+   	</if>
+    <if test='offset != null and offset != ""'>
+       OFFSET ${offset}
+   	</if>
+    </select>
+    
+    <!-- 서비스 사용 통계 Excel -->
+    <select id="getExcelSvcStatsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT b.* 
+        	 , c.org_nm 
+        	 , d.full_name
+		  FROM (
+		  		SELECT COALESCE(SUM(CASE WHEN menu_nm = '사용자 메인 페이지' THEN A.NUM END), 0) AS access_cnt
+					 , COALESCE(SUM(CASE WHEN menu_nm = '이벤트효과' THEN A.NUM END), 0) AS evnt_effect
+					 , COALESCE(SUM(CASE WHEN menu_nm = '경제트렌드' THEN A.NUM END), 0) AS ecnmy_trnd
+					 , COALESCE(SUM(CASE WHEN menu_nm = '경제 24시' THEN A.NUM END), 0) AS ecnmy24
+				     , a.time
+				     , a.org_id
+				  FROM (
+				        SELECT * 
+				             , 1 as NUM 
+				             <if test='type == "month" '>
+				             , to_char(LOG_TIME, 'YYYY-MM') as time
+				             </if>
+				             <if test='type == "day" '>
+				             , to_char(LOG_TIME, 'YYYY-MM-DD') as time
+				             </if>
+				          FROM TBCOM_LOG 
+				         WHERE 1=1
+				        <if test="startDt != null and startDt != ''" >
+						   <if test="endDt != null and endDt != ''" >
+						   AND to_char(LOG_TIME, 'YYYYMMDD') BETWEEN #{startDt} AND #{endDt} 
+						   </if>
+							
+						   <if test="endDt == null or endDt == ''" >
+						   <![CDATA[
+						   AND to_char(LOG_TIME, 'YYYYMMDD') >= #{startDt} 
+						   ]]>
+						   </if>
+						</if>
+						
+						<if test="endDt != null and endDt != ''" >
+						   <if test="startDt == null or startDt == ''" >
+						   <![CDATA[
+						   AND to_char(LOG_TIME, 'YYYYMMDD') <= #{endDt} 
+						   ]]>
+					       </if>
+						</if>
+					  ) AS A
+			 	 GROUP BY A.ORG_ID, A.TIME
+		  	) AS B
+		 LEFT OUTER JOIN TBCOM_ORG AS C
+		   ON B.ORG_ID = C.ORG_ID
+		 LEFT OUTER JOIN  TBREGION AS D
+		   ON C.MEGA_CD = D.PARENT_ID
+		  AND C.CTY_CD = D.ID
+		WHERE 1 = 1
+		  AND C.ORG_ID IS NOT NULL
+		  AND C.ORG_NM IS NOT NULL
+		  <if test='orgId != null and orgId != ""'>
+	      AND C.ORG_ID = #{orgId}
+		  </if>
+		
+		ORDER BY B.TIME DESC
+		 	   , C.ORG_ID ASC 
+		 	   , B.ACCESS_CNT DESC
+    </select>
+	<!-- 서비스 사용통계 페이지 끝 -->
+	
+	
+	<!-- API 수정 페이지 시작 -->
+	
+	<!-- API 기본키 조회 -->
+    <select id="getApiNo" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT api_no
+      FROM TBCOM_API
+     WHERE 1 = 1
+       AND ORG_ID = #{orgId}
+       AND CONTRACT_ID = #{contractId}
+    </select>
+    
+    <!-- API정보 조회 -->
+    <select id="getApiInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	SELECT api_nm
+	     , api_desc
+	  FROM TBCOM_API
+	 WHERE 1 = 1
+	   AND ORG_ID = #{orgId}
+	   AND CONTRACT_ID = #{contractId}
+    </select>
+    
+    <!-- API 지역 정보 조회 -->
+    <select id="getApiRegion" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	SELECT api_no
+	     , SUBSTRING(RGN_ID, 0, 3) AS mega_cd
+    		 , RGN_ID AS cty_cd
+	  FROM TBCOM_API_REGION
+	 WHERE 1 = 1
+	   AND API_NO = #{apiNo}
+    </select>
+    
+    <!-- API 도메인 정보 조회 -->
+    <select id="getApiDomain" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	SELECT api_no
+	     , api_domain
+	  FROM TBCOM_API_INFO
+	 WHERE 1 = 1
+	   AND API_NO = #{apiNo}
+    </select>
+    
+    <!-- API 인증키 저장 -->
+    <insert id="setApiAuth">
+    INSERT INTO TBCOM_API
+        (
+          API_KEY, API_NM, API_DESC, ORG_ID, CONTRACT_ID, REG_DATE, MOD_DATE
+        )
+    VALUES
+        (
+          #{apiKey}, #{apiNm}, #{apiDesc}, #{orgId}, #{contractId}, now(), now()
+        )
+    </insert>
+
+	<!-- API 인증 정보 저장 -->
+	<insert id="setApiInfo">
+    	<selectKey resultType="Integer" keyProperty="apiNo" keyColumn="apiNo" order="BEFORE">
+        SELECT API_NO FROM TBCOM_API WHERE ORG_ID = ${orgId} AND CONTRACT_ID = ${contractId}
+    </selectKey>
+    INSERT INTO TBCOM_API_INFO
+        (
+          API_NO, DOMAIN_NO, API_DOMAIN, REG_DATE
+        )
+    SELECT #{apiNo}, fn_user_api(#{apiNo}), #{apiDomain}, now()
+     WHERE NOT EXISTS (
+    		SELECT API_NO FROM TBCOM_API_INFO WHERE API_NO = #{apiNo} AND API_DOMAIN = #{apiDomain}
+    )
+    </insert>
+    
+    <!-- API 인증 지역정보 저장 -->
+    <insert id="setApiRegion">
+    	<selectKey resultType="Integer" keyProperty="apiNo" keyColumn="apiNo" order="BEFORE">
+        SELECT API_NO FROM TBCOM_API WHERE ORG_ID = ${orgId} AND CONTRACT_ID = ${contractId}
+    </selectKey>
+    INSERT INTO TBCOM_API_REGION
+        (
+          API_NO, RGN_ID, REG_DATE
+        )
+    SELECT #{apiNo}, #{rgnId}, now()
+     WHERE NOT EXISTS (
+    		SELECT API_NO FROM TBCOM_API_REGION WHERE API_NO = #{apiNo} AND RGN_ID = #{rgnId}
+    )
+    </insert>
+    
+    <!-- API 인증키 수정 -->
+    <update id="modifiedApiAuth">
+    	<selectKey resultType="Integer" keyProperty="apiNo" keyColumn="apiNo" order="BEFORE">
+        SELECT API_NO FROM TBCOM_API WHERE ORG_ID = ${orgId} AND CONTRACT_ID = ${contractId}
+    </selectKey>
+    UPDATE TBCOM_API
+       SET API_NM = #{apiNm}
+         , API_DESC = #{apiDesc}
+         , MOD_DATE = now()
+     WHERE API_NO = #{apiNo}
+    </update>
+    
+    <!-- API 인증 삭제 -->
+    <delete id="deleteApiAuth" >
+    DELETE FROM TBCOM_API
+     WHERE API_NO = #{apiNo}
+    </delete>
+    
+    <!-- API 인증 정보 삭제 -->
+    <delete id="deleteApiInfo" >
+    DELETE FROM TBCOM_API_INFO
+     WHERE API_NO = #{apiNo}
+    </delete>
+    
+    <!-- API 인증 지역정보 삭제 -->
+    <delete id="deleteApiRegion" >
+    DELETE FROM TBCOM_API_REGION
+     WHERE API_NO = #{apiNo}
+    </delete>
+    <!-- API 수정 페이지 끝 -->
+    
+    <!-- API정보 건수 조회 -->
+    <select id="getCntAuthInfo" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+    SELECT COUNT(*)
+      FROM TBCOM_API
+     WHERE 1 = 1
+       AND PUBLIC_ID = #{orgId}
+       AND CONTRACT_ID = #{contractId}
+    </select>
+    
+    <!-- API 전체 건수 조회 -->
+    <select id="getTotApiList"  parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS TOT_CNT
+          FROM (
+          		SELECT A.API_NO 
+					 , A.API_NM 
+					 , B.ORG_NM 
+					 , B.ORG_ID 
+					 , C.CONTRACT_ID 
+					 , C.SERVICE_CLSS 
+					 , D.CD_NM AS USE_TYPE_NM 
+					 , C.USE_STR_DATE 
+					 , C.USE_EXP_DATE 
+				  FROM TBCOM_API AS A 
+				  LEFT OUTER JOIN TBCOM_ORG AS B
+				    ON A.PUBLIC_ID = B.ORG_ID
+				  LEFT OUTER JOIN TBCOM_CONTRACT AS C
+				    ON A.CONTRACT_ID = C.CONTRACT_ID
+				  LEFT OUTER JOIN TBCOMM_CODE AS D
+				    ON C.SERVICE_CLSS = D.CODE
+				   AND D.CD_ID = 'SERVICE_CLSS'
+				  LEFT OUTER JOIN TBCOM_API_REGION AS E 
+				    ON E.API_NO = A.API_NO
+				 WHERE 1=1
+				   AND ORG_NM IS NOT NULL
+			 	<if test='serviceClss != null and serviceClss != ""'>
+			 	   AND C.SERVICE_CLSS IN (${serviceClss})
+			 	</if>
+			 	
+				<if test='apiNm != null and apiNm != ""'>
+			       AND A.API_NM LIKE '%' || #{apiNm} || '%'
+			 	</if>
+			 	
+				<if test='orgNm != null and orgNm != ""'>
+			       AND B.ORG_NM LIKE '%' || #{orgNm} || '%'
+			 	</if>
+			 	
+			 	<if test='megaCd != null and megaCd != ""'>
+			 	   AND E.RGN_ID LIKE #{megaCd} || '%' 
+				</if>
+				
+			 	<if test='ctyCd != null and ctyCd != ""'>
+			 	   AND E.RGN_ID LIKE #{ctyCd} || '%' 
+				</if>
+			 
+			 	<if test='startDt != null and startDt != ""'>
+			       AND C.CONT_DATE BETWEEN #{startDt} AND #{endDt}
+			 	</if>
+			 	   GROUP BY A.API_NO 
+					   , A.API_NM 
+					   , B.ORG_NM 
+					   , B.ORG_ID 
+					   , C.CONTRACT_ID 
+					   , C.SERVICE_CLSS 
+					   , D.CD_NM
+					   , C.USE_STR_DATE 
+					   , C.USE_EXP_DATE
+			   ) AS A
+    </select>
+    
+    <!-- API 목록 조회 -->
+    <select id="getApiList"  parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT a.api_no 
+			 , a.api_nm 
+			 , b.org_nm 
+			 , b.org_id 
+			 , b.mega_cd
+			 , b.cty_cd
+			 , c.contract_id 
+			 , c.service_clss 
+			 , d.cd_nm as service_clss_nm 
+			 , c.use_str_date 
+			 , c.use_exp_date
+		  FROM TBCOM_API AS A 
+		  LEFT OUTER JOIN TBCOM_ORG AS B
+		    ON A.PUBLIC_ID = B.ORG_ID
+		  LEFT OUTER JOIN TBCOM_CONTRACT AS C
+		    ON A.CONTRACT_ID = C.CONTRACT_ID
+		  LEFT OUTER JOIN TBCOMM_CODE AS D
+		    ON C.SERVICE_CLSS = D.CODE
+		   AND D.CD_ID = 'SERVICE_CLSS'
+		  LEFT OUTER JOIN TBCOM_API_REGION AS E 
+		    ON E.API_NO = A.API_NO
+		 WHERE 1=1 
+		   AND ORG_NM IS NOT NULL
+	 	<if test='serviceClss != null and serviceClss != ""'>
+	 	   AND C.SERVICE_CLSS IN (${serviceClss})
+	 	</if>
+	 	
+		<if test='apiNm != null and apiNm != ""'>
+	       AND A.API_NM LIKE '%' || #{apiNm} || '%'
+	 	</if>
+	 	
+		<if test='orgNm != null and orgNm != ""'>
+	       AND B.ORG_NM LIKE '%' || #{orgNm} || '%'
+	 	</if>
+	 	
+	 	<if test='megaCd != null and megaCd != ""'>
+	 	   AND E.RGN_ID LIKE #{megaCd} || '%' 
+		</if>
+		
+	 	<if test='ctyCd != null and ctyCd != ""'>
+	 	   AND E.RGN_ID LIKE #{ctyCd} || '%' 
+		</if>
+	 
+	 	<if test='startDt != null and startDt != ""'>
+	       AND C.CONT_DATE BETWEEN #{startDt} AND #{endDt}
+	 	</if>
+	 	   GROUP BY A.API_NO 
+			   , A.API_NM 
+			   , B.ORG_NM 
+			   , B.ORG_ID 
+			   , C.CONTRACT_ID 
+			   , C.SERVICE_CLSS 
+			   , D.CD_NM
+			   , C.USE_STR_DATE 
+			   , C.USE_EXP_DATE
+        ORDER BY CASE WHEN SERVICE_CLSS = '5' THEN 1 ELSE 2 END
+			    , USE_STR_DATE DESC, ORG_NM DESC
+    		<if test='limit != null and limit != ""'>
+        LIMIT ${limit}
+   		</if>
+    		<if test='offset != null and offset != ""'>
+       OFFSET ${offset}
+   		</if>
+    </select>
+    
+    <!-- API 서비스 사용 통계 -->
+    <select id="getTotApiSvcStatsList" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(1) AS TOT_CNT
+		  FROM (
+				SELECT API_KEY
+					  ,LOG_TIME
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend%' THEN 1 else 0 END), 0) AS ECO_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/region%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/induty%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_INDUTY_CNT
+					  
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/region%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_SEXAGE_CNT
+					  
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon%' THEN 1 else 0 END), 0) AS ECOINPOPCON_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/region%' THEN 1 else 0 END), 0) AS ECOINPOPCON_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/induty%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INDUTY_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/time%' THEN 1 else 0 END), 0) AS ECOINPOPCON_TIME_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INREGION_CNT
+					  
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff%' THEN 1 else 0 END), 0) AS EVENT_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff%' THEN 1 else 0 END), 0) AS EVTECOEFF_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/region%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/near%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEAR_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/regionUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGIONUPJONG_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/nearUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEARUPJONG_CNT
+						  
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/region%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_SEXAGE_CNT
+					  
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon%' THEN 1 else 0 END), 0) AS EVTINPOPCON_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/region%' THEN 1 else 0 END), 0) AS EVTINPOPCON_REGION_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/time%' THEN 1 else 0 END), 0) AS EVTINPOPCON_TIME_CNT
+					  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS EVTINPOPCON_INREGION_CNT
+					  
+				  FROM ( 
+						SELECT API_KEY
+						      ,API_URL
+				<if test='type == "month" '>
+							  ,TO_CHAR(LOG_TIME, 'YYYY-MM') LOG_TIME
+				</if>
+				<if test='type == "day" '>
+				
+							  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD') LOG_TIME
+				</if>
+				<if test='type == "time" '>
+							  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD HH24') LOG_TIME
+				</if>
+						  FROM TBCOM_API_LOG A
+						 WHERE 1 = 1
+				<if test='type == "month" '>
+						  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'01000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'31235959', 'YYYYMMDDHH24MISS')
+				</if>
+				<if test='type == "day" '>
+						  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'235959', 'YYYYMMDDHH24MISS')
+				</if>
+				<if test='type == "time" '>
+						  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'0000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'5959', 'YYYYMMDDHH24MISS')
+				</if>
+						) A
+				  GROUP BY API_KEY, LOG_TIME
+				) A,
+			   TBCOM_API B,
+			   TBCOM_ORG C
+		 WHERE 1 = 1
+		   AND A.API_KEY = B.API_KEY
+		   AND B.PUBLIC_ID = C.ORG_ID
+	<if test='orgId != null and orgId != ""'>
+		   AND C.ORG_ID = #{orgId}
+	</if>
+    </select>
+    
+    <!-- API 서비스 사용 통계 -->
+    <select id="getApiSvcStatsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        SELECT *
+		     , COUNT(*) OVER(PARTITION BY AAA.API_NO, AAA.ORG_ID) AS CNT
+	   	  FROM (
+				SELECT B.API_NM
+				      ,B.API_NO
+				      ,C.ORG_ID
+				      ,C.ORG_NM
+				      ,A.LOG_TIME
+					  ,A.ECO_CNT
+					  ,A.ECOTRADEAMT_CNT
+					  ,A.ECOTRADEAMT_REGION_CNT
+					  ,A.ECOTRADEAMT_INDUTY_CNT
+					  
+					  ,A.ECOINPOPPROP_CNT
+					  ,A.ECOINPOPPROP_REGION_CNT
+					  ,A.ECOINPOPPROP_SEXAGE_CNT
+					  
+					  ,A.ECOINPOPCON_CNT
+					  ,A.ECOINPOPCON_REGION_CNT
+					  ,A.ECOINPOPCON_INDUTY_CNT
+					  ,A.ECOINPOPCON_TIME_CNT
+					  ,A.ECOINPOPCON_INREGION_CNT
+					  
+					  ,A.EVENT_CNT
+					  ,A.EVTECOEFF_CNT
+					  ,A.EVTECOEFF_REGION_CNT
+					  ,A.EVTECOEFF_NEAR_CNT
+					  ,A.EVTECOEFF_REGIONUPJONG_CNT
+					  ,A.EVTECOEFF_NEARUPJONG_CNT
+					  
+					  ,A.EVTINPOPPROP_CNT
+					  ,A.EVTINPOPPROP_REGION_CNT
+					  ,A.EVTINPOPPROP_SEXAGE_CNT
+					  
+					  ,A.EVTINPOPCON_CNT
+					  ,A.EVTINPOPCON_REGION_CNT
+					  ,A.EVTINPOPCON_TIME_CNT
+					  ,A.EVTINPOPCON_INREGION_CNT
+				  FROM (
+						SELECT API_KEY
+							  ,LOG_TIME
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend%' THEN 1 else 0 END), 0) AS ECO_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/region%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/induty%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_INDUTY_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/region%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_SEXAGE_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon%' THEN 1 else 0 END), 0) AS ECOINPOPCON_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/region%' THEN 1 else 0 END), 0) AS ECOINPOPCON_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/induty%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INDUTY_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/time%' THEN 1 else 0 END), 0) AS ECOINPOPCON_TIME_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INREGION_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff%' THEN 1 else 0 END), 0) AS EVENT_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff%' THEN 1 else 0 END), 0) AS EVTECOEFF_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/region%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/near%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEAR_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/regionUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGIONUPJONG_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/nearUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEARUPJONG_CNT
+								  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/region%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_SEXAGE_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon%' THEN 1 else 0 END), 0) AS EVTINPOPCON_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/region%' THEN 1 else 0 END), 0) AS EVTINPOPCON_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/time%' THEN 1 else 0 END), 0) AS EVTINPOPCON_TIME_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS EVTINPOPCON_INREGION_CNT
+							  
+						  FROM ( 
+								SELECT API_KEY
+								      ,API_URL
+						<if test='type == "month" '>
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM') LOG_TIME
+						</if>
+						<if test='type == "day" '>
+						
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD') LOG_TIME
+						</if>
+						<if test='type == "time" '>
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD HH24') LOG_TIME
+						</if>
+								  FROM TBCOM_API_LOG A
+								 WHERE 1 = 1
+						<if test='type == "month" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'01000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'31235959', 'YYYYMMDDHH24MISS')
+						</if>
+						<if test='type == "day" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'235959', 'YYYYMMDDHH24MISS')
+						</if>
+						<if test='type == "time" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'0000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'5959', 'YYYYMMDDHH24MISS')
+						</if>
+								) A
+						  GROUP BY API_KEY, LOG_TIME
+						) A,
+					   TBCOM_API B,
+					   TBCOM_ORG C
+				 WHERE 1 = 1
+				   AND A.API_KEY = B.API_KEY
+				   AND B.PUBLIC_ID = C.ORG_ID
+			<if test='orgId != null and orgId != ""'>
+				   AND C.ORG_ID = #{orgId}
+			</if>
+			
+		) AS AAA   
+		ORDER BY AAA.LOG_TIME DESC
+		       , AAA.ORG_ID
+		       , AAA.API_NO DESC
+		<if test='limit != null and limit != ""'>
+       LIMIT ${limit}
+   		</if>
+    	<if test='offset != null and offset != ""'>
+       OFFSET ${offset}
+   		</if>
+    </select>
+    
+    <!--API 서비스 사용 통계 Excel -->
+    <select id="getExcelApiSvcStatsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	SELECT *
+		, COUNT(*) OVER(PARTITION BY AAA.API_NO, AAA.ORG_ID) AS CNT
+		  FROM (
+				SELECT B.API_NM
+				      ,B.API_NO
+				      ,C.ORG_ID
+				      ,C.ORG_NM
+				      ,A.LOG_TIME
+				      ,A.ECO_CNT + A.EVENT_CNT AS TOT_CNT
+					  ,A.ECO_CNT
+					  ,A.ECOTRADEAMT_CNT
+					  ,A.ECOTRADEAMT_REGION_CNT
+					  ,A.ECOTRADEAMT_INDUTY_CNT
+					  
+					  ,A.ECOINPOPPROP_CNT
+					  ,A.ECOINPOPPROP_REGION_CNT
+					  ,A.ECOINPOPPROP_SEXAGE_CNT
+					  
+					  ,A.ECOINPOPCON_CNT
+					  ,A.ECOINPOPCON_REGION_CNT
+					  ,A.ECOINPOPCON_INDUTY_CNT
+					  ,A.ECOINPOPCON_TIME_CNT
+					  ,A.ECOINPOPCON_INREGION_CNT
+					  
+					  ,A.EVENT_CNT
+					  ,A.EVTECOEFF_CNT
+					  ,A.EVTECOEFF_REGION_CNT
+					  ,A.EVTECOEFF_NEAR_CNT
+					  ,A.EVTECOEFF_REGIONUPJONG_CNT
+					  ,A.EVTECOEFF_NEARUPJONG_CNT
+					  
+					  ,A.EVTINPOPPROP_CNT
+					  ,A.EVTINPOPPROP_REGION_CNT
+					  ,A.EVTINPOPPROP_SEXAGE_CNT
+					  
+					  ,A.EVTINPOPCON_CNT
+					  ,A.EVTINPOPCON_REGION_CNT
+					  ,A.EVTINPOPCON_TIME_CNT
+					  ,A.EVTINPOPCON_INREGION_CNT
+					  
+				  FROM (
+						SELECT API_KEY
+							  ,LOG_TIME
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend%' THEN 1 else 0 END), 0) AS ECO_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/region%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/tradeAmt/induty%' THEN 1 else 0 END), 0) AS ECOTRADEAMT_INDUTY_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/region%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS ECOINPOPPROP_SEXAGE_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon%' THEN 1 else 0 END), 0) AS ECOINPOPCON_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/region%' THEN 1 else 0 END), 0) AS ECOINPOPCON_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/induty%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INDUTY_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/time%' THEN 1 else 0 END), 0) AS ECOINPOPCON_TIME_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%ecoTrend/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS ECOINPOPCON_INREGION_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff%' THEN 1 else 0 END), 0) AS EVENT_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff%' THEN 1 else 0 END), 0) AS EVTECOEFF_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/region%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/near%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEAR_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/regionUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_REGIONUPJONG_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/ecoEff/nearUpjong%' THEN 1 else 0 END), 0) AS EVTECOEFF_NEARUPJONG_CNT
+								  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/region%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopProp/sexAge%' THEN 1 else 0 END), 0) AS EVTINPOPPROP_SEXAGE_CNT
+							  
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon%' THEN 1 else 0 END), 0) AS EVTINPOPCON_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/region%' THEN 1 else 0 END), 0) AS EVTINPOPCON_REGION_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/time%' THEN 1 else 0 END), 0) AS EVTINPOPCON_TIME_CNT
+							  ,COALESCE(SUM(CASE WHEN API_URL LIKE '%evntEff/inPopCon/inRegion%' THEN 1 else 0 END), 0) AS EVTINPOPCON_INREGION_CNT
+							  
+						  FROM ( 
+								SELECT API_KEY
+								      ,API_URL
+						<if test='type == "month" '>
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM') LOG_TIME
+						</if>
+						<if test='type == "day" '>
+						
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD') LOG_TIME
+						</if>
+						<if test='type == "time" '>
+									  ,TO_CHAR(LOG_TIME, 'YYYY-MM-DD HH24') LOG_TIME
+						</if>
+								  FROM TBCOM_API_LOG A
+								 WHERE 1 = 1
+						<if test='type == "month" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'01000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'31235959', 'YYYYMMDDHH24MISS')
+						</if>
+						<if test='type == "day" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'000000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'235959', 'YYYYMMDDHH24MISS')
+						</if>
+						<if test='type == "time" '>
+								  AND A.LOG_TIME BETWEEN TO_TIMESTAMP(#{firstDay}||'0000', 'YYYYMMDDHH24MISS') AND TO_TIMESTAMP(#{lastDay}||'5959', 'YYYYMMDDHH24MISS')
+						</if>
+								--AND RGN_ID LIKE '%%'
+								) A
+						  GROUP BY API_KEY, LOG_TIME
+						) A,
+					   TBCOM_API B,
+					   TBCOM_ORG C
+				 WHERE 1 = 1
+				   AND A.API_KEY = B.API_KEY
+				   AND B.PUBLIC_ID = C.ORG_ID
+			<if test='orgId != null and orgId != ""'>
+				   AND C.ORG_ID = #{orgId}
+			</if>
+		) AS AAA
+		ORDER BY AAA.LOG_TIME DESC
+		       , AAA.ORG_ID
+		       , AAA.API_NO DESC
+    </select>
+    
+    <!-- API가 있는 기관리스트 -->
+    <select id="getApiOrgNmList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    SELECT DISTINCT A.ORG_ID,A.ORG_NM	
+ 	  FROM TBCOM_ORG A, TBCOM_API B
+	 WHERE 1 = 1
+  	   AND A.ORG_ID = B.PUBLIC_ID
+	 ORDER BY A.ORG_NM ASC
+    </select>
+    <!-- API 부분 시작 -->
+    
+	<!-- 배치-만료기간 세팅 -->
+    <update id="updateAgreService" parameterType="java.util.HashMap">
+    <![CDATA[
+    	UPDATE  TBCOM_CONTRACT
+		    	SET SERVICE_CLSS = CASE 
+							WHEN SERVICE_CLSS = '1' THEN '2'
+						    WHEN SERVICE_CLSS = '3' THEN '4' 
+						    WHEN SERVICE_CLSS = '5' THEN '6' 
+						    END
+		WHERE 1=1
+		AND use_exp_date < #{toDate}
+		AND SERVICE_CLSS IN ('1','3','5')
+    ]]>
+    </update>
+    
+    <!-- 다중 기관리스트 -->
+    <select id="getOrgMultiList" resultType="java.util.HashMap">
+	    select 
+	    	 id
+	    	,nm
+	    from TBREGION a
+		where A.RGN_CLSS = #{rgnClss}
+		<if test='orgArray != null and orgArray != ""'>
+			and a.id in 
+			<foreach collection="orgArray" item="arr" open="(" close=")" separator=",">
+			 #{arr}
+			</foreach>
+		</if>
+		<if test='parentId != null and parentId != ""'>
+		and a.parent_id = #{parentId}
+		</if>
+		<if test='parentId == null and orgArray == null '>
+		and a.id = #{id}
+		</if>
+		order by nm
+    </select>
+    
+     
+    
+    
+</mapper>
+
+
+
+

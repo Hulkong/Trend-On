@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.common.dao.CommonDao">
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>
+
+
+	<!-- 지역 shape 가져오기 -->
+	<select id="getRegion" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		select shape GEOMETRY, full_name from tbregion where rgn_clss = 'H1'
+	]]>
+	</select>
+
+	<!-- 지역 선택 selectBox option 가져오기 -->
+	<select id="getAreaSelectOption" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ID, NM
+		  FROM TBREGION A
+		 WHERE A.RGN_CLSS = #{rgnClss}
+	]]>
+	<if test='rgnClss == "H2"' >
+		   AND A.PARENT_ID = #{megaCd}
+	</if>
+	<if test='rgnClss == "H3"' >
+		   AND A.PARENT_ID = #{megaCd}
+	</if>
+	<if test='rgnClss == "H4"' >
+		   AND A.ID like #{ctyCd}||'%'
+	</if>
+	<if test='type != null and type != ""'>
+		   AND NOT EXISTS(
+				SELECT 'X'
+				  FROM TBCOM_CONTRACT X
+				 WHERE X.MEGA_CD = #{megaCd}
+				   AND X.CTY_CD = A.ID
+			   )
+	</if>
+	<if test='type2 != null and type2 != ""'>
+		   AND EXISTS(
+				SELECT 'X'
+				  FROM TBCOM_CONTRACT X
+				 WHERE X.MEGA_CD = #{megaCd}
+				   AND X.CTY_CD = A.ID
+			   )
+	</if>
+	<if test='rgnClss == "H1"' >
+	 ORDER BY ID
+	</if>
+	<if test='rgnClss != "H1"' >
+	 ORDER BY NM collate "C"
+	</if>
+	</select>
+
+	<!-- 업종 중분류 선택 selectBox option 가져오기 -->
+	<select id="getUpjong2SelectOption" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT CODE
+		     , cd_nm
+		  FROM TBCOMM_CODE
+		 WHERE 1=1
+	]]>
+	<!-- 동/읍(1)일 경우, EVT_UPJONG_CD_ADMI 사용   -->
+	<if test='admiFlg != null and admiFlg == "1"'>  
+			   AND CD_ID = 'EVT_UPJONG_CD_ADMI'
+	</if>
+	<!-- 면(0)일 경우, EVT_UPJONG_CD_ADMI 사용   -->
+	<if test='admiFlg != null and admiFlg == "0"'>  
+			   AND CD_ID = 'EVT_UPJONG_CD_SMALL'
+	</if>
+	<!-- admiFlg가 없을 경우 '동/읍'(1) 으로..   -->
+	<if test='admiFlg == null or admiFlg == ""'>  
+			   AND CD_ID = 'UPJONG2_CD'
+	</if>
+	<![CDATA[
+		 ORDER BY CD_NM
+	]]>
+	</select>
+	
+	<!-- 이벤트 효과 업종 중분류 선택 selectBox option 가져오기 -->
+	<select id="getEffUpjong2SelectOption" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT CODE
+		     , cd_nm
+		  FROM TBCOMM_CODE
+		 WHERE 1=1
+	]]>
+	<!-- 동/읍(1)일 경우, EVT_UPJONG_CD_ADMI 사용   -->
+	<if test='admiFlg != null and admiFlg == "1"'>  
+			   AND CD_ID = 'EVT_UPJONG_CD_ADMI'
+	</if>
+	<!-- 면(0)일 경우, EVT_UPJONG_CD_ADMI 사용   -->
+	<if test='admiFlg != null and admiFlg == "0"'>  
+			   AND CD_ID = 'EVT_UPJONG_CD_SMALL'
+	</if>
+	<!-- admiFlg가 없을 경우 '동/읍'(1) 으로..   -->
+	<if test='admiFlg == null or admiFlg == ""'>  
+			   AND CD_ID = 'UPJONG2_CD'
+	</if>
+	<![CDATA[
+		   AND CODE NOT IN ('ND0010','ND0011','ND0014','NF0004','NF0005','NS0001','NS0002','NS0003','NS0004')
+		 ORDER BY CD_NM
+	]]>
+	</select>
+
+	<!-- CODE 가져오기 -->
+	<select id="getCommonCodeList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT cd_id
+		     , CODE
+		     , cd_nm
+		     , cd_order
+		  FROM TBCOMM_CODE
+		 WHERE CD_ID = #{code}
+		 ORDER BY CD_ORDER
+	]]>
+	</select>
+	
+	<!-- 데이터 범위 일자-->
+	<select id="getDateRange" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		  SELECT TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) - INTERVAL '23 MONTH ','YYYYMMDD')::TEXT AS min_stdr_date
+			   , TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) + INTERVAL '1 MONTH - 1 day','YYYYMMDD')::TEXT AS max_stdr_date
+			FROM TBCOM_STDR
+	]]>	
+	</select>
+	
+	<!-- 지역 선택 selectBox option 가져오기 -->
+	<select id="getRegionList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ID, NM
+		  FROM TBREGION A
+		 WHERE A.RGN_CLSS = #{rgnClss}
+	]]>
+	<if test='rgnClss == "H2"' >
+		   AND A.PARENT_ID = #{parentId}
+	</if>
+	<if test='rgnClss == "H3"' >
+		   AND A.PARENT_ID = #{parentId}
+	</if>
+	<if test='rgnClss == "H4"' >
+		   AND A.ID LIKE  #{parentId} || '%'
+	</if>
+	<if test='rgnClss == "H1"' >
+	 ORDER BY ID
+	</if>
+	<if test='rgnClss != "H1"' >
+	 ORDER BY NM
+	</if>
+	</select>
+	
+	<!-- CODE 가져오기 -->
+	<select id="getCommonCode" parameterType="java.lang.String" resultType="java.util.Map">
+	<![CDATA[
+		SELECT DISTINCT CD_ID
+		  FROM TBCOMM_CODE
+	]]>
+	</select>
+	
+	<!-- 동/읍(1), 면(0) 구분 flag 가져오기 -->
+	<select id="getEvntFlg" parameterType="java.util.Map" resultType="java.lang.String">
+		SELECT admi_div_cd 
+		FROM TBADMI_FLG 
+		WHERE admi_cd = #{admiCd}
+	</select>
+	
+</mapper>

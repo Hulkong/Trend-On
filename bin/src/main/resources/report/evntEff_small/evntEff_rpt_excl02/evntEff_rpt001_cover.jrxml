@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Wave Cover" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c50b24eb-eb33-413f-8e75-e7e20a5341fd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="trendOnHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.trendOnHost]]></fieldDescription>
+	</field>
+	<field name="h3Cd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.h3Cd]]></fieldDescription>
+	</field>
+	<field name="h3CdInt" class="java.lang.Integer">
+		<fieldDescription><![CDATA[common.h3Cd]]></fieldDescription>
+	</field>
+	<field name="admiNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].admi_nm]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<title>
+		<band height="842" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="176" height="842" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="a4d78f6e-d08f-4b51-92b2-a5f34990ee66">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(0, 0, 0, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="ba4f1fad-c678-4afc-be9b-362f37636510">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="114" width="135" height="30" forecolor="#FFFFFF" uuid="8b9c1cfd-c1a2-4763-b87f-c4dd2505f7b2">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="24" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="78" width="135" height="36" forecolor="#FFFFFF" uuid="a6463c73-f79c-4bf2-87fb-17290cf839dc">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="24" isBold="true"/>
+					<paragraph tabStopWidth="40"/>
+				</textElement>
+				<text><![CDATA[Trend-ON ]]></text>
+			</staticText>
+			<textField pattern="yyyy년 MM월 dd일">
+				<reportElement x="309" y="770" width="246" height="19" forecolor="#E28864" uuid="ef307186-5ae8-45cf-9e85-fea31fe9dc08"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="13" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("YYYY. MM. dd").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="801" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="68c4dfbf-8f1b-43e4-af92-b01339eb952e">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="801" width="136" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="38c0167e-9aaa-4b79-aaa2-5f84fdc24aa6">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="309" y="810" width="246" height="20" forecolor="#E28864" uuid="2fdc161e-8bd1-4cce-9ed2-4ca2d36fe958">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="나눔고딕" size="9.3"/>
+				</textElement>
+				<text><![CDATA[Copyright ⓒ OPENmate_ON All rights reserved. ]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="2959909a-8b48-43fd-85b5-a4a69d2742b3">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="183" width="83" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="b6640ab1-64f4-4697-adc2-072494283453">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="309" y="75" width="246" height="103" forecolor="#E28864" uuid="4dc7c716-fb00-486f-b4d7-f8ea096a8820">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="나눔고딕" size="20" isBold="true"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="23.0"/>
+				</textElement>
+				<text><![CDATA[빅데이터를 활용한
+이벤트 효과
+분석 보고서]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="469" y="183" width="86" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="15ecdf99-3f0a-4526-a3a0-482ea07a7522">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<image>
+				<reportElement x="309" y="339" width="245" height="86" uuid="f508f0c8-c88c-48ac-8368-4876fd276f8e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{trendOnHost}+"/images/report/logo/region_"+$F{h3Cd}+".png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="176" y="470" width="379" height="80" forecolor="#000000" uuid="ec44d141-33b0-46f2-b4e6-08fc7713d339">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="18" isBold="true"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="31.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" - " 
++ ( $F{h3CdInt} == 36110 ?  "" : $F{megaNm} ) 
++ " "+ $F{ctyNm}
++ " "+ $F{admiNm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="36" y="730" width="139" height="57" forecolor="#FFFFFF" uuid="e0406292-48c8-48a6-a5fd-2b116724732a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="6"/>
+					<paragraph lineSpacing="1_1_2" lineSpacingSize="0.5"/>
+				</textElement>
+				<text><![CDATA[[04542]
+11th Floor, 100 Cheonggyecheon-ro Jung-gu, 
+Seoul, Republic of Korea
+
+Tel 02.6956.7541  
+Fax 0505.055.7522]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

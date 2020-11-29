@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.member.dao.MemberDao">
+
+	<!-- 비밀번호 찾기  -->
+	<select id="getValidateMember" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(*) 
+		  FROM TBCOM_ORG
+		 WHERE 1=1
+		   AND MNG_NM = #{userNm} 
+		   AND USER_ID = #{userId}
+		   AND MNG_EMAIL = #{email}
+ 	</select>
+ 	
+ 	<!-- 비밀번호 변경  -->
+ 	<update id="resetPassword" parameterType="java.util.HashMap">
+ 		UPDATE TBCOM_ORG 
+ 		   SET PASSWORD = #{pwd} 
+ 		     , LAST_UPT_DATE = now()
+ 		 WHERE USER_ID = #{userId}
+ 	</update>
+ 	
+ 	<!-- 비밀번호 확인 -->
+ 	<select id="checkPassword" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+ 		SELECT COUNT(*)
+ 		  FROM TBCOM_ORG
+ 		 WHERE USER_ID = #{userId}
+ 		   AND PASSWORD = #{password}
+ 	</select>
+ 	
+ 	<!-- 테스트 사용신청 -->
+ 	<insert id="setUseApply" parameterType="java.util.HashMap">
+ 		INSERT INTO TBCOM_APPLY (
+				  NAME
+				, ORG_NM
+				, DEPT
+				, POSITION
+				, MOBILE
+				, EMAIL
+				, NEWSLETTER_YN
+				, REG_DATE
+				, MEMO
+				, STATE 			   
+ 		) VALUES (
+ 				  #{name}
+ 				, #{orgNm}
+ 				, #{dept}
+ 				, #{position}
+ 				, #{mobile}
+ 				, #{email}
+ 				, #{newsletterYn}
+ 				, now()
+ 				, #{memo}
+ 				, '1'
+ 		)
+ 	</insert>
+ 	
+	<!-- 테스트 사용신청 이메일로그 데이터 삽입 -->
+	<insert id="setEmailLog" parameterType="java.util.HashMap">
+		INSERT INTO TBCOM_AUTH_EMAIL
+		(
+ 			EMAIL_ID
+ 		  , SEND_TIME
+ 		  , EMAIL_TYPE
+ 		  , ORG_ID 
+		 ) VALUES 
+		 (
+ 			#{email}
+ 		  , now()
+ 		  , #{emailType}
+ 		  , #{orgId} 
+		 )
+	</insert>
+ 	
+ 	<!-- 사용자 권한 저장 -->
+    <insert id="setUserRegistAuthor">
+        INSERT INTO TBCOM_AUTHORITY
+            (ORG_ID, AUTHORITY)
+        VALUES
+            (#{orgId}, 'ROLE_USER')
+    </insert>
+</mapper>

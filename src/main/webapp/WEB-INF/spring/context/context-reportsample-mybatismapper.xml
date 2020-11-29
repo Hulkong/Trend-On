@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+
+
+
+	<!-- 보고서 샘플데이터 -->
+	<!-- hsql -->
+<!-- 	
+    <jdbc:embedded-database id="embdDataSource" type="HSQL">
+		<jdbc:script location= "classpath:/hsqldb/test.script"/>
+	</jdbc:embedded-database>
+ -->	
+	 <!-- Custom sql formatter  -->
+<!-- 	 
+     <bean id="dataSource1" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="embdDataSource" />
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE" />
+                <property name="sqlPrefix" value="[SQL] " />
+            </bean>
+        </property>
+    </bean>
+     
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource1"/>
+        <property name="configLocation" value="classpath:com/openmate/frmwrk/config/mapper-config.xml"/>
+       <property name="mapperLocations" value="classpath:com/openmate/frmwrk/report/mappers/report-mapper.xml" />
+    </bean>	
+    
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="basePackage" value="com.openmate.frmwrk.report.*" />
+	    <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+	    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+-->	
+</beans>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+<!-- 		<property name="protocol" value="smtp" /> -->
+		<property name="host" value="${config.email.host}" />
+		<property name="port" value="${config.email.portNumber}" />
+<!-- 		<property name="username" value="no_reply" /> -->
+<!-- 		<property name="password" value="no_reply3758*" /> -->
+		<property name="username" value="${config.email.username}" />
+		<property name="password" value="${config.email.password}" />
+		<property name="javaMailProperties">
+			<props>
+<!-- 				<prop key="mail.transport.protocol">smtp</prop> -->
+				<prop key="mail.smtp.port">${config.email.portNumber}</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,58 @@
+@CHARSET "UTF-8";
+
+/*********** 모바일 전용 css ***********/
+html, body { height: 100%; }
+body {display:table; width:100%;}
+/* HEADER */
+#wrap_head{
+/* 	display:table-row; */
+	width:100%;
+/* 	height:1px; */
+	color:#FFFFFF; 
+}
+h1.main_logo {
+    display:inline-block;
+    height:35px; 
+    padding:5px 10px;}
+#logo {
+    color:#FFFFFF;
+    margin:7px 0 0 0px;
+    display:block;
+    font-size:16px; }
+
+/* 숨겨진 검색창 */
+#content { display:block; height:90px; background:#f26522; width:100%; color:#fff; }
+#content .con_top {position:relative; width:100%; color:#FFF; text-align:center; background:#f26522;padding-top:10px;}
+#content .con_top2 {position:relative; width:100%; color:#FFF; text-align:center; background:#f26522;padding-top:15px;}
+#content .con_top .tit {font-size:20px; font-weight:bold;color:#FFF; }
+#content .con_top .txt {font-size:15px; font-weight:bold;color:#fffc19; }
+#content .con_top .txt2 {font-size:12px;color:#fffc19;}
+
+/* 메인 컨텐츠 */
+#applyDiv { height:100%; display:table-row; width:100%; height:1px; }
+#main { clear:both;width:100%; }
+#main .layer_con {margin:20px auto; width:80%;}
+#main .layer_con .txt_notice {margin-bottom:-32px; text-align:right; color:#ff0000;}
+#main dl.dl_write2 {}
+#main dl.dl_write2 dt {margin:14px 0 4px 0; font-size:15px; font-weight:bold; color:#333;}
+#main dl.dl_write2 dd {}
+#main dl.dl_write2 dd p {color:#ff0000; font-size:12px;}
+#main dl.dl_write2 input {height:30px;}
+#main dl.dl_write2 input.inp_co {width:100%;}
+#main dl.dl_write2 input.inp_num {width:25%;}
+#main .con_btm {margin:0 auto; width:80%;}
+#main .con_btm label {display:block; margin:5px 10px 0 10px; }
+#main .con_btm label em {font-size:13px; font-weight:bold; color:#333;}
+
+#footer{
+	display:table-row;
+	width:100%;
+	height:1px;
+}
+
+/* 완료 */
+#applyFinish {height:100%; display:table-row; width:100%; height:1px;}
+#applyFinish .layer_con {color:#313131;}
+#applyFinish .group_txt {margin:25px 0; text-align:center;}
+#applyFinish .group_txt .tit {margin-bottom:20px; font-size:18px; font-weight:bold; color:#f26522;}
+#applyFinish .group_txt .txt {line-height:1.8; font-size:15px; font-weight:bold;}

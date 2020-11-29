@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.EcnmyTrndDao">	
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>	
+	
+	<!-- 지도 SQL -->
+	<!-- 경제 트렌드 : 지도 (행정동) -->
+	<select id="getTrndMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1
+		 ]]>  
+		<if test='ctyCd != "ALL"'>
+				   AND B.ID like #{ctyCd}||'%'
+		</if>
+	<![CDATA[		 
+		   AND B.RGN_CLSS = #{rgnClss} 
+		   
+	]]>	
+	</select>
+	
+	<!-- 경제 트렌드 : 지도 (시군구) -->
+	<select id="getTrndCtyMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1  
+		   AND B.RGN_CLSS = #{rgnClss} 
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 지역별 거래금액 주제도 (ecumy trnd : amt) 지도 21 -->
+	<select id="getEcnmyTrndSalamt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT A.ADMI_NM
+		     , A.ID
+		     , A.SALE_AMT
+		     , A.GRD
+		     , CASE GRD WHEN 1 THEN '#D7191C' 
+		                WHEN 2 THEN '#FDAE61'
+		                WHEN 3 THEN '#FFFFBF'
+		                WHEN 4 THEN '#ABDDA4'
+		                WHEN 5 THEN '#2C7BB6'
+		                ELSE '#000000' END AS D_COLOR 
+		     , MIN(SALE_AMT) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(SALE_AMT) OVER(PARTITION BY GRD) AS GRD_MAX
+		                 
+		  FROM (
+				SELECT B.NM  AS ADMI_NM 
+					 , B.ID
+				     , SUM(SALE_AMT) AS SALE_AMT 
+				     , NTILE(5) OVER( ORDER BY SUM(SALE_AMT) DESC) AS GRD 
+				  FROM tbadmi_info_d2 A
+				     , TBREGION B 
+				 WHERE 1=1      
+				   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		 		   AND CTY_CD =  substr(#{ctyCd},1,4)
+				   AND B.RGN_CLSS = #{rgnClss}
+				   AND A.ADMI_CD = B.ID
+				 GROUP BY B.NM , B.ID
+				 ) A
+		WHERE 1 = 1
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 매출액 (ecumy trnd : amt) 지도  범례 -->
+	<select id="getSalamtLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+					SELECT 
+					       B.NM  AS ADMI_NM 
+					     , SUM(SALE_AMT) AS SALE_AMT 
+					     , NTILE(5) OVER( ORDER BY SUM(SALE_AMT) DESC) AS GRD 
+					  FROM 
+					       tbadmi_info_d2 A
+					     , TBREGION B 
+					 WHERE 1=1       
+					   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		 		       AND CTY_CD =  substr(#{ctyCd},1,4)
+					   AND B.RGN_CLSS = #{rgnClss}
+					   AND A.ADMI_CD = B.ID
+					GROUP BY B.NM 
+		)
+		SELECT MAX(SALE_AMT) MAX_VALUE,MIN(SALE_AMT) MIN_VALUE  FROM TMP WHERE GRD =1
+		UNION ALL
+		SELECT MAX(SALE_AMT) MAX_VALUE,MIN(SALE_AMT) MIN_VALUE  FROM TMP WHERE GRD =2
+		UNION ALL
+		SELECT MAX(SALE_AMT) MAX_VALUE,MIN(SALE_AMT) MIN_VALUE  FROM TMP WHERE GRD =3
+		UNION ALL
+		SELECT MAX(SALE_AMT) MAX_VALUE,MIN(SALE_AMT) MIN_VALUE  FROM TMP WHERE GRD =4
+		UNION ALL
+		SELECT MAX(SALE_AMT) MAX_VALUE,MIN(SALE_AMT) MIN_VALUE  FROM TMP WHERE GRD =5
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 지역별 유입인구수 (ecumy trnd : cnt) 지도 21 -->
+	<select id="getEcnmyTrndVisitrCo" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT A.ID
+			 , A.NM
+			 , A.TOTAL_CNT
+			 , A.GRD
+			 , CASE GRD WHEN 1 THEN '#D7191C' 
+		                WHEN 2 THEN '#FDAE61'
+		                WHEN 3 THEN '#FFFFBF'
+		                WHEN 4 THEN '#ABDDA4'
+		                WHEN 5 THEN '#2C7BB6'
+		                ELSE '#000000' END AS D_COLOR
+		     , MIN(A.TOTAL_CNT) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(A.TOTAL_CNT) OVER(PARTITION BY GRD) AS GRD_MAX
+		  FROM (
+		  	SELECT B.ID  
+			     , B.NM 
+			     , SUM(TOTAL_CNT) AS TOTAL_CNT 
+			     , NTILE(5) OVER( ORDER BY SUM(TOTAL_CNT) DESC) AS GRD
+			  FROM tbadmi_visit_d A
+			     , TBREGION B 
+			 WHERE 1=1       
+			   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND CTY_CD = SUBSTR(#{ctyCd},1,4)
+			   AND B.RGN_CLSS = #{rgnClss}
+			   AND A.ADMI_CD = B.ID
+			GROUP BY B.ID, B.NM
+			) A
+		WHERE 1 = 1
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 방문객수 (ecumy trnd : cnt) 지도  범례 -->
+	<select id="getVisitrCoLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+				SELECT B.NM  AS ADMI_NM 
+				     , SUM(TOTAL_CNT) AS TOTAL_CNT 
+				     , NTILE(5) OVER( ORDER BY SUM(TOTAL_CNT) DESC) AS GRD 
+				  FROM tbadmi_visit_d A
+				     , TBREGION B 
+				 WHERE 1=1       
+				   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+				   AND CTY_CD = SUBSTR(#{ctyCd},1,4)
+				   AND B.RGN_CLSS = #{rgnClss}
+				   AND A.ADMI_CD = B.ID
+				GROUP BY B.NM
+		)
+		SELECT MAX(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MIN_VALUE5
+		FROM TMP 
+	]]>	
+	</select>
+
+	<!-- 경제트렌드 : 지역별 유입인구 소비 (ecumy trnd : expndtr) 지도 21-->
+	<select id="getEcnmyTrndVisitrExpndtr" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT A.ID
+			 , A.NM
+			 , A.SALE_AMT
+			 , A.GRD
+			 , CASE GRD WHEN 1 THEN '#D7191C' 
+		                WHEN 2 THEN '#FDAE61'
+		                WHEN 3 THEN '#FFFFBF'
+		                WHEN 4 THEN '#ABDDA4'
+		                WHEN 5 THEN '#2C7BB6'
+		                ELSE '#000000' END AS D_COLOR 
+		     , MIN(A.SALE_AMT) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(A.SALE_AMT) OVER(PARTITION BY GRD) AS GRD_MAX
+		  FROM (
+		  	SELECT B.ID
+			     , B.NM 
+			     , SUM(SALE_AMT) AS SALE_AMT 
+			     , NTILE(5) OVER( ORDER BY SUM(SALE_AMT) DESC ) AS GRD
+			  FROM 
+			       tbadmi_visit_d A
+			     , TBREGION B
+			 WHERE 1=1
+			   AND A.ADMI_CD = B.ID
+			   AND B.RGN_CLSS = #{rgnClss}
+			   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND CTY_CD = SUBSTR(#{ctyCd},1,4)
+			GROUP BY B.ID, B.NM
+			) A
+		WHERE 1 = 1
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 방문객 지출액 (ecumy trnd : expndtr)  지도  범례 -->
+	<select id="getVisitrExpndtrLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+				SELECT B.ID
+				     , B.NM  
+				     , SUM(SALE_AMT) AS SALE_AMT 
+				     , NTILE(5) OVER( ORDER BY SUM(SALE_AMT) DESC ) AS GRD
+				  FROM 
+				       tbadmi_visit_d A
+				     , TBREGION B
+				 WHERE 1=1
+				   AND A.ADMI_CD = B.ID
+				   AND B.RGN_CLSS = #{rgnClss}
+				   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+				    AND CTY_CD = SUBSTR(#{ctyCd},1,4)
+				GROUP BY B.ID
+				       , B.NM  
+		)
+		SELECT MAX(CASE WHEN GRD =1 THEN SALE_AMT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN SALE_AMT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN SALE_AMT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN SALE_AMT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN SALE_AMT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN SALE_AMT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN SALE_AMT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN SALE_AMT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN SALE_AMT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN SALE_AMT END) AS MIN_VALUE5
+		FROM TMP
+	]]>	
+	</select>
+
+	<!-- 경제트렌드 : 유입인구 유입지역 주제도 지도 22 -->
+	<select id="getEcnmyTrndVisitrInflow" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT A.ID
+			 , A.NM
+			 , A.IN_CNT
+			 , A.RATE
+			 , A.GRD
+			 , CASE GRD WHEN 1 THEN '#D7191C' 
+		                WHEN 2 THEN '#FDAE61'
+		                WHEN 3 THEN '#FFFFBF'
+		                WHEN 4 THEN '#ABDDA4'
+		                WHEN 5 THEN '#2C7BB6'
+		                ELSE '#000000' END AS D_COLOR 
+		     , MIN(A.RATE) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(A.RATE) OVER(PARTITION BY GRD) AS GRD_MAX
+		  FROM (
+			WITH TMP AS
+			(
+			SELECT B.ID  
+			     , B.NM  
+			     , SUM(IN_CNT)  AS IN_CNT
+			     , ROUND(SUM(IN_CNT)/SUM(SUM(IN_CNT)) OVER() *100,1) AS RATE  
+			     , rank() OVER( ORDER BY SUM(IN_CNT) DESC) RNK
+			     , (COUNT(*) OVER() )  -  (COUNT(*) OVER() * 0.1) L_RNK
+			  FROM TBADMI_INFLOW_INFO_D_NEW A
+			     , TBREGION B  
+			 WHERE 1=1
+			   AND A.IN_CTY_CD = B.ID
+			   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND A.CTY_CD like #{ctyCd}||'%'
+			   AND A.IN_CTY_CD <> substr(#{ctyCd},1,4)
+			   AND B.RGN_CLSS = #{rgnClss}
+			GROUP BY B.ID , B.NM
+			) 
+			SELECT ID
+			     , NM
+			     , IN_CNT
+			     , RATE
+			     , NTILE(5) OVER( ORDER BY IN_CNT DESC) AS GRD
+			  FROM TMP
+			 WHERE 1=1
+			   AND RNK <= L_RNK
+			   ) A
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : 유입지역에따른 방문자수 지도 범례 -->
+	<select id="getVisitrInflowLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP1 AS (
+				WITH TMP AS
+				(
+					SELECT B.ID    
+					     , B.NM    
+					     , SUM(IN_CNT)  AS IN_CNT
+					     , rank() OVER( ORDER BY SUM(IN_CNT) DESC) RNK
+					     , (COUNT(*) OVER() )  -  (COUNT(*) OVER() * 0.1) L_RNK
+					  FROM TBADMI_INFLOW_INFO_D_NEW A
+					     , TBREGION B  
+					 WHERE 1=1
+					   AND A.IN_CTY_CD = B.ID
+					   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+					   AND A.CTY_CD like #{ctyCd}||'%'
+					   AND B.RGN_CLSS = #{rgnClss}
+					GROUP BY B.ID, B.NM   
+				) 
+				SELECT ID
+				     , NM
+				     , IN_CNT
+				     , NTILE(5) OVER( ORDER BY IN_CNT DESC) AS GRD
+				  FROM TMP
+				 WHERE 1=1
+				   AND RNK <= L_RNK
+		)
+		SELECT MAX(CASE WHEN GRD =1 THEN IN_CNT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN IN_CNT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN IN_CNT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN IN_CNT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN IN_CNT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN IN_CNT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN IN_CNT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN IN_CNT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN IN_CNT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN IN_CNT END) AS MIN_VALUE5
+		FROM TMP1
+
+	]]>	
+	</select>
+
+<!-- ////지도 SQL -->
+<!-- 그래프 SQL -->
+
+	<!-- 경제트렌드 : page1. 업종별 거래금액 treemap  그래프 22-->
+	<select id="getEcnmyTrndInduty" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	   SELECT SUBSTR(UPJONG2_CD,1,1) AS UPJONG1_CD 
+            , (SELECT CD_NM FROM TBCOMM_CODE WHERE SUBSTR(A.UPJONG2_CD,1,1)= CODE AND CD_ID ='UPJONG1_CD' ) AS UPJONG1_NM
+            , B.CODE AS UPJONG2_CD
+            , B.CD_NM 
+            , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) *100,1) PERCENT
+            , SUM(SALE_AMT) AS SALE_AMT  
+         FROM 
+              tbcty_upjong_info_d A
+            , TBCOMM_CODE B
+        WHERE 1=1
+          AND A.UPJONG2_CD = B.CODE
+          AND B.CD_ID ='UPJONG2_CD'
+          AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND CTY_CD =  substr(#{ctyCd},1,4)
+     GROUP BY UPJONG2_CD,B.CODE,B.CD_NM   
+     ORDER BY 1,5 DESC
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : page2. 성/연령별 대표 유입인구 그래프(stacked grouped bar chart) 22-->
+	<select id="getEcnmyTrndCnt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_20_CNT END)/SUM(total_cnt)*100,1) AS E_M_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_20_CNT END)/SUM(total_cnt)*100,1) AS H_M_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_30_CNT END)/SUM(total_cnt)*100,1) AS E_M_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_30_CNT END)/SUM(total_cnt)*100,1) AS H_M_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_40_CNT END)/SUM(total_cnt)*100,1) AS E_M_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_40_CNT END)/SUM(total_cnt)*100,1) AS H_M_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_50_CNT END)/SUM(total_cnt)*100,1) AS E_M_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_50_CNT END)/SUM(total_cnt)*100,1) AS H_M_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_60_CNT END)/SUM(total_cnt)*100,1) AS E_M_60_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_60_CNT END)/SUM(total_cnt)*100,1) AS H_M_60_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_20_CNT END)/SUM(total_cnt)*100,1) AS E_F_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_20_CNT END)/SUM(total_cnt)*100,1) AS H_F_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_30_CNT END)/SUM(total_cnt)*100,1) AS E_F_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_30_CNT END)/SUM(total_cnt)*100,1) AS H_F_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_40_CNT END)/SUM(total_cnt)*100,1) AS E_F_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_40_CNT END)/SUM(total_cnt)*100,1) AS H_F_40_RATE       
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_50_CNT END)/SUM(total_cnt)*100,1) AS E_F_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_50_CNT END)/SUM(total_cnt)*100,1) AS H_F_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_60_CNT END)/SUM(total_cnt)*100,1) AS E_F_60_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_60_CNT END)/SUM(total_cnt)*100,1) AS H_F_60_RATE      
+		  FROM TBCTY_VISIT_INFO_D A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like #{ctyCd}||'%'
+	]]>	
+	</select>
+
+	<!-- 경제트렌드 : page3. 활성업종 most common 그래프(horizontal bar) 22-->
+	<select id="getEcnmyTrndMostCommon" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM
+		     , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) *100,1) RATE
+		     , SUM(TOTAL_CNT) AS SALE_CNT  
+		     , SUM(SALE_AMT) AS SALE_AMT   
+		  FROM tbcty_visit_upjong_info_d A
+		     , TBCOMM_CODE B
+		 WHERE 1=1
+		   AND A.UPJONG2_CD = B.CODE
+		   AND B.CD_ID ='UPJONG2_CD'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD = SUBSTR(#{ctyCd},1,4)
+		GROUP BY  B.CODE , B.CD_NM
+		ORDER BY 3 DESC 
+		LIMIT 10
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : page3. 특화업종 most specialized(horizontal bar) 그래프 22-->
+	<select id="getEcnmyTrndMostSpecialized" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT T3.CD_NM  
+		     , ROUND(T1.RATE / T2.RATE*100,1) AS RATE
+		  FROM
+				(
+					SELECT upjong2_cd
+					     , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+					  FROM tbcty_visit_upjong_info_d A
+					 WHERE 1=1
+					   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   			   AND CTY_CD = substr(#{ctyCd},1,4)
+					GROUP BY upjong2_cd
+					ORDER BY 2 DESC 
+					LIMIT 15
+				) T1
+				,
+				(
+					SELECT upjong2_cd
+					     , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+					  FROM tbmega_upjong_info_d A
+					 WHERE 1=1
+					   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   			   AND MEGA_CD LIKE SUBSTR(#{ctyCd},1,2)||'%'
+					GROUP BY upjong2_cd
+				) T2
+				, TBCOMM_CODE T3
+				WHERE 1=1
+				  AND T1.upjong2_cd = T2.upjong2_cd
+    		      AND T1.UPJONG2_CD = T3.CODE
+				  AND T3.CD_ID ='UPJONG2_CD'
+				ORDER BY 2 DESC
+				LIMIT 10
+	]]>	
+	</select>
+	
+	<!-- 경제트렌드 : page3. 유입인구 소비시간 순위 그래프 -->
+	<select id="getEcnmyTrndTimeChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='1' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_1_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='1' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_1_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='2' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_2_RATE  
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='2' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_2_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='3' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_3_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='3' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_3_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='4' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_4_RATE    
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='4' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_4_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='5' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_5_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='5' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_5_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='6' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_6_RATE    
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='6' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_6_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='7' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_7_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='7' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS H_7_RATE 
+		  FROM TBADMI_TIMEZON_INFO_D A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like #{ctyCd}||'%'
+	]]>	
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- ////그래프 SQL -->	
+<!-- 텍스트 SQL -->
+	
+	<!-- page1. 행정동별 거래총액	 amtTotal -->
+	<select id="getEcnmyTrndAmtTotal" parameterType="java.util.Map" resultType="String">
+	<![CDATA[
+       SELECT SUM(SALE_AMT) AS SALE_AMT  
+         FROM tbcty_date_info A
+        WHERE 1=1
+          AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND CTY_CD = #{ctyCd}
+	]]>	
+	</select>
+	
+	<!-- page1. 행정동별 거래금액 순우	 amtRank -->
+	<select id="getEcnmyTrndAmtRank" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+       SELECT B.ID
+            , B.NM  AS ADMI_NM
+            , SUM(SALE_AMT) AS SALE_AMT  
+         FROM tbadmi_info_d2 A
+            , TBREGION B
+        WHERE 1=1
+          AND A.ADMI_CD = B.ID
+          AND B.RGN_CLSS ='H4'
+          AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND CTY_CD =  SUBSTR(#{ctyCd},1,4)
+     GROUP BY B.ID , B.NM   
+     ORDER BY 3 DESC
+     	LIMIT 3 
+	]]>	
+	</select>
+
+	<!-- page1. 업종별 거래액  indutyRank -->
+	<select id="getEcnmyTrndIndutyRank" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+       SELECT B.CODE 
+            , B.CD_NM
+            , SUM(SALE_AMT) AS SALE_AMT
+         FROM tbcty_upjong_info_d A
+            , TBCOMM_CODE B
+        WHERE 1=1
+          AND A.UPJONG2_CD = B.CODE
+          AND B.CD_ID ='UPJONG2_CD'
+          AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND CTY_CD =  SUBSTR(#{ctyCd},1,4)
+     GROUP BY B.CODE 
+            , B.CD_NM   
+     ORDER BY 3 DESC
+     LIMIT #{limitCnt}
+     
+	]]>	
+	</select>
+	
+	<!-- page2. 행정동별 방문객 총수	 visitrTotal -->
+	<select id="getEcnmyTrndVisitrTotal" parameterType="java.util.Map" resultType="String">
+	<![CDATA[
+		SELECT SUM(TOTAL_CNT)  
+		  FROM tbadmi_visit_d A
+		     , TBREGION B
+		 WHERE 1=1
+		   AND A.ADMI_CD = B.ID
+		   AND B.RGN_CLSS ='H4'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+	]]>	
+	</select>
+	
+	<!-- page2. 행정동별 방문객수	 visitrRank -->
+	<select id="getEcnmyTrndVisitrRank" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.NM  
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT  
+		  FROM tbadmi_visit_d A
+		     , TBREGION B
+		 WHERE 1=1
+		   AND A.ADMI_CD = B.ID
+		   AND B.RGN_CLSS ='H4'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+		GROUP BY NM   
+		ORDER BY 2 DESC
+		LIMIT 3   
+	]]>	
+	</select>
+	
+	<!-- page2. 방문객 성/연령 특성 visitrChartr -->
+	<select id="getEcnmyTrndVisitrChartr" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 여성' 
+		       END) CHR
+		  FROM TBCTY_VISIT_INFO_D
+		 WHERE 1=1       
+		   AND CTY_CD like #{ctyCd}||'%'
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND LOC_CLSS_CD ='E'
+	]]>	
+	</select>
+	
+	<!-- page2. 시민 성/연령 특성 ctznChartr -->
+	<select id="getEcnmyTrndCtznChartr" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT 
+		     (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 여성' 
+		      END) CHR
+		 FROM 
+		      TBCTY_VISIT_INFO_D
+		 WHERE 1=1       
+		   AND CTY_CD like #{ctyCd}||'%'
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND LOC_CLSS_CD ='R'
+	]]>	
+	</select>
+
+	<!-- page3. 지역별 유입인구 소비 총액 cnsmpTotal -->
+	<select id="getEcnmyTrndCnsmpTotal" parameterType="java.util.Map" resultType="String">
+	<![CDATA[
+		SELECT SUM(SALE_AMT)
+		  FROM tbadmi_visit_d A
+		     , TBREGION B
+		 WHERE 1=1
+		   AND A.ADMI_CD = B.ID
+		   AND B.RGN_CLSS ='H4'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+	]]>	
+	</select>
+	
+	<!-- page3. 행정동별 소비액 LIST cnsmp -->
+	<select id="getEcnmyTrndCnsmp" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , SUM(SALE_AMT) AS SALE_AMT
+		  FROM tbadmi_visit_d A
+		     , TBREGION B
+		 WHERE 1=1
+		   AND A.ADMI_CD = B.ID
+		   AND B.RGN_CLSS ='H4'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+		GROUP BY B.ID, B.NM   
+		ORDER BY 3 DESC
+		LIMIT #{limitCnt}
+	]]>	
+	</select>
+	
+	<!-- page3. 업종별 유입인구 소비특성(활성업종TEXT) cnsmpInduty -->
+	<select id="getEcnmyTrndCnsmpInduty" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM  
+		     , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) *100) RATE
+		     , SUM(SALE_AMT) AS SALE_AMT 
+		  FROM tbcty_visit_upjong_info_d A
+		     , TBCOMM_CODE B
+		 WHERE 1=1
+		   AND A.UPJONG2_CD = B.CODE
+		   AND B.CD_ID ='UPJONG2_CD'
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 DESC
+		LIMIT 3
+	]]>	
+	</select>
+
+	<!-- page4. 시간대별 방문객수 timeCnt -->
+	<select id="getEcnmyTrndTimeCnt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CD_NM  
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E' THEN TOTAL_CNT END)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1)   AS RATE
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT
+		  FROM TBADMI_TIMEZON_INFO_D A
+		     , TBCOMM_CODE B  
+		 WHERE 1=1
+		   AND A.TIMEZON_CD = B.CODE
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like #{ctyCd}||'%'
+		   AND CD_ID ='TIMEZON_CD'
+		GROUP BY CD_NM   
+		ORDER BY 2 DESC
+		LIMIT 3 
+	]]>	
+	</select>
+
+	<!-- page4. 방문객 유입지역 inflow -->
+	<select id="getEcnmyTrndCtyInflow" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.FULL_NAME  as NM
+		     , ROUND(SUM(IN_CNT)/SUM(SUM(IN_CNT)) OVER() *100,1) AS RATE  
+		     , SUM(IN_CNT) AS IN_CNT
+		  FROM TBADMI_INFLOW_INFO_D_NEW A
+		     , TBREGION B  
+		 WHERE 1=1
+		   AND A.IN_CTY_CD = B.ID
+		   and IN_CTY_CD <> substr(#{ctyCd},1,4) 
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND CTY_CD like #{ctyCd}||'%'
+		   AND B.RGN_CLSS = 'H2'
+		GROUP BY B.FULL_NAME   
+		ORDER BY 2 DESC,3DESC
+		LIMIT 3 
+	]]>	
+	</select>
+	
+	<select id="getEcnmyTrndMegaInflow" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	<![CDATA[
+	  SELECT   B.FULL_NAME AS NM
+	         , ROUND(SUM(IN_CNT) / (SUM(SUM(IN_CNT)) OVER())*100,1) RATE
+	    FROM TBADMI_INFLOW_INFO_D_NEW A
+	       , TBREGION B 
+	    WHERE 1=1
+	      AND CTY_CD like #{ctyCd}||'%'
+	      AND SUBSTR(A.IN_CTY_CD,1,2) = B.ID
+	      AND A.IN_CTY_CD <> SUBSTR(#{ctyCd},1,4)
+	      AND B.RGN_CLSS ='H1'
+	      AND A.STDR_DATE between #{startDate} AND  #{endDate}
+	    GROUP BY B.FULL_NAME 
+	    ORDER BY 2 DESC
+	    LIMIT 3  
+	]]>
+	</select>
+
+	<!-- graph 데이터 -->
+	<select id="getEcnmyTrndGraphData" parameterType="java.util.Map" resultType="java.util.Map">
+<!-- 		  SELECT * FROM TBCTY_DATE_INFO -->
+<!-- 		  WHERE CTY_CD like #{ctyCd}||'%' -->
+<!-- 		<if test="startDate != null and endDate != null"> -->
+<!-- 		  AND STDR_DATE BETWEEN #{startDate} and #{endDate} -->
+<!-- 		</if> -->
+<!-- 		  ORDER BY STDR_DATE -->
+		  
+		<![CDATA[
+			SELECT A.STDR_DATE
+				 , #{ctyCd}::TEXT AS CTY_CD
+				 , COALESCE(B.TOTAL_CNT,0) AS TOTAL_CNT
+				 , COALESCE(B.SALE_CNT,0) AS SALE_CNT
+				 , COALESCE(B.SALE_AMT,0) AS SALE_AMT
+			FROM (
+	    ]]>
+	    <if test='serviceClss == "3"'>
+	    <![CDATA[
+	        SELECT TO_CHAR(GENERATE_SERIES( '20180101'::DATE, '20181231'::DATE, '1 day'),'YYYYMMDD') STDR_DATE
+	          FROM TBCOM_STDR
+	    ]]>
+	    </if>
+	    <if test='serviceClss != "3"'>
+	    <![CDATA[
+	        SELECT TO_CHAR(GENERATE_SERIES( TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) - INTERVAL '23 MONTH ','YYYYMMDD')::DATE
+	                                              , TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) + INTERVAL '1 MONTH - 1 day','YYYYMMDD')::DATE
+	                                              , '1 day'),'YYYYMMDD'
+	                       ) STDR_DATE
+	                  FROM TBCOM_STDR
+	    ]]>
+	    </if>
+	    <![CDATA[  
+			) A
+			LEFT OUTER JOIN
+			TBCTY_DATE_INFO B
+			ON 1=1
+			AND A.STDR_DATE = B.STDR_DATE
+			AND B.CTY_CD like #{ctyCd}||'%'
+			ORDER BY A.STDR_DATE
+		]]>
+	</select>
+<!-- ////텍스트 SQL -->	
+</mapper>

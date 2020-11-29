@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:s="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+	<!-- spring-security 상세설정 -->
+	<s:http auto-config="false"> <!-- access-decision-manager-ref="unanimouseBased"> -->
+		<s:custom-filter ref="sessionManagementFilter" before="SESSION_MANAGEMENT_FILTER" />
+		<!-- spring-security 허용 페이지 설정 -->
+		<s:intercept-url pattern="/openmate/login.json" access="permitAll" />
+		<s:intercept-url pattern="/onmap/main.do" access="permitAll" />
+		<s:intercept-url pattern="/apply.m" access="permitAll" />
+		<s:intercept-url pattern="/onmap/login.do" access="permitAll" />
+		<s:intercept-url pattern="/onmap/logout.do" access="permitAll" />
+		<s:intercept-url pattern="/onmap/member/**" access="permitAll" />
+		<s:intercept-url pattern="/onmap/login/**" access="permitAll" />
+		<s:intercept-url pattern="/onmap/public/**" access="permitAll" />
+		<s:intercept-url pattern="/onmap/admin/main.do" access="permitAll" />
+		<s:intercept-url pattern="/onmap/admin/**" access="hasAnyRole('ROLE_USER')"/>
+		<s:intercept-url pattern="/onmap/**" access="hasAnyRole('ROLE_USER')"/>
+		
+		<!-- spring-security 로그인/처리/실패 페이지설정 -->
+		<s:form-login login-page="/onmap/main.do"
+			login-processing-url="/onmap/login/loginProc.do"
+			authentication-success-handler-ref="authenticationSuccessHandler"
+			authentication-failure-url="/onmap/main.do"
+			username-parameter="userId" password-parameter="password" />
+		<s:access-denied-handler error-page="/error/access-denied.jsp" />
+
+		<s:logout logout-url="/onmap/login/logout.do" invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/onmap/main.do" />
+<!-- 	해제시 자동 로그인 -->
+<!-- 		<s:remember-me key="wmoskey" token-validity-seconds="2419200" /> -->
+
+
+		<s:session-management invalid-session-url="/onmap/main.do">
+			<s:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+		</s:session-management>
+
+
+		<!-- csrf 크로스브라우징 방어 -->
+		<s:csrf disabled="true" />
+		<s:headers>
+			<s:frame-options policy="SAMEORIGIN" />
+		</s:headers>
+
+	</s:http>
+
+
+
+	   <!-- Bean remember me -->
+
+
+
+	<!-- 로그인 성공 시 페이지 설정 -->
+	<bean id="authenticationSuccessHandler"
+		class="com.openmate.frmwrk.user.UserAuthenticationSuccessHandler">
+		<property name="defaultTargetUrl" value="/onmap/crfc_main.do" />
+	</bean>
+
+	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+		<constructor-arg name="strength" value="256"></constructor-arg>
+	</bean>
+
+
+	<bean class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+
+	<bean id="userDatailService" class="com.openmate.frmwrk.user.UserDatailServiceImpl" />
+
+
+	<s:authentication-manager alias="authenticationManager">
+<!-- 		<s:authentication-provider user-service-ref="userDatailService" > -->
+<!-- 			<s:password-encoder ref="passwordEncoder" /> -->
+<!-- 		</s:authentication-provider> -->
+		<s:authentication-provider ref="openmateAuthenticationProvider" />
+	</s:authentication-manager>
+
+
+	<bean id="openmateAuthenticationProvider" class="com.openmate.frmwrk.user.UserAuthenticationProvider">
+		<property name="userService" ref="userDatailService" />
+	</bean>
+
+	<bean id="userService" class="com.openmate.onmap.user.service.impl.UserServiceImpl" />
+
+	<!-- </s:authentication-manager> -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<bean id="sessionManagementFilter" class="org.springframework.security.web.session.SessionManagementFilter">
+        <constructor-arg name="securityContextRepository" ref="org.springframework.security.web.context.HttpSessionSecurityContextRepository#0" />
+        <property name="invalidSessionStrategy" ref="ajaxInvalidSessionStrategy" />
+    </bean>
+
+    <bean id="ajaxInvalidSessionStrategy" class="com.openmate.frmwrk.common.AjaxInvalidSessionStrategy">
+    </bean>
+
+<!--     <bean id="hpSessionSecurityContextRepository" class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/> -->
+	
+	
+</beans>

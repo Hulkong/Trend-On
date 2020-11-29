@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evntEff-page9" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ebfc8522-cf31-4d15-af28-613eb6ff03f3">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+	<subDataset name="Empty Dataset1" uuid="a80a4e40-b8dd-4f75-8f20-39abdf0db2ed"/>
+	<subDataset name="Dataset1" uuid="e57f7662-29f8-4af5-9b09-66eb60e06ef9">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+		<queryString language="json">
+			<![CDATA[rpt-evntEff-009-002]]>
+		</queryString>
+		<field name="total_cnt" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="total_cnt"/>
+			<fieldDescription><![CDATA[total_cnt]]></fieldDescription>
+		</field>
+		<field name="nm" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nm"/>
+			<fieldDescription><![CDATA[nm]]></fieldDescription>
+		</field>
+		<group name="total_cnt">
+			<groupExpression><![CDATA[$F{total_cnt}]]></groupExpression>
+		</group>
+		<group name="nm">
+			<groupExpression><![CDATA[$F{nm}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="Dataset2" uuid="1202ca05-d5b8-4e2f-92b0-6e41b7633f07">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+		<queryString language="json">
+			<![CDATA[rpt-evntEff-009-003]]>
+		</queryString>
+		<field name="total_cnt" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="total_cnt"/>
+			<fieldDescription><![CDATA[total_cnt]]></fieldDescription>
+		</field>
+		<field name="nm" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="nm"/>
+			<fieldDescription><![CDATA[nm]]></fieldDescription>
+		</field>
+		<group name="total_cnt">
+			<groupExpression><![CDATA[$F{total_cnt}]]></groupExpression>
+		</group>
+		<group name="nm">
+			<groupExpression><![CDATA[$F{nm}]]></groupExpression>
+		</group>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="endDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.endDate]]></fieldDescription>
+	</field>
+	<field name="lastEndDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.lastEndDate]]></fieldDescription>
+	</field>
+	<field name="h3Cd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.h3Cd]]></fieldDescription>
+	</field>
+	<field name="admiCd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.admiCd]]></fieldDescription>
+	</field>
+	<field name="admiAround" class="java.lang.String">
+		<fieldDescription><![CDATA[common.admiAround]]></fieldDescription>
+	</field>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="admiNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].admi_nm]]></fieldDescription>
+	</field>
+	<field name="startDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.startDate]]></fieldDescription>
+	</field>
+	<field name="lastStartDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.lastStartDate]]></fieldDescription>
+	</field>
+	<field name="phantomJsHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.phantomJsHost]]></fieldDescription>
+	</field>
+	<field name="period" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].period]]></fieldDescription>
+	</field>
+	<field name="chideH3Cnt" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].cnt]]></fieldDescription>
+	</field>
+	<field name="days" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].days]]></fieldDescription>
+	</field>
+	<field name="009-001-total-cnt" class="java.lang.Long">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-evntEff-009-001[0].total_cnt]]></fieldDescription>
+	</field>
+	<field name="009-002-region-total-cnt" class="java.lang.Long">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-evntEff-009-002[1].total_cnt]]></fieldDescription>
+	</field>
+	<field name="009-002-region-rate" class="java.lang.Float">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-evntEff-009-002[1].rate]]></fieldDescription>
+	</field>
+	<field name="009-002-visitrCnt-total-cnt" class="java.lang.Long">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-evntEff-009-002[0].total_cnt]]></fieldDescription>
+	</field>
+	<field name="009-002-visitrCnt-rate" class="java.lang.Float">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-evntEff-009-002[0].rate]]></fieldDescription>
+	</field>
+	<field name="009-003-visitrCnt-rate" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-009-003[0].rate]]></fieldDescription>
+	</field>
+	<field name="009-004-nm1" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[0].nm]]></fieldDescription>
+	</field>
+	<field name="009-004-avg-tcnt1" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[0].avg_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-rate1" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[0].rate]]></fieldDescription>
+	</field>
+	<field name="009-004-nm2" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[1].nm]]></fieldDescription>
+	</field>
+	<field name="009-004-avg-tcnt2" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[1].avg_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-rate2" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[1].rate]]></fieldDescription>
+	</field>
+	<field name="009-004-nm3" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[2].nm]]></fieldDescription>
+	</field>
+	<field name="009-004-avg-tcnt3" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[2].avg_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-rate3" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[2].rate]]></fieldDescription>
+	</field>
+	<field name="009-004-nm4" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[3].nm]]></fieldDescription>
+	</field>
+	<field name="009-004-avg-tcnt4" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[3].avg_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-rate4" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[3].rate]]></fieldDescription>
+	</field>
+	<field name="009-004-totalTcnt1" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[0].total_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-totalTcnt2" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[1].total_tcnt]]></fieldDescription>
+	</field>
+	<field name="009-004-totalTcnt3" class="java.lang.Long">
+		<fieldDescription><![CDATA[rpt-evntEff-009-004[2].total_tcnt]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="842" splitType="Stretch">
+			<textField>
+				<reportElement x="176" y="499" width="379" height="190" uuid="7b974b0d-127e-47da-8931-beee97fa1463">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["이벤트 기간("+$F{period}+", 총 "+$F{days}+"일) 동안 "+$F{admiNm}+" 일평균 유입인구 수는 평상시 대비 " 
++ ($F{009-003-visitrCnt-rate} == null ? " - " : ($F{009-003-visitrCnt-rate} > 0 ? ($F{009-003-visitrCnt-rate}) + "% 증가" : ($F{009-003-visitrCnt-rate} *(-1)) + "% 감소")) +"\n\n" 
++"그밖에 " 
++ $F{009-004-nm1} + "(" + ($F{009-004-rate1} == null ? " - " : ($F{009-004-rate1} > 0 ? ($F{009-004-rate1}) + "% 증가" : ($F{009-004-rate1}*(-1)) + "% 감소")) +", 약 "+ ($F{009-004-avg-tcnt1} == null ? " - " : KR_WON_ROUND($F{009-004-totalTcnt1},"4","1")) +"명), " 
++ $F{009-004-nm2} + "(" + ($F{009-004-rate2} == null ? " - " : ($F{009-004-rate2} > 0 ? ($F{009-004-rate2}) + "% 증가" : ($F{009-004-rate2}*(-1)) + "% 감소")) +", 약 "+ ($F{009-004-avg-tcnt2} == null ? " - " : KR_WON_ROUND($F{009-004-totalTcnt2},"4","1")) +"명), " 
++ $F{009-004-nm3} + "(" + ($F{009-004-rate3} == null ? " - " : ($F{009-004-rate3} > 0 ? ($F{009-004-rate3}) + "% 증가" : ($F{009-004-rate3}*(-1)) + "% 감소")) +", 약 "+ ($F{009-004-avg-tcnt3} == null ? " - " : KR_WON_ROUND($F{009-004-totalTcnt3},"4","1")) +"명) 순으로 이벤트 기간 동안 유입인구 증가율이 높게 나타남"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="346" y="617" width="25" height="30" forecolor="#FFFFFF" backcolor="#FF8A4A" uuid="5dcc844a-7e94-4b27-920f-a9eac0d0d9e5"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["순위"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="371" y="617" width="60" height="30" forecolor="#FFFFFF" backcolor="#FF8A4A" uuid="fdc00805-938c-40b4-81f3-014f3056a031">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["읍면동"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="431" y="617" width="70" height="30" forecolor="#FFFFFF" backcolor="#FF8A4A" uuid="9bbea9e0-dd10-43b7-8bbb-8a52ce03b0fe">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["유입인구\n일평균 증감률"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="501" y="617" width="45" height="30" forecolor="#FFFFFF" backcolor="#FF8A4A" uuid="560db3ba-a433-4ba9-8fed-4beb4d8da057">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["유입인구\n총 수"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="346" y="647" width="25" height="30" backcolor="rgba(255, 255, 255, 0.0)" uuid="ffd9ddef-84ff-4790-9584-bb97b53eaa99">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["-"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="371" y="647" width="60" height="30" backcolor="rgba(255, 255, 255, 0.0)" uuid="d25d0b0e-6a97-4787-a773-b06cd1096ee8"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{admiNm}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="431" y="647" width="70" height="30" isRemoveLineWhenBlank="true" backcolor="rgba(255, 255, 255, 0.0)" uuid="8ad952d3-7ce7-4154-8f92-c5d390433b08">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{009-003-visitrCnt-rate} > 0 ? "+" : "") + $F{009-003-visitrCnt-rate} + "%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="501" y="647" width="45" height="30" backcolor="rgba(255, 255, 255, 0.0)" uuid="80492911-4d84-4f98-b118-8115a25dd107">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[KR_WON_ROUND(Long.valueOf($F{009-002-visitrCnt-total-cnt}), "4", "1") + "명"]]></textFieldExpression>
+			</textField>
+			<image hAlign="Left" vAlign="Top">
+				<reportElement x="282" y="295" width="166" height="166" uuid="48e6fe10-455a-425e-9a62-22ee57fd1527">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost}+"/d3/pie_chart.jsp?w=249&h=249&t=pdf&o=%7B%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22"+$F{h3Cd}+"%22%2C%22dataId%22%3A%22rpt-evntEff%22%2C%22pageId%22%3A%22rpt-evntEff-009-002%22%2C%22lastStartDate%22%3A%22" + $F{lastStartDate} + "%22%2C%22lastEndDate%22%3A%22" + $F{lastEndDate} + "%22%2C%22startDate%22%3A%22"+$F{startDate}+"%22%2C%22endDate%22%3A%22"+$F{endDate}+"%22%2C%22admiCd%22%3A%22" + $F{admiCd} + "%22%7D"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="501" y="677" width="45" height="30" uuid="59891d5c-c834-404b-90bc-e763be8b161a">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[KR_WON_ROUND(Long.valueOf($F{009-004-totalTcnt1}),"4","1") + "명"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="501" y="707" width="45" height="30" uuid="bbd27083-3072-446c-945a-023b10fe8a1b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[KR_WON_ROUND(Long.valueOf($F{009-004-totalTcnt2}),"4","1") + "명"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="501" y="737" width="45" height="30" uuid="39f564a5-1981-4060-82c4-6d7c340e48a0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[KR_WON_ROUND(Long.valueOf($F{009-004-totalTcnt3}),"4","1") + "명"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="677" width="70" height="30" uuid="64a9a1c3-3afe-41ca-b28f-68f000bfe9e0"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{009-004-rate1} > 0 ? "+" : "") + $F{009-004-rate1} + "%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="707" width="70" height="30" uuid="8b481ad5-c6c6-4529-a5f6-df80799f46f9"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{009-004-rate2} > 0 ? "+" : "") + $F{009-004-rate2} + "%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="737" width="70" height="30" uuid="ea565cf4-e155-4b7a-a919-e186b51332ae">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+					<paragraph rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{009-004-rate3} > 0 ? "+" : "") + $F{009-004-rate3} + "%"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="677" width="60" height="30" uuid="6e2ecd29-cf8f-4a27-a93d-caf537bd406b"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{009-004-nm1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="707" width="60" height="30" uuid="f1bf430d-8e95-4116-ba76-912224014b8f">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{009-004-nm2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="737" width="60" height="30" uuid="6ccd482b-54bc-449e-9519-ef5954b27c80"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{009-004-nm3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="346" y="677" width="25" height="30" uuid="b0489411-45df-4395-aa84-8db1e4b24011">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["1"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="346" y="707" width="25" height="30" uuid="8898e488-9382-4d86-b559-10c57367ee82"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["2"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="346" y="737" width="25" height="30" uuid="7347791f-2d0a-4a4f-9444-fd563cc7e976">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#B5B5B5"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["3"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="499" width="131" height="51" forecolor="#E28864" uuid="ee20f8d1-10e9-4035-898f-13d6f9106be0">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2. 주변지역 유입인구 수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="617" width="131" height="53" uuid="222fbb2d-ce7d-48b8-bbcf-ef8a051484d0">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 6]좌_
+주변지역 유입인구 수 분포도
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="686" width="131" height="51" uuid="3593b809-78eb-4140-90c0-6c2a4b8909fb">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[표 2]우_
+주변지역 유입인구]]></text>
+			</staticText>
+			<image>
+				<reportElement x="176" y="617" width="166" height="150" uuid="b81908d1-6dce-4803-961e-7db3d1411243">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost}+"/d3/choropleth_chart2.jsp?w=249&h=225&t=pdf&o=%7B%22layerFid%22%3A%22layer24%22%2C%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22"+$F{h3Cd}+"%22%2C%22dataId%22%3A%22rpt-evntEff%22%2C%22pageId%22%3A%22rpt-evntEff-009-006%22%2C%22choroColumn%22%3A%22total_tcnt%22%2C%22lastStartDate%22%3A%22" + $F{lastStartDate} + "%22%2C%22lastEndDate%22%3A%22" + $F{lastEndDate} + "%22%2C%22startDate%22%3A%22"+$F{startDate}+"%22%2C%22endDate%22%3A%22"+$F{endDate}+"%22%2C%22admiCd%22%3A%22" + $F{admiCd} + "%22%2C%22admiAround%22%3A%22" + $F{admiAround} + "%22%7D"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="176" y="157" width="379" height="197" uuid="d6e68067-0049-4c3f-b49a-b851a30d6b29">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["이벤트 기간(" + $F{period} + ", 총 " + $F{days} + "일) 동안 " + $F{admiNm} + "의 소비인구는 약 " + ($F{009-001-total-cnt} == null ? "" : KR_WON_ROUND($F{009-001-total-cnt} ,"4","1")) + "명\n\n"
++ "이벤트 기간(" + $F{period} + ", 총 " + $F{days} + "일) 동안 " + $F{admiNm} + "에서 소비행위를 한 상주인구는 약 " + ($F{009-002-region-total-cnt} == null ? "" : KR_WON_ROUND($F{009-002-region-total-cnt} ,"4","1")) + "명,"
++" 유입인구는 약 " + ($F{009-002-visitrCnt-total-cnt} == null ? "" : KR_WON_ROUND($F{009-002-visitrCnt-total-cnt} ,"4","1")) + "명\n\n"
++ "이벤트 기간(" + $F{period} + ", 총 " + $F{days} + "일) 동안 " + $F{admiNm} + "에서 소비행위를 한 유입인구는 전체 소비인구의 " + ($F{009-002-visitrCnt-rate} == null ? "" : $F{009-002-visitrCnt-rate}) + "% 차지"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="295" width="131" height="65" uuid="fe03edda-6bf9-4e66-a78d-4e9f38a7902b">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 5] 
+소비인구 비중]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="24" width="515" height="16" forecolor="#666666" uuid="d530574a-c244-475d-adaa-441fca861bbe">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["빅데이터를 활용한 " + $F{megaNm} + " " + $F{ctyNm} + " " + $F{admiNm} + " 이벤트효과 보고서"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="cdf49e5d-fc64-4777-bb8b-f13bdf8d7d88">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="86" width="131" height="64" forecolor="#E28864" uuid="fcef07ed-4d3f-4c77-bfc6-b0d6ae5e0fae">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="17" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제 3 장
+ : 유입인구 
+   특성 분석]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="157" width="131" height="63" forecolor="#E28864" uuid="5d12666d-09d5-48cb-815d-29e766d639ab">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["1. " + $F{admiNm} + "\r\n"
++"     소비인구 비중"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="802" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="9e968797-4a4b-4a88-84ba-ab38e2d1e008">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="36" y="801" width="140" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="6ba8823c-c033-4a6f-b1fc-847fc2d7463a"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#666666" uuid="4582957d-45b2-49b2-9e6b-43fee532c80a">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="802" width="515" height="40" uuid="b086144a-3327-4eea-9db6-b06fcadef605"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[- 6 -]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,60 @@
+.docGnb {
+	position: fixed;
+	width: 86px;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #2a2d30;
+	z-index: 10;
+	font-family: Helvetica,Arial,sans-serif;
+}
+
+.docGnb a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.docGnb .logo {
+	background-color: #2a2d30;
+	text-align: center;
+	width: 100%;
+	position: relative;
+	z-index: 11;
+}
+
+.docGnb .logo>a {
+	display: block;
+	color: #7e8788;
+	font-size: 13px;
+	letter-spacing: -.5px;
+	position: relative;
+}
+
+.docGnb .gnbMenu {
+	position: relative;
+	z-index: 11;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.docGnb .gnbMenu li {
+	background-color: #53abcd;
+	border-bottom: 1px solid #4494b2;
+	position: relative;
+	list-style: none;
+}
+
+.docGnb .gnbMenu li>a {
+	display: block;
+	width: 100%;
+	font-size: 13px;
+	line-height: 44px;
+	text-align: center;
+}
+
+.docGnb .gnbLink {
+	position: absolute;
+	left: 0;
+	bottom: 25px;
+}

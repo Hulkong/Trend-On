@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="/js/jquery/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+	<table border="1" width="600px">
+		<thead>
+			<th>이름</th>
+			<th>상태</th>
+			<th>설명</th>
+		</thead>
+		<tbody id="testLists">
+			
+		</tbody>
+	</table>
+<script>
+var hostUrl = 'https://www.trend-on.co.kr/api';
+var authKey = '8281ae776ebcefc518fdd652c448f57bbe4a567c83bc6616c2d0dd38c64b67b9';
+var testUrls = {
+	feature: '/code/feature/30110/H4.json',			// 행정동 경계 도형
+	comm: '/code/all.json',							// 공통코드 가져오기
+	deajeon: '/deajeon/allRegPop/20170211/20170410.json',	// 
+	ecoTrend: '/ecoTrend/all/30110/20161030/20170411.json',
+	evntEff: '/evntEff/all/30110590/20161030/20170411.json'
+};
+
+var contents = {
+	feature: '지도 데이터를 가져오는 API',
+	comm: '공통코드들을 가져오는 API',
+	deajeon: '대전 마케팅공사에서 사용하는 데이터를 가져오는 API',
+	ecoTrend: '경제트렌드 데이터를 가져오는 API',
+	evntEff: '이벤트효과 데이터를 가져오는 API' 
+};
+
+/**
+ * 로딩바 구현
+ */
+var loadingBar = {
+	create: function() {
+		
+		var loadingImg = '';
+	     
+	    loadingImg += "<div id='loadingImg' style='position:absolute; left:50%; top:50%; display:none; z-index:10000;'>";
+	    loadingImg += "<img src='/images/common/viewLoading.gif'>"; 
+	    loadingImg += "<p>데이터를 가져오는 중입니다...</p>";
+	    loadingImg += "</div>";   
+	    
+	    $('body').append(loadingImg);
+	},
+	
+	//페이지 로딩 보이기
+	show: function() {
+		if($('#loadingImg').length == 0)
+			this.create();
+		
+		//로딩중 이미지 표시
+		$('#loadingImg').show();
+	},
+	
+	//페이지 로딩 해제
+	hide: function() {
+		$('#loadingImg').hide();
+	}
+};
+
+// 테스트 url을 호출 후 동적으로 element 생성
+$.each(testUrls, function(key, url) {
+	loadingBar.show();
+	if(key != 'comm')
+		url += '?authKey=' + authKey;
+	$.ajax({
+		method: 'GET',
+		url: url
+// 		async : false   // 비동기로 처리
+	}).done(function(result){
+		if(result.status === 'success' || result.features !== undefined) {
+			var status = '성공';
+		} else {
+			var status = '실패';
+		}
+		
+		var html = '<tr>';
+			html +=  '<td>' + key + '</td>';
+			html +=  '<td>' + status + '</td>';
+			html +=  '<td>' + contents[key] + '</td></tr>';
+				
+		$('#testLists').append(html);
+		
+		if($('#testLists tr').length == Object.keys(testUrls).length)
+			loadingBar.hide();
+	});
+});
+</script>
+</body>
+</html>

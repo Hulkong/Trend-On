@@ -1,0 +1,7 @@
+config:
+  port: 48000
+  resourceMappingList:
+    - resource: /d3/
+      url: http://localhost:8090/chartTemplate/
+    - resource: /d4/
+      url: http://localhost:8090/chartTemplate2/

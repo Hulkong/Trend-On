@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+
+		<bean id="onmapDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+			destroy-method="close">
+			<property name="driverClassName" value="${config.jdbc.postgisdb.driverClassName}" />
+			<property name="url" value="${config.jdbc.postgisdb.url}" />
+			<property name="username" value="${config.jdbc.postgisdb.username}" />
+			<property name="password" value="${config.jdbc.postgisdb.password}" />
+			<!-- 초기에 생성될 커넥션개수 -->
+			<property name="initialSize" value="10" />
+			<!--커넥션풀이 제공할 최대 커넥션개수 -->
+			<property name="maxActive" value="30" />
+			<!--풀에 커넥션이 존재하지 않을때, 커넥션이 풀에 다시 리턴되기까지 대기시간. 1/1000초단위, -1일경우 무한대기. -->
+			<property name="maxWait" value="10000" />
+			<!--사용되지 않고 풀에 저장될수 있는 최대 커넥션개수, 음수일경우 제한없음. -->
+			<property name="maxIdle" value="10" />
+			<!--사용되지 않고 풀에 저장될수 있는 최소 커넥션개수. -->
+			<property name="minIdle" value="5" />
+			<property name="validationQuery" value="select 1"></property>			
+		</bean>
+
+
+
+<!-- @Transactional -->
+<!-- propagation 트랜잭션 전파 규칙을 설정. Propagation 열거형 타입에 값이 정의되어 있음 기본값은 Propagation.REQUIRED -->
+<!-- isolation 트랜잭션 격리 레벨을 설정. Isolation 열거형 타입에 값이 정의되어 있음 -->
+<!-- readOnly 읽기 전용 여부를 설정. boolean 값을 설정하며, 기본값은 false -->
+<!-- rollbackFor 트랜잭션을 롤백할 예외 타입을 설정 예, rollbackFor={Exception.class} -->
+<!-- noRollbackFor 트랜잭션을 롤백하지 않을 예외 타입을 설정 예, noRollbackFor={ItemNotFoundException.class} -->
+<!-- timeout 트랜잭션의 타임아웃 시간을 초 단위로 설정 -->
+
+<!-- ISOLATION_DEFAULT	데이터베이스에 의존 -->
+<!-- ISOLATION_READ_UNCOMMITTED	격리레벨중 가장 낮은 격리 레벨이다. 다른 Commit되지 않은 트랜잭션에 의해 변경된 데이터를 볼 수 있다. 거의 트랜잭션의 기능을 수행하지 않는다. -->
+<!-- ISOLATION_READ_COMMITTED	데이터베이스에서 디폴트로 지원하는 격리 레벨이다. 다른 트랜잭션에 의해 Commit되지 않은 데이터는 다른 트랜잭션에서 볼 수 없다.일반적 으로 가장 많이 사용한다. -->
+<!-- ISOLATION_REPEATABLE_READ	다른 트랜잭션이 새로운 데이터를 입력했다면 볼 수 있다. 트랜잭션이 완료 될때까지 SELECT 문장이 사용하는 모든 데이터에 Shared Lock이 걸리므로 다른 사용자는 그 영역에 해당되는 데이터에대한 수정이 불가능하다 -->
+<!-- ISOLATION_SERIALIZABLE	하나의 트랜잭션이 완료된 후에 다른 트랜잭션이 실행하는 것처럼 지원한다.동일한 데이터에 대해서 동시에 두 개 이상의 트랜잭션이 수행 될 수 없다. -->
+
+
+<!-- PROPAGATION_REQUIRED	기존의 트랜잭션이 존재하면 그 트랜잭션을 지원, 없다면 새로운 트랜잭션을 시작. 가장 자주 사용되는 옵션 -->
+<!-- PROPAGATION_SUPPORTS	기존의 트랜잭션이 존재하면 그 트랜잭션을 지원, 없다면 비-트랜잭션 상태로 수행 -->
+<!-- PROPAGATION_MANDATORY	반드시 Transaction 내에서 메소드가 실행되어야 한다. 없으면 예외발생 -->
+<!-- PROPAGATION_REQUIRES_NEW	언제나 새로운 트랜잭션을 수행, 이미 활성화된 트랜잭션이 있다면 일시정지 한다. -->
+<!-- PROPAGATION_NOT_SUPPORTED	새로운 Transaction을 필요로 하지는 않지만, 기존의 Transaction이 있는 경우에는 Transaction 내에서 메소드를 실행한다. -->
+<!-- PROPAGATION_NEVER	Manatory와 반대로 Transaction 없이 실행되어야 하며 Transaction이 있으면 예외를 발생시킨다 -->
+<!-- PROPAGATION_NESTED	현재의 트랜잭션이 존재하면 중첩된 트랜잭션내에서실 행, 없으면 REQUIRED 처럼 동작 -->
+
+	<tx:annotation-driven transaction-manager="onmapTransactionManager"/>
+
+	<bean id="onmapTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="onmapDataSource"/>
+	</bean>
+
+</beans>

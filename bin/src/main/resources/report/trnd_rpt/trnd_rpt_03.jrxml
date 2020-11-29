@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="trnd-page3" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="64380948-45f8-49e1-b4ce-eb07a30add9b">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="trend-k"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="endDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.endDate]]></fieldDescription>
+	</field>
+	<field name="h3Cd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.h3Cd]]></fieldDescription>
+	</field>
+	<field name="admiCd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.admiCd]]></fieldDescription>
+	</field>
+	<field name="startDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.startDate]]></fieldDescription>
+	</field>
+	<field name="phantomJsHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.phantomJsHost]]></fieldDescription>
+	</field>
+	<field name="chideH3Cnt" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].cnt]]></fieldDescription>
+	</field>
+	<field name="period" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].period]]></fieldDescription>
+	</field>
+	<field name="days" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].days]]></fieldDescription>
+	</field>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="admiNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].admi_nm]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="842" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<image>
+				<reportElement x="176" y="205" width="379" height="186" uuid="fc22b5ec-8b9a-4602-b9c3-381a37a352c2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost}+"/d3/region_thumb.jsp?h=279&w=568.5&t=pdf&o={ctyCd:" + $F{h3Cd}+",admiCd:" + $F{admiCd} + ",%22color%22:%22%23000000%22,%22weight%22:1,%22fillOpacity%22:0.0,%22opacity%22:1}"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="40" y="86" width="136" height="64" forecolor="#E28864" uuid="5d0e06ce-3fde-4dd5-8eb1-386b870e47e8">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="17" isBold="true"/>
+				</textElement>
+				<text><![CDATA[제 1 장
+ : 분석 개요 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="145" width="136" height="21" forecolor="#E28864" uuid="a3235d67-043e-49de-9c50-c5b72c0d2f74">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[1. 분석 범위]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="448" width="136" height="21" forecolor="#E28864" uuid="0e1218b6-f486-4e1b-a6be-424fb904a2f4">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[2. 용어 정의]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="176" y="145" width="379" height="57" uuid="cce8df15-318e-46a5-bb7c-5a96e673967b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement markup="styled">
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<style isBold='true'>" + "공간적 범위 " + "</style>" + $F{megaNm} + " " + $F{ctyNm} + " (" + $F{chideH3Cnt} + "개 읍면동)\n\n"+ 
+"<style isBold='true'>" + "시간적 범위 " + "</style>" + $F{period} + "  (총 " + $F{days} + "일)"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="205" width="136" height="21" uuid="25cfdfd6-9594-444c-b028-e7f45c376b05">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["[그림1] \r\n"
++ $F{ctyNm} + " 현황"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="802" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="7ebeb8e5-a0c0-4d44-afd5-a8d8cc8a21a0">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="4b14b76c-bf3b-43c9-8c9f-e7d011b8f0e6">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="176" y="448" width="379" height="30" uuid="300561de-f365-4745-b574-dee6963ad427">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[매출 데이터 용어 정의 및 산출 방법]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="23" width="515" height="16" forecolor="#666666" uuid="9c61aa74-8fd0-4bbd-aad2-375c75d8846e">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["빅데이터를 활용한 " + $F{megaNm} + " " + $F{ctyNm} + " 경제트렌드 보고서"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#666666" uuid="5d11cfc4-7832-4f8f-a032-e5b94f81edf8">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="802" width="515" height="40" uuid="610b91dd-47ce-4c6c-8bfe-2582f7998c40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[- 3 -]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="524" width="45" height="23" uuid="b248e7e5-0de7-4ab7-ba3e-ae8e0414abd1">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="10" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[고객수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="476" width="46" height="23" uuid="e047baa8-bfdc-4d20-8f39-b51761262399">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[매출액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="476" width="333" height="54" uuid="7c8694e1-cde7-438f-9ef9-6eb252b67a7a"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[기간 내 카드 거래정보를 기반으로 추정한 매출액
+(제휴카드사 기준 매출액을 기초로 카드사 시장점유율 및 업종별 현금 결제비율을 감안한 보정계수를 적용하여 산출함)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="524" width="333" height="23" uuid="79db5a66-9997-49a8-9600-4df65c28b811">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[기간 내 사용된 카드 소지자 수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="552" width="45" height="23" uuid="ad4b1f6e-d8c6-455d-acf0-1af047f49028">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" isBold="true"/>
+				</textElement>
+				<text><![CDATA[거래량]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="552" width="333" height="23" uuid="79991d20-d191-4804-ad23-0b6a5e4111a1">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[기간 내 카드 사용에 따른 결제 건 수]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="580" width="45" height="21" uuid="b0419c03-89af-4bbf-bce3-b1754749ac3d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" isBold="true"/>
+				</textElement>
+				<text><![CDATA[상주인구]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="580" width="333" height="30" uuid="e1dc1097-b2f2-435f-b8e4-b13f8c74e940">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[카드사 고객 청구지 기준, 분석지역(선택한 행정동 기준 반경 2km)에 자택 또는 직장을 두고 소비행위를 한 사람]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="618" width="45" height="21" uuid="7ad20fbe-8b01-4f1c-83c9-8641526df26f">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" isBold="true"/>
+				</textElement>
+				<text><![CDATA[유입인구]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="618" width="333" height="42" uuid="a72c4d38-f754-4bb0-b3b0-da265f76d928">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[카드사 고객 청구지 기준, 분석지역(선택한 행정동 기준 반경 2km) 이외 지역에 거주지 주소를 두고 분석기간 동안 분석지역에서 소비행위를 한 유입소비인구]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="666" width="45" height="21" uuid="e59830dc-4099-4c7f-92ee-a4b31ba8f3ab">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" isBold="true"/>
+				</textElement>
+				<text><![CDATA[소비단가]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="666" width="333" height="21" uuid="a11a7110-db52-42bb-9ab0-7257d559d0f2">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[소비인구 거래금액을 거래량으로 나누어 구한 거래 한 건에 대한 대푯값]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="176" y="694" width="45" height="21" uuid="63ff7603-8f1c-488e-846e-f6050c268db0">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" isBold="true"/>
+				</textElement>
+				<text><![CDATA[업종]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="694" width="333" height="30" uuid="c781e616-c133-4583-a09d-c611838a3111">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[카드사 가맹점의 정보를 기준으로 분석지역 상권에 존재하는 업종 중 일정규모의 표본수가 확보된 업종만 분석에 반영]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

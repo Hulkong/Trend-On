@@ -1,0 +1,999 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.Ecnmy24Dao">	
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>	 
+
+<!-- 지도 shape -->
+	<!-- 경제 트렌드 : 지도 (행정동) -->
+	<select id="getStateMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1
+	]]>  
+		<if test='ctyCd != "ALL"'>
+				   AND B.ID like #{ctyCd}||'%'
+		</if>
+	<![CDATA[		 
+		   AND B.RGN_CLSS = #{rgnClss} 
+		   
+	]]>	
+	</select>
+<!-- // 지도 shape -->
+
+<!-- 지자체 현황내 공통쿼리  -->
+
+	<!-- 지자체 현황[공통] : 최신 년월  -->
+	<select id="getLastStdrDate" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT STDR_YM FROM TBCOM_STDR
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[공통] : 읍면동 총수  -->
+	<select id="getAdmiCount" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM 
+		       TBREGION B 
+		WHERE 1=1
+		AND B.ID like #{ctyCd}||'%' 
+		AND B.RGN_CLSS = #{rgnClss} 
+	]]>
+	</select>
+	
+<!-- // 지자체 현황내 공통쿼리  -->
+
+<!-- page01 -->
+	
+	<!-- 지자체 현황[카드] : page1. 거래금액-총 거래금액 (text)  -->
+	<select id="getTotalAmt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT SUM(SALE_AMT) AS SALE_AMT 
+		FROM TBADMI_INFO_YM TIY
+		WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+		AND STDR_YM = #{dateYm}
+	
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[카드] : page1. 거래금액-전월대비 거래금액 비율 (text)  -->
+	<select id="getLastMonRate" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT ((THS.SALE_AMT - LST.SALE_AMT) *100 / (LST.SALE_AMT) ) AS RATE
+		FROM (
+			SELECT SUM(SALE_AMT) AS SALE_AMT  
+			FROM TBADMI_INFO_YM
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			AND STDR_YM = #{dateYm}
+		) THS,
+		(
+			SELECT SUM(SALE_AMT) AS SALE_AMT 
+			FROM TBADMI_INFO_YM
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			AND STDR_YM = TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '1 MONTHS')::DATE ,'YYYYMM')
+		)LST
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[카드] : page1. 거래금액-전년동기 대비 거래금액 비율 (text)  -->
+	<select id="getLastYearRate" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT ((THS.SALE_AMT - LST.SALE_AMT) *100 / (LST.SALE_AMT) ) AS RATE
+		FROM (
+			SELECT SUM(SALE_AMT) AS SALE_AMT 
+			FROM TBADMI_INFO_YM
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			AND STDR_YM = #{dateYm}
+		) THS,
+		(
+			SELECT SUM(SALE_AMT) AS SALE_AMT 
+			FROM TBADMI_INFO_YM
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			AND STDR_YM = TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '12 MONTHS')::DATE,'YYYYMM')
+		)LST
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[카드] : page1. 거래금액 - 최신 1년치 유입/상주 거래금액 (chart)  -->
+	<select id="getTotalAmtChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT SUBSTRING(STDR_DATE ,1,6) AS STDR_YM
+				 , LOC_CLSS_CD
+				 , SUM(SALE_AMT) AS TOTAL_AMT
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			FROM tbadmi_info_d A
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			FROM TBCTY_INFO_D A
+	]]>
+	</if>
+	<![CDATA[
+			WHERE 1=1
+			AND A.STDR_DATE >= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '12 MONTHS')::DATE,'YYYYMMDD')  
+			AND A.STDR_DATE <= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE + INTERVAL '1 MONTHS')::DATE - 1,'YYYYMMDD') 
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			GROUP BY LOC_CLSS_CD , SUBSTRING(STDR_DATE ,1,6)
+		UNION ALL 
+			SELECT SUBSTRING(STDR_DATE ,1,6) AS STDR_YM
+				 , 'A' AS LOC_CLSS_CD
+				 , SUM(SALE_AMT) AS TOTAL_AMT
+		]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			FROM tbadmi_info_d A
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			FROM TBCTY_INFO_D A
+	]]>
+	</if>
+	<![CDATA[
+			WHERE 1=1
+			AND A.STDR_DATE >= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '12 MONTHS')::DATE,'YYYYMMDD')  
+			AND A.STDR_DATE <= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE + INTERVAL '1 MONTHS')::DATE - 1,'YYYYMMDD') 
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+			GROUP BY SUBSTRING(STDR_DATE ,1,6)
+			ORDER BY STDR_YM ASC, LOC_CLSS_CD ASC
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[카드] : page1. 거래금액 - 총 거래금액 (map)  -->
+	<select id="getTotalAmtMap" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ADMI_CD, SALE_AMT, NM 
+		FROM TBADMI_INFO_YM TIY
+			, TBREGION T2 
+		WHERE 1=1
+		AND TIY.ADMI_CD =T2.ID
+		AND T2.RGN_CLSS ='H4'
+		AND CTY_CD like #{ctyCd}||'%'
+		AND STDR_YM = #{dateYm}
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신] : page1. 유동인구 - 총 유동인구 (text)  -->
+	<select id="getTotalFloat" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT SUM(TOTAL_CNT)
+		FROM TBADMI_FLOAT_ALL_CNT 
+		WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		AND CTY_CD like substr(#{ctyCd},1,4)||'%' 
+	]]>
+	</if>
+	<![CDATA[
+		AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신] : page1. 유동인구 - 전월대비 유동인구 비율 (text)  -->
+	<select id="getLastMonFloat" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT ((THS.CNT - LST.CNT) *100 / (LST.CNT) ) AS RATE
+		FROM (
+			SELECT SUM(TOTAL_CNT) CNT
+			FROM TBADMI_FLOAT_ALL_CNT
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+			AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+		) THS,
+		(
+			SELECT SUM(TOTAL_CNT) CNT
+			FROM TBADMI_FLOAT_ALL_CNT
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+			AND SUBSTRING(STDR_DATE ,1,6) = TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '1 MONTHS')::DATE ,'YYYYMM')
+		)LST
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신] : page1. 유동인구 - 전년동기대비 유동인구 비율 (text)  -->
+	<select id="getLastYearFloat" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT ((THS.CNT - LST.CNT) *100 / (LST.CNT) ) AS RATE
+		FROM (
+			SELECT SUM(TOTAL_CNT) CNT
+			FROM TBADMI_FLOAT_ALL_CNT
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+			AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+		) THS,
+		(
+			SELECT SUM(TOTAL_CNT) CNT
+			FROM TBADMI_FLOAT_ALL_CNT
+			WHERE 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+			AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+			AND SUBSTRING(STDR_DATE ,1,6) = TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '12 MONTHS')::DATE ,'YYYYMM')
+		)LST
+	]]>
+	</select>
+
+	<!-- 지자체 현황[통신] : page1. 유동인구 - 최신 1년치 유동인구 그래프 (chart)  -->
+	<select id="getTotalFloatChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT STDR_YM
+			 , LOC_CLSS_CD
+			 , TOTAL_CNT
+		FROM 
+		(
+				SELECT STDR_YM
+					 , 'E' AS LOC_CLSS_CD
+					 , sum(MOVE_CNT) AS TOTAL_CNT
+				FROM TBADMI_FLOAT_CNT A
+				WHERE 1=1
+				AND A.STDR_YM >= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '13 MONTHS')::DATE,'YYYYMMDD')  
+				AND A.STDR_YM <= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE )::DATE,'YYYYMMDD') 
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+				AND A.ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+				AND A.CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+				GROUP BY STDR_YM
+			UNION ALL 
+				SELECT STDR_YM
+					 , 'R' AS LOC_CLSS_CD
+					 , sum(STAY_CNT) AS TOTAL_CNT 
+				FROM TBADMI_FLOAT_CNT A
+				WHERE 1=1
+				AND A.STDR_YM >= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '13 MONTHS')::DATE,'YYYYMMDD')  
+				AND A.STDR_YM <= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE )::DATE,'YYYYMMDD') 
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+				AND A.ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+				AND A.CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+				GROUP BY STDR_YM
+			UNION ALL 
+				SELECT STDR_YM
+					 , 'A' AS LOC_CLSS_CD
+					 , sum(MOVE_CNT+STAY_CNT) AS TOTAL_CNT 
+				FROM TBADMI_FLOAT_CNT A
+				WHERE 1=1
+				AND A.STDR_YM >= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE - INTERVAL '13 MONTHS')::DATE,'YYYYMMDD')  
+				AND A.STDR_YM <= TO_CHAR(DATE_TRUNC('MONTH',(#{dateYm}||'01')::DATE )::DATE,'YYYYMMDD') 
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+				AND A.ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+				AND A.CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+				GROUP BY STDR_YM
+		) A
+		ORDER BY STDR_YM ASC, LOC_CLSS_CD ASC
+	]]>
+	</select>
+	
+	
+	<!-- 지자체 현황[통신] : page1. 유동인구 - 총 유동인구  (주제도)  -->
+	<select id="getTotalFloatMap" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ADMI_CD, SUM(TOTAL_CNT) AS TOTAL_CNT, NM
+		FROM TBADMI_FLOAT_ALL_CNT TFC
+			, TBREGION T2 
+		WHERE 1=1
+		AND TFC.ADMI_CD =T2.ID
+		AND T2.RGN_CLSS ='H4' 
+		AND CTY_CD like #{ctyCd}||'%'
+		AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+		GROUP BY ADMI_CD, NM
+	]]>
+	</select>
+	
+<!-- // page01 -->
+<!-- page02 -->
+
+	<!-- 지자체 현황[카드] : page2. 성/연령별 대표인구 - 소비인구 특성  (text)  -->
+	<select id="getAmtGenderAge" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+		       END) CHR
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		FROM TBADMI_VISIT_INFO_D_NEW
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		FROM TBCTY_VISIT_INFO_D
+	]]>
+	</if>
+	<![CDATA[
+		WHERE 1=1       
+		AND substring(stdr_date ,1,6) = #{dateYm}
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	</select>
+
+	<!-- 지자체 현황[통신사] : page2. 성/연령별 대표인구 - 유동인구 특성  (text)  -->
+	<select id="getFloatGenderAge" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+		       END) CHR
+		  FROM TBADMI_FLOAT_INFO
+		 WHERE 1=1     
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[  
+		AND substring(stdr_date ,1,6) = #{dateYm}
+	]]>
+	</select>
+
+	<!-- 지자체 현황[카드사] : page2. 성/연령별 대표인구 - 소비인구 특성  (chart)  -->
+	<select id="getAmtGenderAgeChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_20_RATE
+		     , ROUND(SUM(M_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_30_RATE
+		     , ROUND(SUM(M_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_40_RATE
+		     , ROUND(SUM(M_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_50_RATE
+		     , ROUND(SUM(M_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_60_RATE
+		     , ROUND(SUM(F_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS	F_20_RATE
+		     , ROUND(SUM(F_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_30_RATE
+		     , ROUND(SUM(F_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_40_RATE
+		     , ROUND(SUM(F_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_50_RATE
+		     , ROUND(SUM(F_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_60_RATE
+		  FROM TBADMI_VISIT_INFO_D_NEW A
+		 WHERE 1=1       
+		   AND substring(stdr_date ,1,6) = #{dateYm}
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		   AND A.ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		   AND A.CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	</select>
+
+	<!-- 지자체 현황[통신사] : page2. 성/연령별 대표인구 - 유동인구 특성  (chart)  -->
+	<select id="getFloatGenderAgeChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		select ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_20_cnt
+			 , ROUND(sum(m_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_30_cnt
+			 , ROUND(sum(m_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_40_cnt
+			 , ROUND(sum(m_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_50_cnt
+			 , ROUND(sum(m_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_60_cnt
+			 , ROUND(sum(f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_20_cnt
+			 , ROUND(sum(f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_30_cnt
+			 , ROUND(sum(f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_40_cnt
+			 , ROUND(sum(f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_50_cnt
+			 , ROUND(sum(f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_60_cnt
+		from tbadmi_float_info
+		where 1=1
+	]]>
+	<if test='admiCd != null and admiCd != ""'>
+	<![CDATA[
+		AND ADMI_CD = #{admiCd}
+	]]>
+	</if>
+	<if test='admiCd == null or admiCd == ""'>
+	<![CDATA[
+		AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+	]]>
+	</if>
+	<![CDATA[
+		AND substring(stdr_date ,1,6) = #{dateYm}
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신사] : page2. 읍면동 간 비교 (주민등록인구, 총 유동인구, 총 거래금액, 총 거래량 - text)  -->
+	<select id="getAdmiStateTxt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT T1.*
+		FROM (
+			select T.*
+				 , RANK () OVER ( ORDER BY POP DESC ) POP_RNK
+				 , RANK () OVER ( ORDER BY FLOAT_CNT DESC ) FLOAT_CNT_RNK
+				 , RANK () OVER ( ORDER BY TOT_AMT DESC ) TOT_AMT_RNK
+				 , RANK () OVER ( ORDER BY TOT_CNT DESC ) TOT_CNT_RNK
+			from ( 
+				SELECT tac.id
+					 , (select nm from tbregion a where a.id = tac.id)
+					 , FLOAT_CNT
+					 , TOT_AMT
+					 , TOT_CNT
+					 , pop
+				FROM  ( select SUM(TOTAL_CNT) AS FLOAT_CNT, admi_cd as id 
+						from TBADMI_FLOAT_ALL_CNT 
+						where 1=1
+						AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+						AND ADMI_CD LIKE SUBSTRING(#{admiCd},1,5)||'%'
+						group by admi_cd 
+					  ) TAC
+					, ( select SUM(SALE_AMT) AS TOT_AMT
+					 		 , SUM(SALE_CNT ) AS TOT_CNT
+					 		 , admi_cd as id 
+					    from tbadmi_info_d
+						where 1=1
+						AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+						AND ADMI_CD LIKE SUBSTRING(#{admiCd},1,5)||'%'
+						group by admi_cd 
+					  ) TDI
+					, (
+						select sum(pop)as pop
+							 , id 
+						from TBPOP_ADMI
+						where 1=1 
+						AND SUBSTRING(yyyymm ,1,6) = #{dateYm}
+						AND id LIKE SUBSTRING(#{admiCd},1,5)||'%'
+						group by id 
+					) TPA
+				where 1=1 
+				and tac.id = tdi.id
+				and tac.id = tpa.id
+			) T
+		) T1
+		where id = #{admiCd}
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신사] : page2. 읍면동 간 비교 (주민등록인구, 총 유동인구, 총 거래금액, 총 거래량 - text2 - 시군구  -->
+	<select id="getAdmiStateTxt2" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT COALESCE(#{ctyCd}, 0) as id
+			 , (select nm from tbregion a where a.id = #{ctyCd} and a.rgn_clss='H3')
+			 , FLOAT_CNT
+			 , TOT_AMT
+			 , TOT_CNT
+			 , pop
+			 , '0' as POP_RNK
+			 , '0' as FLOAT_CNT_RNK
+			 , '0' as TOT_AMT_RNK
+			 , '0' as TOT_CNT_RNK
+		FROM  ( select SUM(TOTAL_CNT) AS FLOAT_CNT 
+				from TBADMI_FLOAT_ALL_CNT 
+				where 1=1
+				AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+				AND ADMI_CD LIKE substr(#{ctyCd},1,4)||'%'
+			  ) TAC
+			, ( select SUM(SALE_AMT) AS TOT_AMT
+			 		 , SUM(SALE_CNT ) AS TOT_CNT
+			    from tbadmi_info_d
+				where 1=1
+				AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+				AND ADMI_CD LIKE substr(#{ctyCd},1,4)||'%'
+			  ) TDI
+			, (
+				select sum(pop)as pop from TBPOP_ADMI
+				where 1=1 
+				AND SUBSTRING(yyyymm ,1,6) = #{dateYm}
+				AND id LIKE substr(#{ctyCd},1,4)||'%'
+			) TPA
+		WHERE 1=1
+	]]>
+	</select>
+	
+	<!-- 지자체 현황[통신사] : page2. 읍면동 간 비교 (주민등록인구, 총 유동인구, 총 거래금액, 총 거래량 - list)  -->
+	<select id="getAdmiStateList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT #{ctyCd}||'' as id
+			 , (select nm from tbregion a where a.id = #{ctyCd} and a.rgn_clss='H3')
+			 , FLOAT_CNT
+			 , ROUND(TOT_AMT/1000) as tot_amt
+			 , TOT_CNT
+			 , pop
+			 , '0' as POP_RNK
+			 , '0' as FLOAT_CNT_RNK
+			 , '0' as TOT_AMT_RNK
+			 , '0' as TOT_CNT_RNK
+		FROM  ( select SUM(TOTAL_CNT) AS FLOAT_CNT 
+				from TBADMI_FLOAT_ALL_CNT 
+				where 1=1
+				AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+				AND ADMI_CD like substr(#{ctyCd},1,4)||'%'
+			  ) TAC
+			, ( select SUM(SALE_AMT) AS TOT_AMT
+			 		 , SUM(SALE_CNT ) AS TOT_CNT
+			    from tbadmi_info_d
+				where 1=1
+				AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+				AND ADMI_CD LIKE substr(#{ctyCd},1,4)||'%'
+			  ) TDI
+			, (
+				select sum(pop)as pop from TBPOP_ADMI
+				where 1=1 
+				AND SUBSTRING(yyyymm ,1,6) = #{dateYm}
+				AND id LIKE substr(#{ctyCd},1,4)||'%'
+			) TPA
+		WHERE 1=1
+		union all
+		(
+			select T.*
+				 , RANK () OVER ( ORDER BY POP DESC ) POP_RNK
+				 , RANK () OVER ( ORDER BY FLOAT_CNT DESC ) FLOAT_CNT_RNK
+				 , RANK () OVER ( ORDER BY TOT_AMT DESC ) TOT_AMT_RNK
+				 , RANK () OVER ( ORDER BY TOT_CNT DESC ) TOT_CNT_RNK
+			from ( 
+				SELECT tac.id
+					 , (select nm from tbregion a where a.id = tac.id)
+					 , FLOAT_CNT
+					 , ROUND(TOT_AMT/1000) as tot_amt
+					 , TOT_CNT
+					 , pop
+				FROM  ( select SUM(TOTAL_CNT) AS FLOAT_CNT, admi_cd as id 
+						from TBADMI_FLOAT_ALL_CNT 
+						where 1=1
+						AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+						AND ADMI_CD LIKE substr(#{ctyCd},1,4)||'%'
+						group by admi_cd 
+					  ) TAC
+					, ( select SUM(SALE_AMT) AS TOT_AMT
+					 		 , SUM(SALE_CNT ) AS TOT_CNT
+					 		 , admi_cd as id 
+					    from tbadmi_info_d
+						where 1=1
+						AND SUBSTRING(STDR_DATE ,1,6) = #{dateYm}
+						AND ADMI_CD LIKE substr(#{ctyCd},1,4)||'%'
+						group by admi_cd 
+					  ) TDI
+					, (
+						select sum(pop)as pop
+							 , id 
+						from TBPOP_ADMI
+						where 1=1 
+						AND SUBSTRING(yyyymm ,1,6) = #{dateYm}
+						AND id like substr(#{ctyCd},1,4)||'%'
+						group by id 
+					) TPA
+				where 1=1 
+				  and tac.id = tdi.id
+				  and tac.id = tpa.id
+			) T
+			order by nm collate "C" asc
+		)
+	]]>
+	</select>
+
+
+
+<!-- // page02 -->
+
+<!-- EXCEL DOWN DATA -->
+	<select id="excelData" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT  ID, NM, CODE AS TIMEZONE_CD,
+				coalesce(TOTAL_CNT_E,0) AS TOTAL_CNT_E,
+				coalesce(WEEK_DAYS_CNT_E,0) AS WEEK_DAYS_CNT_E,
+				coalesce(WEEK_END_CNT_E,0) AS WEEK_END_CNT_E,
+				coalesce(TOTAL_CNT_H,0) AS TOTAL_CNT_H,
+				coalesce(WEEK_DAYS_CNT_H,0) AS WEEK_DAYS_CNT_H,
+				coalesce(WEEK_END_CNT_H,0) AS WEEK_END_CNT_H
+		FROM (
+			SELECT CODE, ID,NM 
+			FROM 
+				(SELECT CODE FROM TBCOMM_CODE WHERE CD_ID='TIMEZON_CD') A
+			, 	(SELECT ID,NM FROM TBREGION WHERE PARENT_ID = substr(#{ctyCd},1,4) ) B
+		) B
+		LEFT OUTER JOIN 
+		(
+			SELECT  ADMI_CD, A.TIMEZON_CD,
+					case
+						when (sum(sum(TOTAL_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(E_CNT)/ (sum(sum(TOTAL_CNT)) over(partition by admi_cd)), 3), 0)
+					end as TOTAL_CNT_E ,
+					case
+						when (sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WD_E_CNT)/(sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_DAYS_CNT_E ,
+					case
+						when (sum(sum(WEEK_END_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WE_E_CNT)/(sum(sum(WEEK_END_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_END_CNT_E ,
+					case
+						when (sum(sum(TOTAL_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(H_CNT)/(sum(sum(TOTAL_CNT)) over(partition by admi_cd)), 3), 0)
+					end as TOTAL_CNT_H ,
+					case
+						when (sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WD_H_CNT)/(sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_DAYS_CNT_H ,
+					case
+						when (sum(sum(WEEK_END_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WE_H_CNT)/(sum(sum(WEEK_END_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_END_CNT_H
+			FROM TBADMI_TIMEZON_INFO A
+			WHERE 1 = 1
+			AND STDR_YM = #{date}
+			AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+			AND A.TIMEZON_CD IS NOT NULL
+			GROUP BY ADMI_CD, A.TIMEZON_CD
+		) R1
+		ON B.ID = R1.ADMI_CD AND B.CODE = R1.TIMEZON_CD
+		ORDER BY NM, R1.TIMEZON_CD ASC
+	]]>
+	</select>
+	
+	<select id="excelTotalData" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT TIMEZON_CD
+             , ROUND(SUM(E_CNT)/ (SUM(SUM(TOTAL_CNT)) OVER()),3)  AS TOTAL_CNT_E
+             , ROUND(SUM(WD_E_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER()),3)  AS WEEK_DAYS_CNT_E
+             , ROUND(SUM(WE_E_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER()),3)  AS WEEK_END_CNT_E 
+             , ROUND(SUM(H_CNT)/(SUM(SUM(TOTAL_CNT)) OVER()),3)  AS TOTAL_CNT_H
+             , ROUND(SUM(WD_H_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER()),3)  AS WEEK_DAYS_CNT_H
+             , ROUND(SUM(WE_H_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER()),3)  AS WEEK_END_CNT_H
+          FROM TBADMI_TIMEZON_INFO A
+         WHERE 1=1       
+           AND STDR_YM = #{date}
+           AND CTY_CD like substr(#{ctyCd},1,4)||'%'
+           AND TIMEZON_CD IS NOT NULL
+        GROUP BY TIMEZON_CD 
+        order by TIMEZON_CD  asc
+	]]>
+	</select>
+<!-- // EXCEL DOWN DATA -->	
+	
+	
+<!-- old -->
+	<!-- 경제24 : graph-top -->
+	<select id="getEcnmy24TimeGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		  SELECT 
+		         TIMEZON_CD
+		       , SUM(TOTAL_CNT) AS TOTAL_CNT   
+		       , SUM(WEEK_DAYS_CNT) AS WEEK_DAYS_CNT 
+		       , SUM(WEEK_END_CNT)  AS WEEK_END_CNT 
+		    FROM
+		         TBCTY_TIMEZON_INFO
+		   WHERE 1=1
+		     AND STDR_YM = #{date}
+		     AND CTY_CD like #{ctyCd}||'%'
+		  GROUP BY TIMEZON_CD
+		  ORDER BY 1
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 BLOCK -->
+	<select id="getAdmi24Map" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1  
+		   AND B.ID like #{ctyCd}||'%'
+		   AND B.RGN_CLSS = #{rgnClss} 
+		   
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 BLOCK -->
+	<select id="getBlockMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT BAS_ID AS ID
+		     , '' AS BAS_NM
+		     , GEOM AS GEOMETRY
+		  FROM 
+		       tbshp_bsizon 
+		 WHERE 1=1  
+		   AND SIG_CD like #{ctyCd}||'%'
+		   
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 -->
+	<select id="getEcnmy24Map" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		  SELECT bas_id AS ID
+		       , '' as bas_NM  
+		       , ROUND(SUM(TOTAL_CNT))  AS TOTAL_CNT 
+		       , ROUND(SUM(WEEK_DAYS_CNT))  AS WEEK_DAYS_CNT
+		       , ROUND(SUM(WEEK_END_CNT))  AS WEEK_END_CNT    
+		    FROM 
+		         TBBAS_TIMEZON_INFO A
+		   WHERE 1=1       
+		     AND STDR_YM = #{date} 
+		     AND A.CTY_CD like #{ctyCd}||'%'
+
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		   AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[    
+		GROUP BY bas_id
+	]]>	
+	</select>
+	
+	<!-- 경제24 : graph in map -->
+	<select id="getEcnmy24MapGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM   --행정동명
+		     , ROUND(SUM(E_CNT)/ (SUM(SUM(TOTAL_CNT)) OVER())*100,1)  AS TOTAL_CNT_E
+		     , ROUND(SUM(WD_E_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER())*100,1)  AS WEEK_DAYS_CNT_E
+		     , ROUND(SUM(WE_E_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER())*100,1)  AS WEEK_END_CNT_E 
+		     , ROUND(SUM(H_CNT)/(SUM(SUM(TOTAL_CNT)) OVER())*100,1)  AS TOTAL_CNT_H
+		     , ROUND(SUM(WD_H_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER())*100,1)  AS WEEK_DAYS_CNT_H
+		     , ROUND(SUM(WE_H_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER())*100,1)  AS WEEK_END_CNT_H
+		  FROM 
+		       TBADMI_TIMEZON_INFO A
+		     , TBREGION B 
+		 WHERE 1=1       
+		   AND STDR_YM = #{date}
+		   AND CTY_CD like #{ctyCd}||'%'
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		   AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[
+		   AND B.RGN_CLSS = 'H4'
+		   AND A.ADMI_CD = B.ID
+		GROUP BY  B.ID, B.NM 
+	
+	]]>	
+	</select>
+
+	<!-- 경제24 : 지도범례 -->
+	<select id="getEcnmy24MapLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+				  SELECT BAS_ID
+				       , '' AS BAS_NM   
+				       , ROUND(SUM(${valColumn}))  AS TOTAL_CNT 
+				       , NTILE(4) OVER( ORDER BY SUM(${valColumn}) DESC) AS GRD 
+				    FROM 
+				         TBBAS_TIMEZON_INFO A
+				   WHERE 1=1       
+				     AND STDR_YM = #{date}
+				     AND A.CTY_CD = #{ctyCd}
+				     AND A.BLK_CD = B.BLK_CD
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		 			 AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[  
+				GROUP BY BAS_ID
+				HAVING SUM(TOTAL_CNT) <>0
+				UNION ALL
+				  SELECT BAS_ID
+				       , '' AS BAS_NM   
+				       , ROUND(SUM(${valColumn}))  AS TOTAL_CNT
+				       , 5 AS GRD      
+				    FROM 
+				         TBBAS_TIMEZON_INFO A
+				   WHERE 1=1       
+				     AND STDR_YM = #{date}
+				     AND A.CTY_CD = #{ctyCd}
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		 			 AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[    
+				GROUP BY BAS_ID
+				HAVING SUM(TOTAL_CNT) =0
+				)
+		SELECT MAX(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MIN_VALUE5
+		FROM TMP 
+
+	]]>	
+	</select>
+	
+<!-- // old -->
+</mapper>

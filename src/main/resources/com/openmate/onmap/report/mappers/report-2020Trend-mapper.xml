@@ -1,0 +1,2544 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.report.service.newTrendReportDao">
+
+  <!-- 경제트랜드 보고서 시작 -->
+  <!-- 전페이지. 전 페이지중 필요한 페이지 전체에서 사용 - 기본 텍스트 -->
+  <select id="rpt-new-trnd-000-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT SPLIT_PART(FULL_NAME, ' ', 1) MEGA_NM 
+			 , SPLIT_PART(FULL_NAME, ' ', 2) CTY_NM 
+			 , SUBSTR('20200602',1,4)||'년 '||SUBSTR('20200602',5,2)||'월 ' as start_ym
+	 		 , SUBSTR('20200612',1,4)||'년 '||SUBSTR('20200612',5,2)||'월 ' as end_ym
+			 , SUBSTR(#{startDate},1,4)||'년 '||SUBSTR(#{startDate},5,2)||'월 '||SUBSTR(#{startDate},7,2)||'일 '||'~ '||SUBSTR(#{endDate},1,4)||'년 '||SUBSTR(#{endDate},5,2)||'월 '||SUBSTR(#{endDate},7,2)||'일' AS period
+			 , TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1 as days
+			 , ( SELECT COUNT(*) 
+			 	 FROM TBREGION 
+			 	 WHERE 1=1
+				 AND ID LIKE #{h3Cd}||'%'
+				 AND RGN_CLSS = 'H4'
+			 ) AS CNT
+		FROM TBREGION
+		WHERE 1=1
+		AND ID LIKE #{h3Cd}||'%'
+		AND RGN_CLSS = 'H4'
+		LIMIT 1
+  ]]>
+  </select>
+  
+  <!-- 7페이지. 2장 1절의 시기별 특성 1문단 - 총 유동인구 -->
+  <select id="rpt-new-trnd-007-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT SUM(TOTAL_CNT)AS TOT_FLOAT_CNT 
+		FROM TBADMI_FLOAT_ALL_CNT
+		WHERE 1=1
+		AND STDR_DATE >= #{startDate} 
+		AND STDR_DATE <= #{endDate}
+		AND CTY_CD like #{h3Cd}||'%'
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 2문단 - 유동인구 규모 증감 -->
+  <select id="rpt-new-trnd-007-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT 
+			A.TOT_FLOAT_CNT - B.TOT_FLOAT_CNT AS DIFF_CNT
+		FROM (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(STAY_CNT + MOVE_CNT) AS TOT_FLOAT_CNT 
+			FROM TBADMI_FLOAT_CNT A
+			WHERE 1=1
+			AND STDR_YM = to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM')
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			ORDER BY 1 DESC
+			LIMIT 1
+		) A
+		,(
+			SELECT STDR_YM AS CD_NM
+				 , SUM(STAY_CNT + MOVE_CNT) AS TOT_FLOAT_CNT 
+			FROM TBADMI_FLOAT_CNT A
+			WHERE 1=1
+			AND A.STDR_YM = to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			ORDER BY 1
+			LIMIT 1
+		) B;
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 3문단 - 최근 1년 동안 유동인구 수가 가장 큰 월, 가장 작은 월 -->
+  <select id="rpt-new-trnd-007-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT substring(A.CD_NM,1,4)||'년 '||substring(A.CD_NM,5,2)||'월' AS MIN_FLOAT_YM
+			 , A.TOT_FLOAT_CNT AS MIN_FLOAT_CNT
+			 , substring(B.CD_NM,1,4)||'년 '||substring(B.CD_NM,5,2)||'월'  AS MAX_FLOAT_YM
+			 , B.TOT_FLOAT_CNT AS MAX_FLOAT_CNT
+		FROM (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(STAY_CNT + MOVE_CNT) AS TOT_FLOAT_CNT 
+			FROM TBADMI_FLOAT_CNT TFC
+			WHERE 1=1
+			AND TFC.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND TFC.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			order by 2
+			limit 1
+		)A , (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(STAY_CNT + MOVE_CNT) AS TOT_FLOAT_CNT 
+			FROM TBADMI_FLOAT_CNT TFC
+			WHERE 1=1
+			AND TFC.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND TFC.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			order by 2 desc
+			limit 1
+		) B
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 월별 유동인구 수 변화 - 그래프 -->
+  <select id="rpt-new-trnd-007-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT substring(STDR_YM,1,4)||'년'||substring(STDR_YM,5,6)||'월' AS CD_NM_TXT
+			 , STDR_YM AS CD_NM
+			 , SUM(STAY_CNT + MOVE_CNT) AS TOT_FLOAT_CNT 
+		FROM TBADMI_FLOAT_CNT A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '23 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY STDR_YM
+		ORDER BY 1 ASC
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 4문단 - 총 거래금액 -->
+  <select id="rpt-new-trnd-007-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT SUM(SALE_AMT) AS TOT_SALE_AMT 
+		FROM tbadmi_info_d2 A
+		WHERE 1=1
+		AND A.STDR_DATE >= #{startDate} 
+		AND A.STDR_DATE <= #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 5문단 - 거래규모 증감 -->
+  <select id="rpt-new-trnd-007-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT 
+			A.TOT_SALE_AMT - B.TOT_SALE_AMT AS DIFF_AMT
+		FROM (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(SALE_AMT) AS TOT_SALE_AMT 
+			FROM tbadmi_info_ym A
+			WHERE 1=1
+			AND A.STDR_YM = to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			ORDER BY 1 DESC
+			LIMIT 1
+		) A
+		,(
+			SELECT STDR_YM AS CD_NM
+				 , SUM(SALE_AMT) AS TOT_SALE_AMT 
+			FROM tbadmi_info_ym A
+			WHERE 1=1
+			AND A.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			ORDER BY 1
+			LIMIT 1
+		) B
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 6문단 - 최근 1년 동안 거래금액이  가장 큰 월, 가장 작은 월 -->
+  <select id="rpt-new-trnd-007-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT substring(A.CD_NM,1,4)||'년 '||substring(A.CD_NM,5,2)||'월' AS MIN_SALE_YM
+			 , A.TOT_SALE_AMT AS MIN_SALE_AMT
+			 , substring(B.CD_NM,1,4)||'년 '||substring(B.CD_NM,5,2)||'월' AS MAX_SALE_YM
+			 , B.TOT_SALE_AMT AS MAX_SALE_AMT
+		FROM (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(SALE_AMT) AS TOT_SALE_AMT 
+			FROM tbadmi_info_ym A
+			WHERE 1=1
+			AND A.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND A.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			order by 2
+			limit 1
+		)A , (
+			SELECT STDR_YM AS CD_NM
+				 , SUM(SALE_AMT) AS TOT_SALE_AMT 
+			FROM tbadmi_info_ym A
+			WHERE 1=1
+			AND A.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '11 months')::date,'YYYYMM')  
+			AND A.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+			AND CTY_CD like #{h3Cd}||'%'
+			GROUP BY STDR_YM
+			order by 2 desc
+			limit 1
+		) B
+  ]]>
+  </select>
+
+  <!-- page7. 2장 1절의 시기별 특성 월별 거래금액 변화 - 그래프 -->
+  <select id="rpt-new-trnd-007-008" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT STDR_YM AS CD_NM
+			 , SUM(SALE_AMT) AS TOT_SALE_AMT 
+		FROM tbadmi_info_ym A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',#{endDate}::date - interval '23 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',#{endDate}::date )::date,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY STDR_YM
+		ORDER BY 1 ASC
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 1문단 - 거래금액이 가장 높은 계절 -->
+  <select id="rpt-new-trnd-008-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+		             when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		             when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		             when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		        end) AS STDR_QT
+		     , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+		                when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+		                when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+		                when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+		           end) AS STDR_YY   
+			 , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('06','07','08') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('09','10','11') then (STAY_CNT + MOVE_CNT) 
+		             	when substr(STDR_YM,5,2) in ('12','01','02') then (STAY_CNT + MOVE_CNT)
+		           end) AS TOT_FLOAT_CNT 
+		FROM TBADMI_FLOAT_CNT A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		               when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		               when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		          end) 
+		ORDER BY TOT_FLOAT_CNT desc
+		LIMIT 1
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 1문단 - 거래금액이 가장 낮은 계절 -->
+  <select id="rpt-new-trnd-008-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+		             when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		             when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		             when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		        end) AS STDR_QT
+		     , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+		                when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+		                when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+		                when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+		           end) AS STDR_YY   
+			 , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('06','07','08') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('09','10','11') then (STAY_CNT + MOVE_CNT) 
+		             	when substr(STDR_YM,5,2) in ('12','01','02') then (STAY_CNT + MOVE_CNT)
+		           end) AS TOT_FLOAT_CNT 
+		FROM TBADMI_FLOAT_CNT A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		               when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		               when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		          end) 
+		ORDER BY TOT_FLOAT_CNT
+		LIMIT 1
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 2문단 - 거래금액이 가장 높은 계절 -->
+  <select id="rpt-new-trnd-008-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT	(case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					  when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					  when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					  when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				end) AS STDR_QT
+			  , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+						 when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+						 when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+				end) AS STDR_YY   
+			  , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('06','07','08') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('09','10','11') then SALE_AMT 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then SALE_AMT
+				end) AS TOT_SALE_AMT 
+		FROM tbadmi_info_ym A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					   when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					   when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				 end) 
+		ORDER BY TOT_SALE_AMT desc
+		LIMIT 1
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 2문단 - 거래금액이 가장 낮은 계절 -->
+  <select id="rpt-new-trnd-008-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT	(case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					  when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					  when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					  when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				end) AS STDR_QT
+			  , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+						 when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+						 when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+				end) AS STDR_YY   
+			  , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('06','07','08') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('09','10','11') then SALE_AMT 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then SALE_AMT
+				end) AS TOT_SALE_AMT 
+		FROM tbadmi_info_ym A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					   when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					   when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				 end) 
+		ORDER BY TOT_SALE_AMT
+		LIMIT 1
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 - 유동인구 변화 그래프 -->
+  <select id="rpt-new-trnd-008-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+		             when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		             when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		             when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		        end) AS STDR_QT
+		     , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+		                when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+		                when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+		                when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+		           end) AS STDR_YY   
+			 , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('06','07','08') then (STAY_CNT + MOVE_CNT)
+		             	when substr(STDR_YM,5,2) in ('09','10','11') then (STAY_CNT + MOVE_CNT) 
+		             	when substr(STDR_YM,5,2) in ('12','01','02') then (STAY_CNT + MOVE_CNT)
+		           end) AS TOT_FLOAT_CNT 
+		FROM TBADMI_FLOAT_CNT A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+		               when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+		               when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+		          end) 
+		ORDER BY STDR_YY
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 계절별 거래금액 및 유동인구 - 거래금액 변화 그래프 -->
+  <select id="rpt-new-trnd-008-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT	(case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					  when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					  when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					  when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				end) AS STDR_QT
+			  , MIN(case when substr(STDR_YM,5,2) in ('03','04','05') then substr(STDR_YM,1,4)||'.03~'||substr(STDR_YM,1,4)||'.05'
+						 when substr(STDR_YM,5,2) in ('06','07','08') then substr(STDR_YM,1,4)||'.06~'||substr(STDR_YM,1,4)||'.08'
+						 when substr(STDR_YM,5,2) in ('09','10','11') then substr(STDR_YM,1,4)||'.09~'||substr(STDR_YM,1,4)||'.11' 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then substr(STDR_YM,1,4)||'.12~'||substr(STDR_YM,1,4)::integer+1 ||'.02'
+				end) AS STDR_YY   
+			  , SUM(case when substr(STDR_YM,5,2) in ('03','04','05') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('06','07','08') then SALE_AMT
+						 when substr(STDR_YM,5,2) in ('09','10','11') then SALE_AMT 
+						 when substr(STDR_YM,5,2) in ('12','01','02') then SALE_AMT
+				end) AS TOT_SALE_AMT 
+		FROM tbadmi_info_ym A
+		WHERE 1=1
+		AND A.STDR_YM >= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date - interval '11 months')::date,'YYYYMM')  
+		AND A.STDR_YM <= to_char(date_trunc('month',fn_qt_date3(#{endDate})::date + interval '1 months')::date - 1,'YYYYMM') 
+		AND CTY_CD like #{h3Cd}||'%'
+		GROUP BY (case when substr(STDR_YM,5,2) in ('03','04','05') then ' 봄'
+					   when substr(STDR_YM,5,2) in ('06','07','08') then '여름'
+					   when substr(STDR_YM,5,2) in ('09','10','11') then '가을' 
+					   when substr(STDR_YM,5,2) in ('12','01','02') then '겨울'
+				 end) 
+		ORDER BY STDR_YY
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 요일별 거래금액 및 유동인구 - 유동인구기준 유동인구가 가장 많은 요일 리스트 3순위 -->
+  <select id="rpt-new-trnd-008-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) as days_type
+		     , ROUND(sum(TFAC.total_cnt)/sum(sum(TFAC.total_cnt)) OVER()*100,1 ) as tot_rate
+		     , (case 
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 1 then '월요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 2 then '화요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 3 then '수요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 4 then '목요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 5 then '금요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 6 then '토요일'
+			    	when EXTRACT(DOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 0 then '일요일'
+		       end ) as DOW
+		 FROM tbadmi_float_all_cnt TFAC 
+		WHERE 1=1
+		  AND TFAC.CTY_CD like #{h3Cd}||'%'
+		  AND TFAC.STDR_DATE >= #{startDate}
+		  AND TFAC.STDR_DATE <= #{endDate}
+		group by days_type
+		order by 2 desc 
+		limit 3
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 요일별 거래금액 및 유동인구 - 거래금액기준 거래금액이 가장 큰 요일 리스트 3순위 -->
+  <select id="rpt-new-trnd-008-008" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) as days_type
+		     , ROUND(sum(TID.SALE_AMT)/sum(sum(TID.sale_amt)) OVER()*100,1 ) as tot_rate
+		     , (case 
+			   		when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 1 then '월요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 2 then '화요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 3 then '수요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 4 then '목요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 5 then '금요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 6 then '토요일'
+			    	when EXTRACT(DOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 0 then '일요일'
+		       	end ) as DOW
+		FROM TBCTY_INFO_D TID 
+		WHERE 1=1
+		AND TID.CTY_CD like #{h3Cd}||'%'
+		AND TID.STDR_DATE >= #{startDate}
+		AND TID.STDR_DATE <= #{endDate}
+		group by days_type
+		order by 2 desc 
+		limit 3
+  ]]>
+  </select>
+
+  <!-- page8. 2장 1절의 요일별 거래금액 및 유동인구 - 요일별 거래금액& 유동인구 비율 -->
+  <select id="rpt-new-trnd-008-009" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select days_type, value, name, groupname, color, groupname_order
+		from (  
+			SELECT EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) as days_type
+			     , ROUND(sum(TFAC.total_cnt)/sum(sum(TFAC.total_cnt)) OVER()*100,1 ) as value
+			     , (case 
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 1 then '월요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 2 then '화요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 3 then '수요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 4 then '목요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 5 then '금요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 6 then '토요일'
+				     	when EXTRACT(ISODOW FROM to_date(TFAC.stdr_date,'YYYYMMDD')) = 7 then '일요일'
+			       end ) as name
+			    , '#2EC5C5' as color
+			    , '유동인구 비율' as groupname
+			    , '0' as groupname_order
+			FROM tbadmi_float_all_cnt TFAC 
+			WHERE 1=1
+			AND TFAC.CTY_CD like #{h3Cd}||'%'
+			AND TFAC.STDR_DATE >= #{startDate}
+			AND TFAC.STDR_DATE <= #{endDate}
+			group by days_type
+			UNION ALL    
+			SELECT EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) as days_type
+			     , ROUND(sum(TID.SALE_AMT)/sum(sum(TID.sale_amt)) OVER()*100,1 ) as value
+			     , (case 
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 1 then '월요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 2 then '화요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 3 then '수요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 4 then '목요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 5 then '금요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 6 then '토요일'
+				     	when EXTRACT(ISODOW FROM to_date(TID.stdr_date,'YYYYMMDD')) = 7 then '일요일'
+			       end ) as name
+			   , '#FE8D75' as color
+			   , '거래금액 비율' as groupname
+			   , '1' as groupname_order
+			FROM TBCTY_INFO_D TID 
+			WHERE 1=1
+			AND TID.CTY_CD like #{h3Cd}||'%'
+			AND TID.STDR_DATE >= #{startDate}
+			AND TID.STDR_DATE <= #{endDate}
+			GROUP BY DAYS_TYPE
+		) T1
+		order by groupname desc, days_type asc
+  ]]>
+  </select>
+
+  <!-- page9. 2장 2절의 행정동별 특성 1문단 행정동별 유동인구 규모가 큰 순으로 3개 & 주제도 -->
+  <select id="rpt-new-trnd-009-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.NM
+			 , SUM(total_cnt) AS TOT_float_cnt
+			 , B.ID
+		FROM tbadmi_float_all_cnt A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE between #{startDate} AND #{endDate}   AND CTY_CD = #{h3Cd}
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.NM, B.ID
+		ORDER BY TOT_FLOAT_CNT DESC
+  ]]>
+  </select>
+  
+  <!-- page9. 2장 2절의 행정동별 특성 1문단 행정동별 거래금액 규모가 큰 순으로 3개 & 주제도 -->
+  <select id="rpt-new-trnd-009-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.NM
+			 , SUM(SALE_AMT) AS TOT_SALE_AMT
+			 , ROUND(SUM(SALE_AMT)/SUM(SUM(SALE_AMT))over() *100, 1)as RATE 
+			 , B.ID
+		FROM tbadmi_info_d2 A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.NM, B.ID
+		order by tot_sale_amt desc 
+  ]]>
+  </select>
+  
+  <!-- page9. 2장 2절의 행정동별 특성 1문단 행정동별 거래량 규모가 큰 순으로 3개 & 주제도 -->
+  <select id="rpt-new-trnd-009-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.NM
+			 , SUM(SALE_CNT) AS SALE_CNT 
+			 , ROUND(SUM(SALE_CNT)/SUM(SUM(SALE_CNT))over() *100, 1)as RATE
+			 , B.ID
+		FROM  tbadmi_info_d2 A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.NM, B.ID
+		order by SALE_CNT desc
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 유동인구 > 성별 유동인구 비교 -->
+  <select id="rpt-new-trnd-010-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ROUND(SUM(M_20_CNT + M_30_CNT + M_40_CNT + M_50_CNT + M_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS M_RATE
+			 , ROUND(SUM(F_20_CNT + F_30_CNT + F_40_CNT + F_50_CNT + F_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS F_RATE
+			 , round((sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_mf_rate
+		 	 , round((sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_fm_rate
+		FROM TBCTY_FLOAT_INFO
+		where 1=1
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = #{h3Cd}
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 유동인구 >  연령별 유동인구 비교 -->
+  <select id="rpt-new-trnd-010-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt + f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1)  as cnt_20
+				 , round(sum(m_30_cnt + f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_30
+				 , round(sum(m_40_cnt + f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_40
+				 , round(sum(m_50_cnt + f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_50
+				 , round(sum(m_60_cnt + f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_60
+			from tbcty_float_info
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT FLOAT_AGE
+			 , RATE
+		FROM (
+			SELECT '20대' AS FLOAT_AGE
+			, CNT_20 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS FLOAT_AGE
+			, CNT_30 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS FLOAT_AGE
+			, CNT_40 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS FLOAT_AGE
+			, CNT_50 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS FLOAT_AGE
+			, CNT_60 AS RATE
+			FROM TMP
+		) A
+		ORDER BY RATE DESC
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 유동인구 >  성/연령별 유동인구 비교 -->
+  <select id="rpt-new-trnd-010-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_60_cnt
+			from tbcty_float_info
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT FLOAT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS FLOAT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS FLOAT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS FLOAT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS FLOAT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS FLOAT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS FLOAT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS FLOAT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS FLOAT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS FLOAT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS FLOAT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 3
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 유동인구 >  성/연령별 유동인구  그래프 -->
+  <select id="rpt-new-trnd-010-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_60_cnt
+			from tbcty_float_info
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT name 
+			 , groupname 
+			 , groupname_order
+			 , color 
+			 , value
+		FROM (
+			SELECT '20대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_20_cnt AS value
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 소비인구 >  성별 소비인구 비교 -->
+  <select id="rpt-new-trnd-010-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ROUND(SUM(M_20_CNT + M_30_CNT + M_40_CNT + M_50_CNT + M_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS M_RATE
+			 , ROUND(SUM(F_20_CNT + F_30_CNT + F_40_CNT + F_50_CNT + F_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS F_RATE
+			 , round((sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_mf_rate
+		 	 , round((sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_fm_rate
+		FROM TBCTY_VISIT_INFO_D 
+		WHERE 1=1
+		AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 소비인구 >  연령별 소비인구 비교 -->
+  <select id="rpt-new-trnd-010-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt + f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1)  as cnt_20
+				 , round(sum(m_30_cnt + f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_30
+				 , round(sum(m_40_cnt + f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_40
+				 , round(sum(m_50_cnt + f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_50
+				 , round(sum(m_60_cnt + f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as cnt_60
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+		)
+		SELECT AMT_AGE
+			 , RATE
+		FROM (
+			SELECT '20대' AS AMT_AGE
+			, CNT_20 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS AMT_AGE
+			, CNT_30 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS AMT_AGE
+			, CNT_40 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS AMT_AGE
+			, CNT_50 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS AMT_AGE
+			, CNT_60 AS RATE
+			FROM TMP
+		) A
+		ORDER BY RATE DESC
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 소비인구 >  성/연령별 소비인구 비교 -->
+  <select id="rpt-new-trnd-010-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_60_cnt
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+		)
+		SELECT AMT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS AMT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS AMT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS AMT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS AMT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS AMT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS AMT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS AMT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS AMT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS AMT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS AMT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 3
+  ]]>
+  </select>
+  
+  <!-- page10. 2장 3절의 인구 속성별 특성 > 성/연령대별 대표 소비인구 >  성/연령별 소비인구  그래프 -->
+  <select id="rpt-new-trnd-010-008" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) as f_60_cnt
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+		)
+		SELECT name 
+			 , groupname 
+			 , groupname_order
+			 , color 
+			 , value
+		FROM (
+			SELECT '20대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_20_cnt AS value
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+  ]]>
+  </select>
+  
+  <!-- page11. 2장 4절의 업종별 거래 특성 > 업종별 거래량 및 거래금액 >  거래량  텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-011-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+			 , B.CD_NM  
+			 , SUM(SALE_CNT) as SALE_CNT
+			 , ROUND(SUM(SALE_CNT)/SUM(SUM(SALE_CNT)) OVER()*100,1) AS CNT_RATE
+		FROM TBCTY_UPJONG_INFO_D A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 DESC 
+		LIMIT 10
+  ]]>
+  </select>
+  
+  <!-- page11. 2장 4절의 업종별 거래 특성 > 업종별 거래량 및 거래금액 >  거래 금액  텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-011-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+			 , B.CD_NM  
+			 , SUM(SALE_AMT) AS SALE_AMT
+			 , ROUND(SUM(SALE_AMT)/SUM(SUM(SALE_AMT)) OVER() * 100 ,1) AS AMT_RATE
+		FROM tbcty_upjong_info_d A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 DESC 
+		LIMIT 10
+  ]]>
+  </select>
+  
+  <!-- page11. 2장 4절의 업종별 거래 특성 > 업종별 거래규모 비교 >  특화업종 지수 텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-011-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT T1.CD_NM  
+			 , T1.SALE_AMT       
+			 , ROUND(T1.RATE / T2.RATE*100,1) AS RATE    
+		FROM (
+			SELECT B.CD_NM
+				 , SUM(SALE_AMT) SALE_AMT  
+				 , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+			FROM tbcty_visit_upjong_info_d A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.UPJONG2_CD = B.CODE
+			AND B.CD_ID ='UPJONG2_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+			GROUP BY CD_NM
+			ORDER BY 3 DESC 
+			LIMIT 15
+		) T1
+		,
+		(
+			SELECT B.CD_NM
+				 , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+			FROM tbmega_upjong_info_d A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.UPJONG2_CD = B.CODE
+			AND B.CD_ID ='UPJONG2_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND A.MEGA_CD LIKE SUBSTR(#{h3Cd},1,2)||'%'
+			GROUP BY CD_NM
+		) T2
+		WHERE 1=1
+		AND T1.CD_NM = T2.CD_NM
+		ORDER BY 3 DESC
+		LIMIT 5
+  ]]>
+  </select>
+  
+  <!-- page12. 2장 5절의 시간대별 특성 > 시간대별 유동인구 수 텍스트 -->
+  <select id="rpt-new-trnd-012-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select b.code, b.cd_nm
+			 , round(a.total_cnt / sum(sum(a.total_cnt))over()*100,1) as rate
+		from (
+			select TIMEZON_CD
+			, sum(case
+				 	when timezon_cd = '1' then inflow_cnt/2
+				 	else inflow_cnt
+				 end) as total_cnt
+			from tbcty_inflow_timezone tit 
+			where 1=1
+			AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			GROUP BY TIMEZON_CD
+		)a
+		, tbcomm_code b
+		where 1=1
+		AND a.TIMEZON_CD = b.CODE
+		AND b.CD_ID ='TIMEZON_CD'
+		GROUP BY b.code , b.cd_nm, a.total_cnt 
+		order by 3 desc
+		limit 3
+  ]]>
+  </select>
+  
+  <!-- page12. 2장 5절의 시간대별 특성 > 시간대별 유동인구 수 그래프 -->
+  <select id="rpt-new-trnd-012-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select b.code, b.cd_nm
+			 , round(a.total_cnt / sum(sum(a.total_cnt))over()*100,1) as rate
+		from (
+			select TIMEZON_CD
+			, sum(case
+				 	when timezon_cd = '1' then inflow_cnt/2
+				 	else inflow_cnt
+				 end) as total_cnt
+			from tbcty_inflow_timezone tit 
+			where 1=1
+			AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			GROUP BY TIMEZON_CD
+		)a
+		, tbcomm_code b
+		where 1=1
+		AND a.TIMEZON_CD = b.CODE
+		AND b.CD_ID ='TIMEZON_CD'
+		GROUP BY b.code , b.cd_nm, a.total_cnt 
+		order by 1
+  ]]>
+  </select>
+  
+  <!-- page12. 2장 5절의 시간대별 특성 > 시간대별 소비인구 수 텍스트 -->
+  <select id="rpt-new-trnd-012-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM  
+		     , ROUND(SUM(TOTAL_CNT) / (SUM(SUM(TOTAL_CNT)) OVER()) *100,1) RATE
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT  
+		FROM TBADMI_TIMEZON_INFO_D A
+		     , TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 DESC
+		LIMIT 3 
+  ]]>
+  </select>
+  
+  <!-- page12. 2장 5절의 시간대별 특성 > 시간대별 소비인구 수 그래프 -->
+  <select id="rpt-new-trnd-012-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+			 , B.CD_NM  
+		     , ROUND(SUM(TOTAL_CNT) / (SUM(SUM(TOTAL_CNT)) OVER()) *100,1) RATE
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT  
+		FROM TBADMI_TIMEZON_INFO_D A
+		    , TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 1
+  ]]>
+  </select>
+  
+  <!-- page13. 3장 1절의 유입 유동인구 규모 >  유동인구 수& 비율 텍스트 -->
+  <select id="rpt-new-trnd-013-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT (R_CNT + E_CNT) AS TOTAL_CNT
+			 , R_CNT, E_CNT
+			 , ROUND(R_CNT/(R_CNT+E_CNT)*100,1) AS R_RATE
+			 , ROUND(E_CNT/(R_CNT+E_CNT)*100,1) AS E_RATE
+		FROM (
+			SELECT SUM(TOTAL_CNT) AS R_CNT
+			FROM TBADMI_FLOAT_ALL_CNT 
+			WHERE 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD  = 'R'
+		) A 
+		, (
+			SELECT SUM(TOTAL_CNT) AS E_CNT 
+			FROM TBADMI_FLOAT_ALL_CNT 
+			WHERE 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD  = 'E'
+		) B
+  ]]>
+  </select>
+  
+  <!-- page13. 3장 1절의 유입 소비인구 규모 >  1문단 소비인구 수 텍스트 -->
+  <select id="rpt-new-trnd-013-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT R_AMT, E_AMT, ROUND(E_AMT/(R_AMT+E_AMT)*100,1) as rate
+		FROM (
+			SELECT SUM(SALE_AMT) AS R_AMT
+			FROM TBCTY_INFO_D
+			WHERE 1=1
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+			AND LOC_CLSS_CD ='R'
+		) A,(
+			SELECT SUM(SALE_AMT) AS E_AMT
+			FROM TBCTY_INFO_D
+			WHERE 1=1
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+			AND LOC_CLSS_CD ='E'
+		) B
+  ]]>
+  </select>
+  
+  <!-- page13. 3장 1절의 유입 소비인구 규모 >  2문단 유입 소비인구 거래량 텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-013-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT SUM(A.SALE_AMT) AS SALE_AMT  -- 유입
+			 , SUM(A.SALE_CNT) AS SALE_CNT 	-- 유입
+			 , SUM(B.SALE_AMT) AS TOT_SALE_AMT  --전체
+			 , SUM(B.SALE_CNT) AS TOT_SALE_CNT  -- 전체
+			 , ROUND(SUM(A.SALE_AMT) / SUM(B.SALE_AMT) * 100,1) AS RATE1  
+			 , 100 - ROUND(SUM(A.SALE_AMT) / SUM(B.SALE_AMT) * 100,1) AS RATE2 
+			 , ROUND(SUM(A.SALE_CNT) / SUM(B.SALE_CNT) * 100,1) AS RATE3  
+			 , 100 - ROUND(SUM(A.SALE_CNT) / SUM(B.SALE_CNT) * 100,1) AS RATE4 
+		FROM ( 
+			SELECT SUM(A.SALE_AMT) AS SALE_AMT  
+				 , SUM(A.SALE_CNT) AS SALE_CNT
+			from tbadmi_visit_d A
+			WHERE 1=1
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		) A
+		, ( 
+			SELECT SUM(A.SALE_AMT) AS SALE_AMT  
+				 , SUM(A.SALE_CNT) AS SALE_CNT
+			FROM tbadmi_info_d2 A
+			WHERE 1=1
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		)B
+  ]]>
+  </select>
+  
+  <!-- page13. 3장 1절의 유입 유동인구 규모 >  유동인구 수 그래프 -->
+  <select id="rpt-new-trnd-013-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+	  	select loc_clss_cd as code
+			, sum(total_cnt) as total_cnt
+			, round( sum(total_cnt) /sum(sum(total_cnt))over() * 100,1) as rate
+			, case 
+				when loc_clss_cd ='R' then '#C9C9C9'
+				when loc_clss_cd ='E' then '#31ACAB'
+			  end as color
+		from tbadmi_float_all_cnt 
+		where 1=1
+		AND STDR_DATE between  #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		group by loc_clss_cd 
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  유입 유동인구가 가장 많이 방문한 행정동 리스트 텍스트, 지도 -->
+  <select id="rpt-new-trnd-014-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ID, NM
+			 , ROUND(SUM(TOTAL_CNT)/SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS RATE
+			 , SUM(SUM(TOTAL_CNT)) OVER() AS TOTAL_CNT 
+		FROM TBADMI_FLOAT_ALL_CNT TFAC
+			, TBREGION TG
+		WHERE 1=1
+		AND TFAC.ADMI_CD = TG.ID
+		AND LOC_CLSS_CD = 'E'
+		AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD = #{h3Cd}
+		GROUP BY ID, NM
+		ORDER BY RATE DESC
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  유입 유동인구가 가장 많이 방문한 행정동 리스트 표 -->
+  <select id="rpt-new-trnd-014-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ID, NM
+			 , ROUND(SUM(TOTAL_CNT)/SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS RATE
+			 , SUM(TOTAL_CNT) AS TOTAL_CNT 
+		FROM TBADMI_FLOAT_ALL_CNT TFAC
+			, TBREGION TG
+		WHERE 1=1
+		AND TFAC.ADMI_CD = TG.ID
+		AND LOC_CLSS_CD = 'E'
+		AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD = #{h3Cd}
+		GROUP BY ID, NM
+		ORDER BY RATE desc
+		limit 5
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  상위 유입 유동인구 비율 -->
+  <select id="rpt-new-trnd-014-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ROUND(SUM(A.TOTAL_CNT)/B.TOTAL_CNT*100, 1) AS RATE 
+		FROM (
+			SELECT SUM(TOTAL_CNT) AS TOTAL_CNT, ADMI_CD 
+			FROM TBADMI_FLOAT_ALL_CNT TFAC
+			WHERE 1=1
+			AND LOC_CLSS_CD = 'E'
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+			GROUP BY ADMI_CD 
+			ORDER BY TOTAL_CNT DESC
+			LIMIT 3
+		) A,
+		(
+			SELECT SUM(TOTAL_CNT) AS TOTAL_CNT
+			FROM TBADMI_FLOAT_ALL_CNT TFAC
+			WHERE 1=1
+			AND LOC_CLSS_CD = 'E'
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		) B
+		GROUP BY B.TOTAL_CNT
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  상위 유입 소비인구 거래금액 리스트 3순위 -->
+  <select id="rpt-new-trnd-014-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.ID
+		     , B.NM 
+		     , SUM(sale_amt) AS TOTAL_AMT 
+		     , ROUND(SUM(sale_amt) / (SUM(SUM(sale_amt)) OVER())*100,1) RATE
+		FROM tbadmi_visit_d A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.ID,B.NM
+		ORDER BY 4 DESC 
+		limit 3
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  상위 유입 소비인구 거래금액 비율 -->
+  <select id="rpt-new-trnd-014-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ROUND(SUM(A.TOTAL_AMT)/B.TOTAL_AMT*100, 1) AS RATE 
+		FROM (
+			SELECT SUM(SALE_AMT) AS TOTAL_AMT, ADMI_CD 
+			FROM TBADMI_VISIT_D TFAC
+			WHERE 1=1
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+			GROUP BY ADMI_CD 
+			ORDER BY TOTAL_AMT DESC
+			LIMIT 3
+		) A,
+		(
+			SELECT SUM(SALE_AMT) AS TOTAL_AMT
+			FROM TBADMI_VISIT_D TFAC
+			WHERE 1=1
+			AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		) B
+		GROUP BY B.TOTAL_AMT
+  ]]>
+  </select>
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  유입 소비인구 거래금액 지도  -->
+  <select id="rpt-new-trnd-014-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.ID
+			 , B.NM 
+			 , SUM(SALE_AMT) AS TOTAL_AMT 
+			 , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER())*100,1) RATE
+		FROM TBADMI_VISIT_D A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.ID,B.NM
+		ORDER BY 3 DESC
+  ]]>
+  </select>
+  
+  
+  <!-- page14. 3장 2절의 행정동별 유입인구 >  유입 소비인구 거래금액 리스트 5순위 -->
+  <select id="rpt-new-trnd-014-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.ID
+			 , B.NM 
+			 , SUM(SALE_AMT) AS TOTAL_AMT 
+			 , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER())*100,1) RATE
+		FROM TBADMI_VISIT_D A
+			, TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		AND A.STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+		AND B.RGN_CLSS ='H4'
+		GROUP BY B.ID,B.NM
+		ORDER BY 3 DESC 
+		LIMIT 5
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 성/연령대별 유입 유동인구 >  성별 비교 -->
+  <select id="rpt-new-trnd-015-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select round(sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_rate
+			 , round(sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_rate
+			 , round((sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_mf_rate
+			 , round((sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_fm_rate
+		from tbcty_inflow_float_info
+		where 1=1
+		AND loc_clss_cd = 'E'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD = #{h3Cd}
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 성/연령대별 유입 유동인구 >  연령별 비교  -->
+  <select id="rpt-new-trnd-015-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt + f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1)  as cnt_20
+				 , round(sum(m_30_cnt + f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_30
+				 , round(sum(m_40_cnt + f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_40
+				 , round(sum(m_50_cnt + f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_50
+				 , round(sum(m_60_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_60
+			from tbcty_inflow_float_info
+			where 1=1
+			AND loc_clss_cd ='E'
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT FLOAT_AGE
+			 , RATE
+		FROM (
+			SELECT '20대' AS FLOAT_AGE
+			, CNT_20 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS FLOAT_AGE
+			, CNT_30 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS FLOAT_AGE
+			, CNT_40 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS FLOAT_AGE
+			, CNT_50 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS FLOAT_AGE
+			, CNT_60 AS RATE
+			FROM TMP
+		) A
+		ORDER BY RATE DESC
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 성/연령대별 유입 유동인구 >  성/연령별 유동인구 비교 -->
+  <select id="rpt-new-trnd-015-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from tbcty_inflow_float_info
+			where 1=1
+			AND loc_clss_cd ='E'
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT FLOAT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS FLOAT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS FLOAT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS FLOAT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS FLOAT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS FLOAT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS FLOAT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS FLOAT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS FLOAT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS FLOAT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS FLOAT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 3
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 유동인구 >  성/연령별 유입 유동인구 그래프 -->
+  <select id="rpt-new-trnd-015-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from tbcty_inflow_float_info
+			where 1=1
+			AND loc_clss_cd ='E'
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = #{h3Cd}
+		)
+		SELECT name 
+			 , groupname 
+			 , groupname_order
+			 , color 
+			 , value
+		FROM (
+			SELECT '20대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_20_cnt AS value
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 소비인구 > 성별 비교 -->
+  <select id="rpt-new-trnd-015-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT ROUND(SUM(M_20_CNT + M_30_CNT + M_40_CNT + M_50_CNT + M_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS M_RATE
+			 , ROUND(SUM(F_20_CNT + F_30_CNT + F_40_CNT + F_50_CNT + F_60_CNT)/SUM(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) AS F_RATE
+			 , round((sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_mf_rate
+			 , round((sum(f_20_cnt + f_30_cnt + f_40_cnt + f_50_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt) - sum(m_20_cnt + m_30_cnt + m_40_cnt + m_50_cnt + m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt))*100,1) as diff_fm_rate
+		FROM TBCTY_VISIT_INFO_D 
+		WHERE 1=1
+		AND STDR_DATE BETWEEN #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND LOC_CLSS_CD = 'E'
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 소비인구 >  연령별 소비인구 비교 -->
+  <select id="rpt-new-trnd-015-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt + f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1)  as cnt_20
+				 , round(sum(m_30_cnt + f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_30
+				 , round(sum(m_40_cnt + f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_40
+				 , round(sum(m_50_cnt + f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_50
+				 , round(sum(m_60_cnt + f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as cnt_60
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD = 'E'
+		)
+		SELECT AMT_AGE
+			 , RATE
+		FROM (
+			SELECT '20대' AS AMT_AGE
+			, CNT_20 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS AMT_AGE
+			, CNT_30 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS AMT_AGE
+			, CNT_40 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS AMT_AGE
+			, CNT_50 AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS AMT_AGE
+			, CNT_60 AS RATE
+			FROM TMP
+		) A
+		ORDER BY RATE DESC
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 소비인구 >  성/연령별 소비인구 비교 -->
+  <select id="rpt-new-trnd-015-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD = 'E'
+		)
+		SELECT AMT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS AMT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS AMT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS AMT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS AMT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS AMT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS AMT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS AMT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS AMT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS AMT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS AMT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 3
+  ]]>
+  </select>
+  
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 소비인구 >  성/연령별 소비인구  그래프 -->
+  <select id="rpt-new-trnd-015-008" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD ='E'
+		)
+		SELECT name 
+			 , groupname 
+			 , groupname_order
+			 , color 
+			 , value
+		FROM (
+			SELECT '20대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_20_cnt AS value
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '남성' as  groupname
+			, '1' as groupname_order
+			, '#54A7E8' as color
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상' AS name
+			, '여성' as  groupname
+			, '0' as groupname_order
+			, '#E47677' as color
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+  ]]>
+  </select>  
+  
+  
+    
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 소비인구 >  성/연령별 소비인구 비교 : 상주인구 - 텍스트 -->
+  <select id="rpt-new-trnd-015-009" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from TBCTY_VISIT_INFO_D
+			where 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD = 'R'
+		)
+		SELECT AMT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS AMT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS AMT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS AMT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS AMT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS AMT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS AMT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS AMT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS AMT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS AMT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS AMT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 1
+  ]]>
+  </select>
+  
+  <!-- page15. 3장 3절의 인구 속성별 특성 > 성/연령대별 유입 유동인구 >  성/연령별 유동인구 비교 : 상주 유동인구 - 텍스트 -->
+  <select id="rpt-new-trnd-015-010" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		with tmp as (
+			select round(sum(m_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_20_cnt
+				 , round(sum(m_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_30_cnt
+				 , round(sum(m_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_40_cnt
+				 , round(sum(m_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_50_cnt
+				 , round(sum(m_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as m_60_cnt
+				 , round(sum(f_20_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_20_cnt
+				 , round(sum(f_30_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_30_cnt
+				 , round(sum(f_40_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_40_cnt
+				 , round(sum(f_50_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_50_cnt
+				 , round(sum(f_60_cnt)/sum(m_20_cnt+m_30_cnt+m_40_cnt+m_50_cnt+m_60_cnt+f_20_cnt+f_30_cnt+f_40_cnt+f_50_cnt+f_60_cnt)*100,1) as f_60_cnt
+			from tbcty_inflow_float_info
+			where 1=1
+			AND loc_clss_cd ='R'
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+		)
+		SELECT FLOAT_TYPE
+			 , RATE
+		FROM (
+			SELECT '20대 남성' AS FLOAT_TYPE
+			, m_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 남성' AS FLOAT_TYPE
+			, m_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 남성' AS FLOAT_TYPE
+			, m_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 남성' AS FLOAT_TYPE
+			, m_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 남성' AS FLOAT_TYPE
+			, m_60_cnt AS RATE
+			FROM TMP
+			union all
+			SELECT '20대 여성' AS FLOAT_TYPE
+			, f_20_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '30대 여성' AS FLOAT_TYPE
+			, f_30_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '40대 여성' AS FLOAT_TYPE
+			, f_40_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '50대 여성' AS FLOAT_TYPE
+			, f_50_cnt AS RATE
+			FROM TMP
+			UNION ALL 
+			SELECT '60대 이상 여성' AS FLOAT_TYPE
+			, f_60_cnt AS RATE
+			FROM TMP
+		) A
+		order by rate desc
+		limit 1
+  ]]>
+  </select> 
+  
+  <!-- page16. 3장 4절의 업종별 유입인구 거래량 및 거래금액 > 거래량이 높은 업종 순위 텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-016-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM	-- 업종명
+		     , SUM(SALE_CNT) AS SALE_CNT -- 텍스트에서 사용될 소비금액   
+		     , ROUND(SUM(SALE_CNT) / (SUM(SUM(SALE_CNT)) OVER()) *100,1) RATE -- 비율
+		FROM tbcty_visit_upjong_info_d A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE substring(#{h3Cd},1,4)||'%'
+		GROUP BY  B.CODE , B.CD_NM
+		ORDER BY 3 DESC
+		LIMIT 10
+  ]]>
+  </select>  
+  
+  <!-- page16. 3장 4절의 업종별 유입인구 거래량 및 거래금액 > 거래금액이 높은 업종 순위 텍스트 & 그래프 -->
+  <select id="rpt-new-trnd-016-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM	-- 업종명
+		     , SUM(SALE_AMT) AS SALE_AMT -- 텍스트에서 사용될 소비금액   
+		     , ROUND(SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) *100,1) RATE -- 비율
+		FROM tbcty_visit_upjong_info_d A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE substring(#{h3Cd},1,4)||'%'
+		GROUP BY  B.CODE , B.CD_NM
+		ORDER BY 3 DESC
+		LIMIT 10 
+  ]]>
+  </select>  
+  
+  <!-- page16. 3장 4절의 업종별 거래규모 비교 > 특화업종 리스트 -->
+  <select id="rpt-new-trnd-016-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT T1.CD_NM  
+		     , T1.SALE_AMT       
+		     , ROUND(T1.RATE / T2.RATE*100,1) AS RATE    
+		FROM (
+			SELECT B.CD_NM
+				 , SUM(SALE_AMT) SALE_AMT  
+				 , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+			FROM tbcty_visit_upjong_info_d A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.UPJONG2_CD = B.CODE
+			AND B.CD_ID ='UPJONG2_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD = SUBSTR(#{h3Cd},1,4)
+			GROUP BY CD_NM
+			ORDER BY 3 DESC 
+			LIMIT 15
+		) T1
+		,
+		(
+			SELECT B.CD_NM
+				 , SUM(SALE_AMT) / (SUM(SUM(SALE_AMT)) OVER()) RATE
+			FROM tbmega_upjong_info_d A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.UPJONG2_CD = B.CODE
+			AND B.CD_ID ='UPJONG2_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND A.MEGA_CD LIKE SUBSTR(#{h3Cd},1,2)||'%'
+			GROUP BY CD_NM
+		) T2
+		WHERE 1=1
+		AND T1.CD_NM = T2.CD_NM
+		ORDER BY 3 DESC
+		LIMIT 5
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 유입 유동인구가 가장 활발한 시간대 리스트 -->
+  <select id="rpt-new-trnd-017-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+			 , trim(B.CD_NM) as cd_nm  
+			 , ROUND(SUM(total_cnt) / (SUM(SUM(total_cnt)) OVER()) *100,1) RATE
+			 , SUM(total_cnt) AS TOTAL_CNT  
+		FROM (
+				select TIMEZON_CD
+					, sum(case
+						 	when timezon_cd = '1' then inflow_cnt/2
+						 	else inflow_cnt
+						 end) as total_cnt
+					from tbcty_inflow_timezone tit 
+					where 1=1
+					AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+					AND CTY_CD LIKE #{h3Cd}||'%'
+					AND LOC_CLSS_CD = 'E'
+					GROUP BY TIMEZON_CD
+			) A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 desc
+		limit 3
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 상주 유동인구 최고 시간대 -->
+  <select id="rpt-new-trnd-017-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+			 , trim(B.CD_NM) as cd_nm  
+			 , SUM(total_cnt) AS TOTAL_CNT  
+		FROM (
+				   select TIMEZON_CD
+						, sum(case
+							 	when timezon_cd = '1' then inflow_cnt/2
+							 	else inflow_cnt
+							 end) as total_cnt
+						from tbcty_inflow_timezone tit 
+						where 1=1
+						AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+						AND CTY_CD LIKE #{h3Cd}||'%'
+						AND LOC_CLSS_CD = 'R'
+						GROUP BY TIMEZON_CD
+			) A
+			, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 desc
+		limit 1
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 상주 유동인구와 유입 유동인구 차이가 가장 큰 시간대 -->
+  <select id="rpt-new-trnd-017-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT trim(A.CD_NM) as cd_nm
+			 , ABS(A.TOTAL_CNT - B.TOTAL_CNT) as diff
+		FROM (
+		SELECT B.CD_NM  
+				 , SUM(total_cnt) AS TOTAL_CNT  
+			FROM (
+				   select TIMEZON_CD
+						, sum(case
+							 	when timezon_cd = '1' then inflow_cnt/2
+							 	else inflow_cnt
+							 end) as total_cnt
+						from tbcty_inflow_timezone tit 
+						where 1=1
+						AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+						AND CTY_CD LIKE #{h3Cd}||'%'
+						AND LOC_CLSS_CD = 'R'
+						GROUP BY TIMEZON_CD
+				) A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.TIMEZON_CD = B.CODE
+			AND B.CD_ID ='TIMEZON_CD'
+			GROUP BY B.CD_NM 
+		) A
+		left outer join
+		(
+		SELECT B.CD_NM  
+				 , SUM(total_cnt) AS TOTAL_CNT  
+			FROM (
+				   select TIMEZON_CD
+						, sum(case
+							 	when timezon_cd = '1' then inflow_cnt/2
+							 	else inflow_cnt
+							 end) as total_cnt
+						from tbcty_inflow_timezone tit 
+						where 1=1
+						AND tit.STDR_DATE between #{startDate} AND  #{endDate}
+						AND CTY_CD LIKE #{h3Cd}||'%'
+						AND LOC_CLSS_CD = 'E'
+						GROUP BY TIMEZON_CD
+				) A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.TIMEZON_CD = B.CODE
+			AND B.CD_ID ='TIMEZON_CD'
+			GROUP BY B.CD_NM 
+		) B
+		ON A.CD_NM = B.CD_NM
+		order by diff desc
+		limit 1
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 유입 소비인구가 가장 활발한 시간대 리스트 -->
+  <select id="rpt-new-trnd-017-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.CODE
+		     , B.CD_NM  
+		     , ROUND(SUM(TOTAL_CNT) / (SUM(SUM(TOTAL_CNT)) OVER()) *100,1) RATE
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT  
+		FROM TBADMI_TIMEZON_INFO_D A
+		     , TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND LOC_CLSS_CD ='E'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 3 desc
+		limit 3
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 상주 소비인구가 가장 활발한 시간대 -->
+  <select id="rpt-new-trnd-017-005" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT trim(B.CD_NM) as cd_nm  
+		     , SUM(TOTAL_CNT) AS TOTAL_CNT  
+		FROM TBADMI_TIMEZON_INFO_D A
+		     , TBCOMM_CODE B
+		WHERE 1=1
+		AND A.TIMEZON_CD = B.CODE
+		AND B.CD_ID ='TIMEZON_CD'
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND LOC_CLSS_CD ='R'
+		GROUP BY B.CODE, B.CD_NM   
+		ORDER BY 2 desc
+		limit 1
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 상주 소비인구와 유입 소비인구 차이가 가장 큰 시간대 -->
+  <select id="rpt-new-trnd-017-006" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT trim(A.CD_NM) as cd_nm
+			 , ABS(A.TOTAL_CNT - B.TOTAL_CNT) as diff
+		FROM (
+		SELECT B.CD_NM  
+				 , SUM(TOTAL_CNT) AS TOTAL_CNT  
+			FROM TBADMI_TIMEZON_INFO_D A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.TIMEZON_CD = B.CODE
+			AND B.CD_ID ='TIMEZON_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD = 'R'
+			GROUP BY B.CD_NM 
+		) A
+		left outer join
+		(
+		SELECT B.CD_NM  
+				 , SUM(TOTAL_CNT) AS TOTAL_CNT  
+			FROM TBADMI_TIMEZON_INFO_D A
+				, TBCOMM_CODE B
+			WHERE 1=1
+			AND A.TIMEZON_CD = B.CODE
+			AND B.CD_ID ='TIMEZON_CD'
+			AND A.STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD LIKE #{h3Cd}||'%'
+			AND LOC_CLSS_CD = 'E'
+			GROUP BY B.CD_NM 
+		) B
+		ON A.CD_NM = B.CD_NM
+		order by diff desc
+		limit 1
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 시간대별 상주/유입유동인구 그래프 -->
+  <select id="rpt-new-trnd-017-007" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		select * 
+		from (
+			select B.CODE
+			 	 , B.CD_NM  as name
+			 	 , round(sum(total_cnt)/sum(sum(total_cnt)) over() *100, 1) as value
+				 , '#D3D3D3' as color
+				 , '상주인구' as groupname
+			from ( 
+					select timezon_cd 
+						 , sum(case
+						 	  when timezon_cd = '1' then inflow_cnt/2
+						 	  else inflow_cnt
+						   end) as total_cnt
+					from tbcty_inflow_timezone 
+					where 1=1
+					AND STDR_DATE between #{startDate} AND  #{endDate}
+					AND CTY_CD LIKE #{h3Cd}||'%'
+					and loc_clss_cd ='R'
+					group by timezon_cd 
+				) A
+				, tbcomm_code B
+			where 1=1
+			and B.cd_id ='TIMEZON_CD'
+			AND A.TIMEZON_CD = B.CODE
+			GROUP BY CODE,name, color,groupname
+			union all
+			select B.CODE
+			 	 , B.CD_NM  as name
+			 	 , round(sum(total_cnt)/sum(sum(total_cnt)) over() *100, 1) as value
+				 , '#2EC5C5' as color
+				 , '유입인구' as groupname
+			from ( 
+					select timezon_cd 
+						 , sum(case
+						 	  when timezon_cd = '1' then inflow_cnt/2
+						 	  else inflow_cnt
+						   end) as total_cnt
+					from tbcty_inflow_timezone 
+					where 1=1
+					AND STDR_DATE between #{startDate} AND  #{endDate}
+					AND CTY_CD LIKE #{h3Cd}||'%'
+					and loc_clss_cd ='E'
+					group by timezon_cd 
+				) A
+				, tbcomm_code B
+			where 1=1
+			and B.cd_id ='TIMEZON_CD'
+			AND A.TIMEZON_CD = B.CODE
+			GROUP BY CODE,name, color,groupname
+		) T
+		order by groupname desc, code
+  ]]>
+  </select>  
+  
+  <!-- page17. 3장 5절의 시간대별 유입인구 > 시간대별 상주/유입 소비인구 그래프 -->
+  <select id="rpt-new-trnd-017-008" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+	   (select B.CODE
+		 	 , B.CD_NM  as name
+		 	 , round(sum(total_cnt)/sum(sum(total_cnt)) over() *100, 1) as value
+			 , '#FE8E75' as color
+			 , '유입인구' as groupname
+		from TBADMI_TIMEZON_INFO_D A
+			, tbcomm_code B
+		where 1=1
+		and B.cd_id ='TIMEZON_CD'
+		AND A.TIMEZON_CD = B.CODE
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD like #{h3Cd}||'%'
+		AND LOC_CLSS_CD='E'
+		GROUP BY CODE,name, color,groupname
+		order by code)
+		union all
+		(select B.CODE
+		 	 , B.CD_NM  as name
+		 	 , round(sum(total_cnt)/sum(sum(total_cnt)) over() *100, 1) as value
+			 , '#D3D3D3' as color
+			 , '상주인구' as groupname
+		from TBADMI_TIMEZON_INFO_D A
+			, tbcomm_code B
+		where 1=1
+		and B.cd_id ='TIMEZON_CD'
+		AND A.TIMEZON_CD = B.CODE
+		AND A.STDR_DATE between #{startDate} AND  #{endDate}
+		AND CTY_CD like #{h3Cd}||'%'
+		AND LOC_CLSS_CD='R'
+		GROUP BY CODE,name, color,groupname
+		order by code)
+  ]]>
+  </select>  
+  
+  <!-- page18. 3장 6절의 유입인구의 유입지역 > 시군구 단위 유입 유동인구 3순위 & 지도 -->
+  <select id="rpt-new-trnd-018-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.id
+			 , B.full_name 
+			 , sum(total_cnt) as tot
+		 	 , round(sum(total_cnt)/sum(sum(total_cnt)) over()*100,1) as rate
+		FROM TBCTY_INFLOW_FLOAT A
+			, TBREGION B
+		WHERE 1=1
+		and substring(A.in_cty_cd,1,4) = substring(B.id,1,4)
+		AND B.rgn_clss='H3'
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND IN_CTY_CD != #{h3Cd}
+		AND B.RGN_CLSS ='H3'
+		group by B.full_name, B.id 
+		order by rate desc
+  ]]>
+  </select>  
+  
+  <!-- page18. 3장 6절의 유입인구의 유입지역 > 시도 단위 유입 유동인구 3순위 -->
+  <select id="rpt-new-trnd-018-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.full_name 
+			 , round(sum(total_cnt)/sum(sum(total_cnt)) over()*100,1) as rate
+		FROM TBCTY_INFLOW_FLOAT A
+			, TBREGION B
+		WHERE 1=1
+		and A.in_mega_cd = B.id
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		group by B.full_name  
+		order by rate desc
+		limit 3
+  ]]>
+  </select>  
+  
+   <!-- page18. 3장 6절의 유입인구의 유입지역 > 시군구 단위 유입 유동인구  표1 -->
+  <select id="rpt-new-trnd-018-003" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.full_name 
+			 , round(sum(total_cnt)/sum(sum(total_cnt)) over()*100,1) as rate
+		FROM TBCTY_INFLOW_FLOAT A
+			, TBREGION B
+		WHERE 1=1
+		and substring(A.in_cty_cd,1,4) = substring(B.id,1,4)
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND IN_CTY_CD != #{h3Cd}
+		AND B.RGN_CLSS ='H3'
+		group by B.full_name  
+		order by rate desc
+		limit 10
+  ]]>
+  </select>  
+  
+     <!-- page18. 3장 6절의 유입인구의 유입지역 > 시군구 단위 유입 유동인구  표2 -->
+  <select id="rpt-new-trnd-018-004" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		SELECT B.full_name 
+			 , round(sum(total_cnt)/sum(sum(total_cnt)) over()*100,1) as rate
+		FROM TBCTY_INFLOW_FLOAT A
+			, TBREGION B
+		WHERE 1=1
+		and substring(A.in_cty_cd,1,4) = substring(B.id,1,4)
+		AND CTY_CD LIKE #{h3Cd}||'%'
+		AND STDR_DATE between #{startDate} AND  #{endDate}
+		AND IN_CTY_CD != #{h3Cd}
+		AND B.RGN_CLSS ='H3'
+		group by B.full_name  
+		order by rate desc
+		limit 10 offset 10
+  ]]>
+  </select>  
+  
+  <!-- 부록. 읍면동별 상주/유입인구  유동 비중  -->
+  <select id="rpt-new-trnd-020-001" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		WITH TMP AS
+		(
+			SELECT admi_cd   
+			     , loc_clss_cd
+			     , SUM(total_cnt) AS total_cnt
+			FROM tbadmi_float_all_cnt
+			WHERE 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD like #{h3Cd}||'%'      
+			GROUP BY admi_cd, loc_clss_cd 
+		)
+		SELECT (SELECT NM FROM TBREGION WHERE ID = #{h3Cd} AND rgn_clss='H3') AS NM
+		     , SUM(total_cnt) T_CNT
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN total_cnt END) AS E_CNT   
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN total_cnt END) AS R_CNT
+		     , 100 AS T_RATE
+		     , ROUND((SUM(CASE WHEN loc_clss_cd ='E' THEN total_cnt END) /SUM(total_cnt)) * 100,1) AS E_RATE 
+		     , ROUND((SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN total_cnt END) /SUM(total_cnt)) * 100,1) AS R_RATE
+		FROM TMP
+		UNION ALL
+		SELECT NM
+		     , SUM(total_cnt) T_CNT
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN total_cnt END) AS E_CNT   
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN total_cnt END) AS R_CNT
+		     , 100 AS T_RATE
+		     , ROUND((SUM(CASE WHEN loc_clss_cd ='E' THEN total_cnt END) /SUM(total_cnt)) * 100,1) AS E_RATE 
+		     , ROUND((SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN total_cnt END) /SUM(total_cnt)) * 100,1) AS R_RATE
+		FROM TMP A
+		    , TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		GROUP BY NM  
+		ORDER BY T_CNT desc
+  ]]>
+  </select>  
+  
+  <!-- 부록. 읍면동별 상주/유입인구  소비 비중 -->
+  <select id="rpt-new-trnd-020-002" parameterType="java.util.HashMap" resultType="java.util.HashMap"> 
+  <![CDATA[
+		WITH TMP AS
+		(
+			SELECT admi_cd   
+			     , loc_clss_cd
+			     , SUM(sale_cnt) AS sale_cnt
+			     , SUM(sale_amt) AS sale_amt
+			FROM  tbadmi_info_d
+			WHERE 1=1
+			AND STDR_DATE between #{startDate} AND  #{endDate}
+			AND CTY_CD like #{h3Cd}||'%'      
+			GROUP BY admi_cd, loc_clss_cd 
+		)
+		SELECT (SELECT NM FROM TBREGION WHERE ID = #{h3Cd} AND rgn_clss='H3') AS NM
+		     , SUM(SALE_AMT) T_AMT
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_AMT END) AS E_AMT   
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_AMT END) AS R_AMT
+		     , SUM(SALE_CNT) T_CNT     
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_CNT END) AS E_CNT  
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_CNT END) AS R_CNT
+		     , 100 AS T_RATE
+		     , ROUND((SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_CNT END) /SUM(SALE_CNT)) * 100,1) AS E_RATE 
+		     , ROUND((SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_CNT END) /SUM(SALE_CNT)) * 100,1) AS R_RATE
+		FROM TMP
+		UNION ALL
+		SELECT NM
+		     , SUM(SALE_AMT) T_AMT
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_AMT END) AS E_AMT   
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_AMT END) AS R_AMT
+		     , SUM(SALE_CNT) T_CNT     
+		     , SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_CNT END) AS E_CNT  
+		     , SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_CNT END) AS R_CNT
+		     , 100 AS T_RATE
+		     , ROUND((SUM(CASE WHEN loc_clss_cd ='E' THEN SALE_CNT END) /SUM(SALE_CNT)) * 100,1) AS E_RATE 
+		     , ROUND((SUM(CASE WHEN LOC_CLSS_CD = 'R' THEN SALE_CNT END) /SUM(SALE_CNT)) * 100,1) AS R_RATE
+		FROM TMP A
+		    , TBREGION B
+		WHERE 1=1
+		AND A.ADMI_CD = B.ID
+		GROUP BY NM  
+		ORDER BY T_AMT DESC
+  ]]>
+  </select>  
+
+  <!-- 경제트랜드 보고서 끝 ///// -->
+</mapper>

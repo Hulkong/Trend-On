@@ -1,0 +1,2010 @@
+@charset "utf-8";
+
+/* 리뉴얼 버전1 CSS ==================================================================================================== */
+/* 작업일자: 2020.07.14 */
+/* 작업자: 김용현 */
+/* 적용대상: 24시 현황 / 경제 트렌드 / 이벤트 효과 */
+
+/* NotoSansKR font start ======================================================== */
+@font-face {
+	font-family: 'NotoSansKR-Black';
+	src: url('../fonts/NotoSansKR-Black.eot');
+	src: url('../fonts/NotoSansKR-Black.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Black.woff')
+		format('woff'), url('../fonts/NotoSansKR-Black.ttf')
+		format('truetype'), url('../fonts/NotoSansKR-Black.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NotoSansKR-Bold';
+	src: url('../fonts/NotoSansKR-Bold.eot');
+	src: url('../fonts/NotoSansKR-Bold.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Bold.woff')
+		format('woff'), url('../fonts/NotoSansKR-Bold.ttf') format('truetype'),
+		url('../fonts/NotoSansKR-Bold.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NotoSansKR-Light';
+	src: url('../fonts/NotoSansKR-Light.eot');
+	src: url('../fonts/NotoSansKR-Light.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Light.woff')
+		format('woff'), url('../fonts/NotoSansKR-Light.ttf')
+		format('truetype'), url('../fonts/NotoSansKR-Light.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NotoSansKR-Medium';
+	src: url('../fonts/NotoSansKR-Medium.eot');
+	src: url('../fonts/NotoSansKR-Medium.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Medium.woff')
+		format('woff'), url('../fonts/NotoSansKR-Medium.ttf')
+		format('truetype'), url('../fonts/NotoSansKR-Medium.svg')
+		format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NotoSansKR-Regular';
+	src: url('../fonts/NotoSansKR-Regular.eot');
+	src: url('../fonts/NotoSansKR-Regular.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Regular.woff')
+		format('woff'), url('../fonts/NotoSansKR-Regular.ttf')
+		format('truetype'), url('../fonts/NotoSansKR-Regular.svg')
+		format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NotoSansKR-Thin';
+	src: url('../fonts/NotoSansKR-Thin.eot');
+	src: url('../fonts/NotoSansKR-Thin.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/NotoSansKR-Thin.woff')
+		format('woff'), url('../fonts/NotoSansKR-Thin.ttf') format('truetype'),
+		url('../fonts/NotoSansKR-Thin.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+/* NotoSansKR font end ======================================================== */
+
+/* SpoqaHanSans font start ======================================================== */
+@font-face {
+	font-family: 'SpoqaHanSans_B';
+	src: url('../fonts/SpoqaHanSans_B.eot');
+	src: url('../fonts/SpoqaHanSans_B.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/SpoqaHanSans_B.woff')
+		format('woff'), url('../fonts/SpoqaHanSans_B.ttf') format('truetype'),
+		url('../fonts/SpoqaHanSans_B.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SpoqaHanSans_L';
+	src: url('../fonts/SpoqaHanSans_L.eot');
+	src: url('../fonts/SpoqaHanSans_L.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/SpoqaHanSans_L.woff')
+		format('woff'), url('../fonts/SpoqaHanSans_L.ttf') format('truetype'),
+		url('../fonts/SpoqaHanSans_L.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SpoqaHanSans_R';
+	src: url('../fonts/SpoqaHanSans_R.eot');
+	src: url('../fonts/SpoqaHanSans_R.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/SpoqaHanSans_R.woff')
+		format('woff'), url('../fonts/SpoqaHanSans_R.ttf') format('truetype'),
+		url('../fonts/SpoqaHanSans_R.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SpoqaHanSans_T';
+	src: url('../fonts/SpoqaHanSans_T.eot');
+	src: url('../fonts/SpoqaHanSans_T.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/SpoqaHanSans_T.woff')
+		format('woff'), url('../fonts/SpoqaHanSans_T.ttf') format('truetype'),
+		url('../fonts/SpoqaHanSans_T.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+/* SpoqaHanSans font end ======================================================== */
+
+/* global start ======================================================== */
+html, body {
+	font-size: 16px;
+	font-family: 'NotoSansKR-Regular'
+}
+
+/* font-family */
+.notos-bl {
+	font-family: 'NotoSansKR-Black', sans-serif !important;
+}
+
+.notos-b {
+	font-family: 'NotoSansKR-Bold', sans-serif !important;
+}
+
+.notos-l {
+	font-family: 'NotoSansKR-Light', sans-serif !important;
+}
+
+.notos-m {
+	font-family: 'NotoSansKR-Medium', sans-serif !important;
+}
+
+.notos-r {
+	font-family: 'NotoSansKR-Regular', sans-serif !important;
+}
+
+.notos-t {
+	font-family: 'NotoSansKR-Thin', sans-serif !important;
+}
+
+.shs-b {
+	font-family: 'SpoqaHanSans_B', sans-serif !important;
+}
+
+.shs-r {
+	font-family: 'SpoqaHanSans_R', sans-serif !important;
+}
+
+.shs-l {
+	font-family: 'SpoqaHanSans_L', sans-serif !important;
+}
+
+.shs-t {
+	font-family: 'SpoqaHanSans_T', sans-serif !important;
+}
+
+/* typhography */
+/* Bold 50px/74px */
+.text-xxxl-b {
+	font: normal 3.125rem/4.625rem 'NotoSansKR-Bold' !important;
+}
+
+/* Medium 35px/52px */
+.text-xxl-m {
+	font: normal 2.1875rem/3.25rem 'NotoSansKR-Medium' !important;
+}
+
+/* Bold 25px/37px */
+.text-xl-b {
+	font: normal 1.5625rem/2.3125rem 'NotoSansKR-Bold' !important;
+}
+
+/* Regular 25px/37px */
+.text-xl-r {
+	font: normal 1.5625rem/2.3125rem 'NotoSansKR-Regular' !important;
+}
+
+/* Bold 18px/27px */
+.text-l-b {
+	font: normal 1.125rem/1.6875rem 'NotoSansKR-Bold' !important;
+}
+
+/* Regular 18px/27px */
+.text-l-r {
+	font: normal 1.125rem/1.6875rem 'NotoSansKR-Regular' !important;
+}
+
+/* Medium 18px/27px */
+.text-l-m {
+	font: normal 1.125rem/1.6875rem 'NotoSansKR-Medium' !important;
+}
+
+/* Regular 16px/24px */
+.text-m-r {
+	font: normal 0.9rem/1.5rem 'NotoSansKR-Regular' !important;
+}
+
+/* Medium 14px/20px */
+.text-s-m {
+	font: normal 0.875rem/1.25rem 'NotoSansKR-Medium' !important;
+}
+
+/* Regular 14px/20px */
+.text-s-r {
+	font: normal 0.775rem/1.25rem 'NotoSansKR-Regular' !important;
+}
+
+/* Regular 12px/18px */
+.text-xs-r {
+	font: normal 0.75rem/1.125rem 'NotoSansKR-Regular' !important;
+}
+
+/* Bold 30px/27px */
+.num-l-b {
+	font: normal 1.675rem/1.6875rem 'SpoqaHanSans_B' !important;
+}
+
+/* Bold 18px/27px */
+.num-lm-b {
+	font: normal 1.425rem/1.6875rem 'SpoqaHanSans_B' !important;
+}
+
+/* Regular 18px/27px */
+.num-m-t {
+	font: normal 1.125rem/1.6875rem 'SpoqaHanSans_T' !important;
+}
+
+/* Regular 14px/20px */
+.num-s-r {
+	font: normal 0.875rem/1.25rem 'SpoqaHanSans_R' !important;
+}
+
+/* font-color */
+/* 1. black-line */
+.font-orange {
+	color: #F26522 !important;
+}
+
+.font-green {
+	color: #2EC5C5 !important;
+}
+
+.font-blue {
+	color: #54A7E8 !important;
+}
+
+.font-red {
+	color: #E47677 !important;
+}
+
+.font-orange-light {
+	color: #FE8D75 !important;
+}
+
+.font-black-light {
+	color: #666666 !important;
+}
+
+/* border line */
+.border-top {
+	border-top: 1px solid #AAAAAA !important;
+}
+
+.border-right {
+	border-right: 1px solid #AAAAAA !important;
+}
+
+.border-bottom {
+	border-bottom: 1px solid #AAAAAA !important;
+}
+
+.border-left {
+	border-left: 1px solid #AAAAAA !important;
+}
+
+.border-top-bottom {
+	border-top: 1px solid #AAAAAA !important;
+	border-bottom: 1px solid #AAAAAA !important;
+}
+
+.border-left-right {
+	border-left: 1px solid #AAAAAA !important;
+	border-right: 1px solid #AAAAAA !important;
+}
+
+/* etc */
+table.brd_dl th strong {
+	font-weight: normal;
+	color: inherit;
+}
+
+.article_group .article_lf dl dd.total {
+	margin: 0;
+	padding: 0;
+}
+/* global end ======================================================== */
+
+/* media query start =================================================== */
+
+/*
+##Device = 대부분의 스마트폰 모바일 기기(세로)
+##Screen = 320px에서 479px 사이
+*/
+@media ( min-width : 320px) and (max-width: 480px) {
+}
+
+/*
+##Device = 저해상도 태블릿 / 모바일(가로)
+##Screen = 481px에서 767px 사이
+*/
+@media ( min-width : 481px) and (max-width: 767px) {
+}
+
+/*
+##Device = 태블릿 / 아이패드(세로)
+##Screen = 768px에서 1024px 사이
+*/
+@media ( min-width : 768px) and (max-width: 1024px) {
+}
+
+/*
+##Device = 태블릿 / 아이패드(가로)
+##Screen = 768px에서 1024px 사이
+*/
+@media ( min-width : 768px) and (max-width: 1024px) and (orientation:
+	landscape) {
+}
+
+/*
+##Device = 랩탑 / 데스크탑(12인치 ~ 13인치)
+##Screen = 1025px에서 1280px 사이
+*/
+@media ( min-width : 1025px) and (max-width: 1280px) {
+	html, body {
+		font-size: 14px;
+	}
+}
+
+/*
+##Device = 랩탑(맥북 포함)
+*/
+@media ( min-width : 1025px) and (max-width: 1680px) {
+	html, body {
+		font-size: 14px;
+	}
+}
+
+/*
+##Device = 데스크탑(14인치 이상)
+##Screen = 1281px 이상 해상도 데스크탑
+*/
+@media ( min-width : 1281px) {
+}
+
+@media ( max-width : 1335px) {
+		.city-status .section_top .layout.excel .excel_button {
+		    padding:2px 10px;
+		    max-width:28px;
+		}
+		
+		
+		.city-status .section_top .layout.excel .excel_button .download {
+			display:none;
+		}
+}
+
+/* header start====================================================================================================*/
+#header {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 5.625rem;
+	background: rgba(68, 75, 85, .8);
+	line-height: 5.625rem;
+	opacity: 1;
+}
+
+#header .logo {
+	top: 2rem;
+	left: 2.5rem;
+	width: 11.188rem;
+	height: 1.938rem;
+	opacity: 1;
+	display: block;
+	position: relative;
+	margin: 0;
+}
+
+.city-status #header,
+.ecnmy-trnd #header,
+.event-effect #header {
+	height: 3.125rem;
+	line-height: 3.125rem;
+	background: #202632 0% 0% no-repeat padding-box;
+	z-index: 100;
+}
+
+.city-status #header .logo,
+.ecnmy-trnd #header .logo,
+.event-effect #header .logo {
+	top: 0.75rem;
+}
+
+#header #nav {
+	position: relative;
+	float: left;
+	margin: 0;
+}
+
+#header #nav ul li a {
+	padding: 0 1.25rem;
+	text-align: left;
+	letter-spacing: 0;
+	color: #FFFFFF;
+	opacity: 1;
+}
+
+#header .gnb {
+	height: 1.5rem;
+	margin: 0 3.563rem 0 0;
+	position: relative;
+}
+
+#header .gnb a.user {
+	text-align: left;
+	font: normal 1rem/1.5rem Noto Sans CJK KR;
+	letter-spacing: 0;
+	color: #FFFFFF;
+	opacity: 1;
+	background-position: right;
+}
+
+#header .gnb a.user em {
+	color: #FFCB00;
+}
+
+#fp-nav2.section_top {
+	top: 3.125rem;
+	left: 0;
+	height: 9.125rem;
+	background: #fff;
+	opacity: 1;
+	z-index: 99;
+}
+
+#fp-nav2.section_top ul.menu_anchor li {
+	width: 5.938rem;
+	height: 1.375rem;
+	border: 1px solid #A4A4A4;
+	border-radius: 0.5rem;
+	background: transparent;
+	opacity: 1;
+	margin: 0 0.75rem 0 0;
+	border-radius: 0.5rem;
+	background: transparent;
+}
+
+#fp-nav2.section_top ul.menu_anchor li a {
+	padding: 0;
+	text-align: center;
+	font: normal 0.875rem/1.25rem Noto Sans CJK KR;
+	letter-spacing: 0;
+	color: #A4A4A4;
+	opacity: 1;
+	line-height: 1.438rem;
+}
+
+#fp-nav2.section_top ul.menu_anchor li .line {
+	width: 0.75rem;
+	height: 0;
+	opacity: 1;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 0.375rem;
+}
+
+#fp-nav2.section_top ul.menu_anchor li.active a {
+	background: none;
+}
+
+/* 전체보기 버튼 */
+#fp-nav2.section_top ul.menu_anchor li._allview:hover, #fp-nav2.section_top ul.menu_anchor li._allview.active
+	{
+	background: #F26522 0% 0% no-repeat padding-box;
+	border: 1px solid #F26522;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._allview:hover a, #fp-nav2.section_top ul.menu_anchor li._allview.active a
+	{
+	color: #fff;
+}
+
+/* 카드소비 버튼 */
+#fp-nav2.section_top ul.menu_anchor li._card .line {
+	border: 0.188rem solid #FE8D75;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._card:hover {
+	border: 1px solid #FE8D75;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._card.active {
+	border: 1px solid #FE8D75;
+	background: #FE8D75 0% 0% no-repeat padding-box;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._card.active a {
+	color: white;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._card.active .line {
+	border: 0.188rem solid #FFFFFF;
+}
+
+/* 유동인구 버튼 */
+#fp-nav2.section_top ul.menu_anchor li._pop .line {
+	border: 0.188rem solid #2EC5C5;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._pop:hover {
+	border: 1px solid #2EC5C5;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._pop.active {
+	border: 1px solid #2EC5C5;
+	background: #2EC5C5 0% 0% no-repeat padding-box;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._pop.active a {
+	color: white;
+}
+
+#fp-nav2.section_top ul.menu_anchor li._pop.active .line {
+	border: 0.188rem solid #FFFFFF;
+}
+
+/* 기준년월 표시  */
+#fp-nav2.section_top .article_rgt .group_period .search_period {
+	margin-top: 0.5rem;
+	font: normal 0.875rem/1.25rem Noto Sans CJK KR;
+	letter-spacing: 0;
+	color: #666666;
+	opacity: 1;
+}
+
+/* 우측상단 컨트롤 버튼 */
+#fp-nav2.section_top .btn_list ul li {
+	float: left;
+	margin-left: 0.625rem;
+	width: 8.375rem;
+	height: 1.75rem;
+	border: 1px solid #888888;
+	border-radius: 1.375rem;
+	opacity: 1;
+}
+
+#fp-nav2.section_top .btn_list ul li:hover {
+	border: 1px solid #F7941D;
+}
+
+#fp-nav2.section_top .btn_list ul li a {
+	font: normal 0.875rem/1.25rem Noto Sans CJK KR;
+	letter-spacing: 0;
+	color: #888888;
+	text-align: center;
+	opacity: 1;
+	line-height: 1.875rem;
+	display: block;
+}
+
+#fp-nav2.section_top .btn_list ul li.on {
+	border: 1px solid #F7941D;
+	background: #F7941D 0% 0% no-repeat padding-box;
+}
+
+#fp-nav2.section_top .btn_list ul li.on a {
+	color: #fff;
+}
+
+/* 시계열 그래프 */
+#fp-nav2.section_top .top_graph {
+/* 	height: 6.313rem; */
+}
+
+#fullpage #section1 {
+	padding-top: 12.25rem;
+	background-color: #fff;
+}
+
+#fullpage #section2 {
+	background: #f8f8f8;
+}
+
+#fullpage span {
+	margin-left: 0;
+}
+
+/* selectbox type1 + type2 */
+.select_box.select_ty1 .tit, .select_box.select_ty2 .tit {
+	width: 2.938rem;
+	height: 1.563rem;
+    line-height: 1.563rem;
+    padding: 0 60px 0 10px;
+    border-radius: 3px;
+    border: 1px solid #ff6f15;
+    color: #666666;
+}
+
+.select_box.select_ty1 .tit:before, .select_box.select_ty2 .tit:before {
+	opacity: 1;
+    background: transparent;
+    right: 0;
+    top: 0;
+    width: 2rem;
+    height: 1.688rem;
+    border-radius: 3px;
+    color: #FFF;
+    text-align: center;
+    background-color: #ff6f15;
+}
+
+.select_box.select_ty1 .tit {
+/* 	font: normal 1.125rem/1.688rem Noto Sans CJK KR; */
+/* 	line-height: 2.25rem; */
+	color: #666666;
+}
+
+.article_group {
+	padding: 1.875rem 0;
+}
+
+.article_group.first {
+	padding-top: 1.875rem;
+}
+
+.article_group .article_lf {
+	position: relative;
+	float: left;
+	top: -0.313rem;
+	width: 27.813rem;
+}
+
+.map .legend {
+    position: absolute;
+    z-index: 1;
+    width: 13.125rem;
+    background-color: rgba(255, 255, 255, .5);
+    bottom: 1.25rem;
+    right: 0.625rem;
+    padding-left: 0.188rem;
+    padding-right: 0.188rem;
+}
+
+.leaflet-popup-content-wrapper {
+	border-radius: unset !important;
+}
+
+.tooltip-header {
+	position: relative;
+    z-index: 1;
+}
+
+.tooltip-header .tooltip-title {
+	max-width: 16.25rem;
+    color: rgb(207, 176, 23);
+    vertical-align: top;
+    width: 15rem;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    z-index: 1;
+    font-size: 1rem;
+    line-height: 1.063rem;
+    padding: 0.188rem;
+}
+
+.tooltip-data {
+	overflow-y: auto;
+    z-index: -1;
+    max-height: 9rem;
+}
+
+.tooltip-data .tooltip-block {
+	font-size: 0.75rem;
+    padding: 0.188rem 0.375rem;
+    position: relative;
+    color: #000;
+}
+
+.tooltip-data .tooltip-block .tooltip-name {
+	display: inline-block;
+    width: 9.688rem;
+    min-height: 0.875rem;
+}
+
+.tooltip-data .tooltip-block .tooltip-value {
+	display: block;
+    position: absolute;
+    text-align: right;
+    top: 0.188rem;
+    right: 0.375rem;
+}
+
+.tooltip-data .tooltip-block .tooltip-seperator {
+    display: block;
+    height: 1px;
+    margin: 0 0.188rem;
+    background-color: rgb(221, 221, 221);
+}
+
+.combo-box {
+    position: absolute;
+    display:none;
+    visibility: visible;
+    background: white;
+    border: 1px solid #707070;
+/*     margin-top: 0.625rem; */
+    margin-left: 2.5rem;
+    width: 194px;
+    z-index: 100;
+    height: 17.5rem;
+    overflow-y: scroll;
+}
+
+.combo-box li {
+	text-align: left;
+	font: normal 1.25rem/1.813rem Noto Sans CJK KR;
+	letter-spacing: 0;
+	color: #757575;
+	padding-left: 0.875rem;
+    margin: 0.125rem 0;
+    cursor: pointer;
+}
+
+.combo-box li.selected {
+	background: #F26522 0% 0% no-repeat padding-box;
+	color: white;
+}
+
+.combo-box li:hover {
+	background: #F9EAE7 0% 0% no-repeat padding-box;
+	color: #757575;
+}
+
+/* 시군구 현황 start ====================================================================================================*/
+.city-status .leaflet-container {
+	background: #fff;	
+}
+
+.city-status #fp-nav2.section_top {
+	width: 100%;
+	display: table;
+/* 	padding: 1.25rem 2.5rem; */
+	padding: 0 2.5rem;
+	background: #F9F9F9 0% 0% no-repeat padding-box;
+}
+
+.city-status .section_top .left, .city-status .section_top .right {
+	width: 60%;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+
+.city-status .section_top .layout {
+	float: left;
+	margin-right: 1.875rem;
+}
+
+
+.city-status .section_top .layout.date .combo-box {
+	width: 19.25rem;
+}
+
+.city-status .section_top .layout .top_title {
+	text-align: left;
+	letter-spacing: 0;
+	color: #757575;
+}
+
+.city-status .section_top .layout .top_contents {
+	text-align: left;
+	letter-spacing: 0;
+	color: #0E2434;
+	padding-left: 2.5rem;
+	padding-bottom: 0.625rem;
+	line-height: 4.125rem !important;
+	cursor: pointer;
+}
+
+.city-status .section_top img {
+	cursor: pointer;
+}
+
+.city-status .section_top .layout img {
+	width: 1.563rem;
+	height: 0.938rem;
+	vertical-align: middle;
+}
+
+.city-status .section_top .layout .excel_button img {
+	width: 100%;
+	height: 100%;
+}
+
+.city-status .section_top .layout.region img, 
+.city-status .section_top .layout.date img {
+	margin-left: 0.938rem;
+}
+
+.city-status .section_top .layout.excel {
+	margin: 0 0 0 1.875rem;
+	text-align: center;
+	cursor: pointer;
+}
+
+.city-status .section_top .layout.excel .excel_button {
+    margin-top: 25%;
+    width: 122px;
+    height: 36px;
+    border: 1px solid #a4a4a4;
+    border-radius: 22px;
+    opacity: 1;
+}
+
+.city-status .section_top .layout.excel .excel_button .image {
+    width: 28px;
+    height: 27px;
+    top: 5px;
+    position: relative;
+    background: transparent url(/images/renew_v1/excel.png) 0% 0% no-repeat padding-box;
+    opacity: 1;
+    display: inline-block;
+}
+
+.city-status .section_top .layout.excel .excel_button .download {
+	margin-left: 0.438rem;
+    vertical-align: text-top;
+	letter-spacing: 0;
+	text-align: left;
+	color: #a4a4a4;
+}
+
+.city-status .section_top .right>p {
+	float: left;
+	width: 100%;
+	margin-bottom: 0.625rem;
+}
+
+.city-status .section_top .right>p .btn.refresh {
+	vertical-align: middle;
+	margin: 0 0.5rem;
+}
+
+.canRotate
+{
+    -webkit-animation: FullRotation 1s ease-out;
+    -o-animation: FullRotation 1s ease-out;
+    -ms-animation: FullRotation 1s ease-out;
+    -moz-animation: FullRotation 1s ease-out;
+    animation: FullRotation 1s ease-out;
+} 
+
+@-webkit-keyframes FullRotation
+{
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@-o-keyframes FullRotation
+{
+    from { -o-transform: rotate(0deg); }
+    to { -o-transform: rotate(360deg); }
+}
+
+@-ms-keyframes FullRotation
+{
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+
+@-moz-keyframes FullRotation
+{
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+
+@keyframes FullRotation
+{
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.city-status .section_top .right  .title {
+	text-align: left;
+	letter-spacing: 0;
+	color: #0E2434;
+}
+
+.city-status .section_top .right  .subtitle {
+	text-align: left;
+	letter-spacing: 0;
+	color: #AAAAAA;
+}
+
+.city-status .section_top .right .article {
+	display: inline-block;
+	float: left;
+	width: 50%;
+}
+
+.city-status .section_top .right .article .news_title {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 60%;
+    text-align: left;
+    letter-spacing: 0;
+    color: #666666;
+    vertical-align: text-top;
+}
+
+.city-status .section_top .right .article .date {
+	margin-left: 1.75rem;
+	text-align: left;
+	letter-spacing: 0;
+	color: #AAAAAA;
+	text-align: left;
+}
+
+/* 진짜 */
+/* 좌측 레이아웃 타입1 */
+.article_group {
+	/* 	display: none; */
+	
+}
+
+.city-status .article_group {
+	padding: 1.575rem 0;
+}
+
+.city-status .article_group:nth-child(2n) {
+	padding-bottom:9rem;
+}
+
+.ecnmy-trnd .article_group:nth-child(2n+1), .event-effect .article_group:nth-child(2n+1) {
+	padding-bottom:10rem;
+}
+.contents-left-type1 {
+	/* 	display: block; */
+	
+}
+
+.contents-left-type2 {
+	/* 		display: block; */
+	
+}
+
+.contents-left-type3 {
+	/* 	display: block; */
+	
+}
+
+.contents-left-type4 {
+	/* 		display: block; */
+	
+}
+
+.contents-left-type5 {
+	/* 	display: block; */
+	
+}
+
+.contents-left-type6 {
+	/* 	display: block; */
+	
+}
+
+.contents-left-type7 {
+	/* 	display: block; */
+	
+}
+
+/* 
+contents left layout type 1
+ 1. 거래금액: 시군구현황
+ 2. 유동인구: 시군구현황
+*/
+#contents .contents-left-type1 {
+	top: auto;
+}
+
+#contents .contents-left-type1 h4 {
+	text-align: left;
+	letter-spacing: 0;
+	margin-bottom: 0.313rem;
+}
+
+#contents .contents-left-type1 dl {
+	margin: 0.5rem 0;
+}
+
+#contents .contents-left-type1 dl dt {
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 0.375rem 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type1 dl dd {
+	width: 9.75rem;
+	line-height: 2.5;
+}
+
+#contents .contents-left-type1 dl dd.last {
+	border: none;
+}
+
+#contents .contents-left-type1 dl dd strong {
+	margin: 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type1 dl dd span {
+	margin-left: 0.313rem !important;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type1 .txt_infor {
+	margin: 0;
+	float: left;
+	letter-spacing: 0;
+	text-align: left;
+}
+
+/* 
+contents left layout type 2
+ 1. 성/연령별: 시군구현황
+ 2. 성/연령별 대표인구: 경제트렌드
+ 3. 유입인구 성/연령 특성: 경제트렌드 
+ 4. 유입 소비인구 소비특성: 경제트렌드
+ 5. 성/연령별 대표인구: 이벤트효과
+ 6. 업종별 경제효과: 이벤트효과
+ 7. 유입인구 성/연령별 특성: 이벤트효과 
+*/
+#contents .contents-left-type2 {
+	top: auto;
+}
+
+#contents .contents-left-type2 h4 {
+	text-align: left;
+	letter-spacing: 0;
+	margin-bottom: 0.313rem;
+}
+
+#contents .contents-left-type2 dl {
+	margin: 0.75rem 0;
+}
+
+#contents .contents-left-type2 dl dt {
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 0.375rem 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type2 dl dd {
+	width: 8.75rem;
+	line-height: 3;
+}
+
+#contents .contents-left-type2 dl dd.last {
+	border: none;
+}
+
+#contents .contents-left-type2 dl dd strong {
+	margin: 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type2 dl dd span {
+	margin-left: 0.313rem;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type2 .txt_infor {
+	margin: 0;
+	float: left;
+	letter-spacing: 0;
+	text-align: left;
+}
+
+#contents .contents-left-type2 dl:nth-of-type(1) {
+	margin: 0 2.5rem 1rem 0;
+}
+
+#contents .contents-left-type2 .article_lf dl dd {
+	width: auto;
+	height: 3.375rem;
+}
+
+/* 
+contents left layout type 3
+ 1. 읍면동 간 비교: 시군구현황 
+*/
+#contents .contents-left-type3 {
+	top: auto;
+}
+
+#contents .contents-left-type3 h4 {
+	text-align: left;
+	letter-spacing: 0;
+	margin-bottom: 0.313rem;
+}
+
+#contents .contents-left-type3 dl {
+	margin: 0.75rem 0;
+}
+
+#contents .contents-left-type3 dl dt {
+	display: inline-block;
+	width: 100%;
+	margin: 0 0 0.375rem 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type3 dl dd {
+	width: 8.75rem;
+	line-height: 3;
+}
+
+#contents .contents-left-type3 dl dd.last {
+	border: none;
+}
+
+#contents .contents-left-type3 dl dd strong {
+	margin: 0;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type3 dl dd span {
+	margin-left: 0.313rem !important;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type3 .txt_infor {
+	margin: 0;
+	float: left;
+	letter-spacing: 0;
+	text-align: left;
+}
+
+#contents .contents-left-type3 .article_lf ul {
+	display: inline-block;
+	margin-bottom: 2.063rem;
+}
+
+#contents .contents-left-type3 .article_lf li {
+	display: inline-block;
+	width: 12rem;
+	float: left;
+}
+
+#contents .contents-left-type3 .article_lf li:nth-of-type(2n) {
+	padding-left: 1.25rem;
+}
+
+#contents .contents-left-type3 .article_lf dl dd {
+	width: 100%;
+}
+
+/* 
+contents left layout type 4 
+ 1. 지역별 거래금액: 경제트렌드
+ 2. 지역별 유동인구 수: 경제트렌드
+ 3. 업종별 거래금액: 경제트렌드
+ 4. 유입 소비인구 거래금액: 경제트렌드
+ 5. 유입 유동인구 수: 경제트렌드
+ 6. 유입 유동인구 유입지역: 경제트렌드
+ 7. 주변지역 유동인구 변화: 이벤트효과
+ 8. 유입 유동인구 수: 이벤트효과
+ 9. 유입 유동인구 유입지역: 이벤트효과
+*/
+#contents .contents-left-type4 .article_lf .tit {
+	text-align: left;
+	letter-spacing: 0;
+	margin-bottom: 0.313rem;
+}
+
+#contents .contents-left-type4 .article_lf dl dt.total {
+	margin: 0 0 0.313rem 0;
+	text-align: left;
+	letter-spacing: 0;
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+#contents .contents-left-type4 dl dd.total {
+	text-align: left;
+	letter-spacing: 0;
+	margin: 0 0 0.738rem 0;
+}
+
+#contents .contents-left-type4 .article_lf dl dd strong {
+	margin: 0;
+}
+
+#contents .contents-left-type4 table.brd_dl th {
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type4 table.brd_dl tr {
+	height: 1.5rem;
+}
+
+#contents .contents-left-type4 table.brd_dl th em.rank {
+	text-align: left;
+	letter-spacing: 0;
+	opacity: 1;
+	background: transparent;
+	width: 0.688rem;
+	height: 1.688rem;
+}
+
+#contents .contents-left-type4 table.brd_dl td {
+	padding-left: 1.875rem;
+	text-align: left;
+	letter-spacing: 0;
+	color: #707070;
+}
+
+#contents .contents-left-type4 table.brd_dl td strong {
+	letter-spacing: 0;
+	margin: 0;
+}
+
+#contents .contents-left-type4 .txt_infor {
+/* 	margin-top: 1.938rem; */
+	margin:0px;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+/* 
+contents left layout type 5 
+ 1. 유입인구 시간대 특성: 경제트렌드
+ 2. 유입인구 시간대 특성: 이벤트효과
+*/
+#contents .contents-left-type5 .article_lf .tit {
+	line-height: 2.375rem;
+}
+
+#contents .contents-left-type5 dl {
+	margin: 0 2.5rem 1rem 0;
+}
+
+#contents .contents-left-type5 .article_lf dl dt.total {
+	width: initial;
+}
+
+#contents .contents-left-type5 .article_lf dl dd.total {
+	margin-left: 4.813rem;
+	margin-bottom: 0;
+}
+
+#contents .contents-left-type5 .txt_sub_dl {
+	margin-right: 2.5rem;
+	padding-bottom: 1rem;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+/* 
+contents left layout type 6
+ 1. 주변지역 경제효과: 이벤트 효과 
+*/
+#contents .contents-left-type6 .article_lf .tit {
+	text-align: left;
+	letter-spacing: 0;
+	margin-bottom: 0.313rem;
+}
+
+#contents .contents-left-type6 .article_lf dl dt.total {
+	margin: 0 0 0.313rem 0;
+	text-align: left;
+	letter-spacing: 0;
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+#contents .contents-left-type6 dl dd.total {
+	text-align: left;
+	letter-spacing: 0;
+	margin: 0 0 0.938rem 0;
+}
+
+#contents .contents-left-type6 .article_lf dl dd strong {
+	margin: 0;
+}
+
+#contents .contents-left-type6 table.brd_dl th {
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type6 table.brd_dl tr {
+	height: 2.5rem;
+}
+
+#contents .contents-left-type6 table.brd_dl th em.rank {
+	text-align: left;
+	letter-spacing: 0;
+	opacity: 1;
+	background: transparent;
+	width: 0.688rem;
+	height: 1.688rem;
+}
+
+#contents .contents-left-type6 table.brd_dl td {
+	text-align: left;
+	letter-spacing: 0;
+	color: #707070;
+}
+
+#contents .contents-left-type6 table.brd_dl td strong {
+	letter-spacing: 0;
+	margin: 0;
+}
+
+#contents .contents-left-type6 .txt_infor {
+	margin-top: 1.938rem;
+	text-align: left;
+	letter-spacing: 0;
+}
+
+#contents .contents-left-type6 .container {
+	width: calc(100% - 1.875rem);
+	height: 7rem;
+	position: relative;
+	margin-bottom: 0.938rem;
+}
+
+#contents .contents-left-type6 .container .left, 
+#contents .contents-left-type6 .container .right {
+	float: left;
+	position: absolute;
+	height: 100%;
+}
+
+#contents .contents-left-type6 .container .left {
+	width: 58%;
+}
+
+#contents .contents-left-type6 .container .right {
+	left: 58%;
+    width: 42%;
+}
+
+#contents .contents-left-type6 .container .left h3 {
+	position: absolute;
+	bottom: 1.563rem;
+}
+
+#contents .contents-left-type6 th, #contents .contents-left-type6 td {
+	vertical-align: baseline;
+}
+
+#contents .contents-left-type6 .txt_infor {
+	margin-top: -0.625rem;
+}
+
+/* contents right layout type 1 */
+#contents .contents-right-type1 .graph, #contents .contents-right-type1 .map
+{
+	height: 19.375rem;
+}
+
+#contents .contents-right-type1 .graph {
+	float: left;
+	width: 67%;
+}
+
+#contents .contents-right-type1 .map {
+	float: right;
+	width: 33%;
+}
+
+/* contents right layout type 2 */
+#contents .contents-right-type2 .bx_graph {
+/* 	background: #ddd; */
+	float: left;
+	width: 48%;
+	min-width: 12.5rem;
+	height: 19.313rem;
+}
+
+#contents .contents-right-type2 .bx_graph.right {
+	float: right;
+}
+
+/* contents right layout type 3 */
+#contents .contents-right-type3 .bx_graph {
+/* 	background: #ddd; */
+	width: 100%;
+	height: 19.375rem;
+}
+
+/* 시군구 현황 거래금액 그래프 */
+.city-status #layout0 .groupedBarLine .line {
+	stroke: #fe8d75;
+	stroke-width: 2px;
+}
+
+.city-status #layout0 .groupedBarLine .dot {
+	fill: #fe8d75;
+}
+
+.city-status #layout0 .groupedBarLine .dot.fake {
+	fill: transparent;
+}
+
+.city-status #layout0 .groupedBarLine .dot.fake:hover {
+	fill: #fe8d75;
+}
+
+.city-status #layout0 .groupedBarLine .selected .box {
+	fill: #fe8d75;
+	opacity: 0.2;
+}
+
+.city-status #layout0 .groupedBarLine .selected .dot {
+	fill: #fff;
+	stroke: #fe8d75;
+}
+
+/* 시군구 현황 유동인구 그래프 */
+.city-status #layout1 .groupedBarLine .line {
+	stroke: #2ec5c5;
+	stroke-width: 2px;
+}
+
+.city-status #layout1 .groupedBarLine .dot {
+	fill: #2ec5c5;
+}
+
+.city-status #layout1 .groupedBarLine .dot.fake {
+	fill: transparent;
+}
+
+.city-status #layout1 .groupedBarLine .dot.fake:hover {
+	fill: #2ec5c5;
+}
+
+.city-status #layout1 .groupedBarLine .selected .box {
+	fill: #2ec5c5;
+	opacity: 0.2;
+}
+
+.city-status #layout1 .groupedBarLine .selected .dot {
+	fill: #fff;
+	stroke: #2ec5c5;
+}
+
+.tooltip {
+  color: rgb(68, 68, 68);
+  font-family: Nanum Gothic;
+  font-weight: 200;
+  font-size: 0.75rem;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 4px 0.438rem;
+  position: fixed;
+  min-width: 11.25rem;
+  min-height: 3.625rem;
+  z-index: 25;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+/*   top: 100%; */
+  left: 50%;
+  margin-left: -0.313rem;
+  border-width: 0.313rem;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+
+.tooltip .container {
+  background-color: rgb(255, 255, 255);
+  padding: 0.375rem;
+  width: -moz-max-content;
+  width: -webkit-max-content;
+  width: -o-max-content;
+}
+
+.tooltip .header {
+  position: relative;
+  z-index: 1;
+}
+
+.tooltip .title {
+  color: rgb(207, 176, 23);
+  vertical-align: top;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  z-index: 1;
+  font-size: 1rem;
+  line-height: 1.063rem;
+  padding: 0.188rem;
+}
+
+.tooltip .data {
+  overflow-y: auto;
+  z-index: -1;
+  max-height: 9rem;
+}
+
+.tooltip .data .block {
+  font-size: 0.75rem;
+  padding: 0.188rem 0.375rem;
+  position: relative;
+  color: rgb(0, 0, 0);
+}
+
+.tooltip .data .name {
+  display: inline-block;
+  width: 9.688rem;
+  min-height: 0.875rem;
+}
+
+.tooltip .data .value {
+  display: block;
+  position: absolute;
+  text-align: right;
+  top: 0.188rem;
+  right: 0.375rem;
+}
+
+.tooltip .data .seperator {
+  background-color: rgb(221, 221, 221);
+  display: block;
+  height: 1px;
+  margin: 0 0.188rem;
+}
+
+.tooltip .footer {
+  font-size: 0.625rem;
+  position: relative;
+  text-align: center;
+}
+
+.city-status .map .legend {
+	left: 0;
+	right: 0;
+}
+
+.city-status #layout3 .dataTables_wrapper {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.city-status #layout3 table.dataTable thead th, 
+.city-status #layout3 table.dataTable thead td {
+	border: none;
+}
+
+.city-status #layout3 .dataTables_wrapper.no-footer .dataTables_scrollBody {
+	border-bottom: 1px solid #ddd;
+}
+
+.city-status #layout3 table.dataTable thead th {
+	border-top: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	box-sizing: border-box;
+	background-color: #F1F1F1;
+}
+
+.city-status #layout3 table.dataTable thead th:first-child {
+	border-left: 1px solid #ddd;
+}
+
+.event-effect .combo-box {
+	width: 7.313rem;
+	margin-top: -1px;
+	margin-left: 0.313rem;
+}
+
+.event-effect .combo-box li {
+	font: normal 0.875rem/1.25rem Noto Sans CJK KR;
+}
+
+.event-effect #layout3 .combo-box {
+	margin-left: 0;
+    height: auto;
+}
+
+#trnd-compare .map {
+    width: 100%;
+    height: 12.875rem;
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+ 
+.spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.625rem;
+  margin-left: -0.625rem;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #000;
+  animation: spinner .6s linear infinite;
+  z-index: 50;
+}
+
+img.infinite_rotating_logo{
+    animation: rotate_image 10s linear infinite;
+    transform-origin: 50% 50%;
+}
+ 
+@keyframes rotate_image{
+	100% {
+    	transform: rotate(360deg);
+    }
+}
+
+.hidden {
+	display: none !important;
+}
+
+.axis path {
+/* 	display: block !important; */
+	fill: none;
+	stroke: #cccccc;
+	shape-rendering: crispEdges;
+}
+
+.axis line, 
+.axis-grid {
+	fill: none;
+	stroke: #cccccc;
+	shape-rendering: crispEdges;
+	/* 	    		opacity: 0.7; */
+}
+
+/* legend */
+.legend .rect {
+	opacity: 0.85;
+	cursor: pointer;
+}
+
+.legend .rect:hover {
+	opacity: 1;
+}
+
+.legend .rect text {
+	fill: #757575;
+	font: normal 0.75rem/1.125rem 'NotoSansKR-Regular';
+	letter-spacing: 0;	
+}
+
+.legend .rect:nth-of-type(2n) text {
+	fill: #fff;
+}
+
+#layout9 .legend .rect text {
+	fill: #fff;
+} 
+
+/* Tooltip */
+
+/* Timeseries */
+.dateRange path.area {
+	fill: transparent;
+}
+
+.dateRange path.line.type1 {
+	stroke: #fe8d75;
+	stroke-width: 2px;
+}
+
+.dateRange path.line.type2 {
+	stroke: #2ec5c5;
+	stroke-width: 2px;
+}
+
+.dateRange .x.axis line {
+	stroke: none;
+}
+
+.dateRange .y.axis.right line {
+	stroke: none;
+}
+
+/* GroupedBarLine */
+.groupedBarLine path {
+    fill: none;
+}
+.groupedBarLine .axis  text,
+.groupedBarV1 .axis  text,
+.tick text {
+/* .tick text tspan { */
+	fill: #757575;
+	letter-spacing: 0;
+	font: normal 0.675rem/1.25rem 'NotoSansKR-Regular';
+}
+
+.groupedBarV1 .title {
+	fill: #666666;
+	letter-spacing: 0;
+	font: normal 1.563rem/2.313rem 'NotoSansKR-Regular';
+}
+
+/* .groupedBarV1 .bar { */
+/* 	width: 1.625rem; */
+/* } */
+
+/* groupedBarV1 */
+/* groupedBarV2 */
+/* groupedBarLine */
+/* treemap */
+/* horizontalBar */
+/* multiLine */
+
+/* map legend */
+.map .legend small,
+.map .legend ul li.key {
+	font: normal 0.75rem/1.125rem 'NotoSansKR-Regular';
+	letter-spacing: 0;
+	color: #757575;
+}
+
+/* table */ 
+table thead th {
+	font: normal 1.125rem/1.688rem 'NotoSansKR-Regular';
+	letter-spacing: 0;
+	color: #666666;
+}
+
+table tbody td {
+	font: normal 1rem/1.5rem 'NotoSansKR-Regular';
+	letter-spacing: 0;
+	color: #333333;
+}
+
+.no-data {
+    text-align: center;
+    vertical-align: middle;
+    display: inline-block;
+    width: 100%;
+    line-height: 21.313rem;
+    background: #D3D3D3;
+    color: #000;
+}
+
+table.brd_dl {
+	min-width: 17.5rem;
+/* 	height: 7.5rem; */
+	margin-bottom: 0.15rem;
+}
+
+.section_top .article_rgt .group_period .layer_period .pop_footer .btn_confirm {
+	cursor: pointer;
+}
+
+.month-name {
+	color: white;
+}
+
+#fog .reportDataLoading .loadingBox {
+	display: table;
+}
+
+#mainContents .crtfcContents {
+    height: 44rem;
+}
+
+#mainContents .tit_main {
+	top: 12.5rem;
+}
+
+#mainContents .tit_main img {
+    width: 28.125rem;
+    height: 10.625rem;
+}
+
+#mainContents .navi_menu {
+	top: 25rem;
+}
+
+#mainContents .navi_menu .menu3 {
+	height: calc(8.5rem * 2);	
+}
+
+#mainContents .navi_menu ul li {
+	height: 7.563rem;
+}
+
+#mainContents .navi_menu ul li p {
+	font-size: 1.125rem; 
+}
+
+#mainContents .navi_menu ul li p.mCenter span {
+	font-size: 1.875rem;
+}
+
+#mainContents .bottomBtn {
+	top: 44.625rem;	
+}
+
+span {
+	margin-left: 0.313rem;
+}
+
+#rangeChart {
+	height: 6.313rem;
+}
+
+.section_top .top_graph .group_help {
+	top: 0.5rem;
+	padding: 0.625rem 1.875rem;
+	font-size: 0.875rem;
+}
+
+.section_top .top_graph .group_help p.fs13 {
+	font-size: 0.813rem;
+}
+
+.section_top .top_graph .group_help p .fs11 {
+	font-size: 0.688rem;
+}
+
+.bx_graph .gslider {
+	top: 5.125rem;
+    height: 1.25rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+}
+
+#rangeChart .title {
+    position: absolute;
+    font-size: 0.438rem;
+    top: 0.438rem;
+}
+
+#rangeChart .title.left {
+	left: 0.375rem;	
+}
+
+#rangeChart .title.right {
+	right: 0.375rem;
+}
+
+.bx_graph .gslider.startSlider:after {
+    left: -1.25rem;
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+    border-color: transparent;
+    width: 20px;
+    height: 1.25rem;
+    background-image: url(/images/renew_v1/ic_slider-left.png);
+    background-color: #f26522;
+    background-repeat: no-repeat;
+    background-position-x: 5px;
+    background-position-y: center;
+    border-style: none;
+}
+
+.bx_graph .gslider.endSlider:after {
+    right: -1.25rem;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+    border-color: transparent;
+    width: 20px;
+    height: 1.25rem;
+    background-image: url(/images/renew_v1/ic_slider-right.png);
+    background-color: #f26522;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    border-style: none;
+}
+
+.select_box.select_ty2 {
+	margin-top: 0.563rem;
+}
+
+#fp-nav2.section_top ul.menu_anchor {
+	margin-top: 0.625rem;
+}
+
+.article_group .article_rg {
+	padding-left: 27.813rem;
+}
+
+.city-status #layout3 table td {
+	background: transparent;
+}
+
+.city-status .openmate-on.select td {
+	background: #eee !important;
+}
+
+.city-status #layout3 table .no-order {
+	background-image: none;
+}
+
+.city-status #layout3 table .sorting,
+.city-status #layout3 table .sorting_asc, 
+.city-status #layout3 table .sorting_desc {
+	background-size: 1.563rem;
+}
+
+.ecnmy-trnd #contents #layout8 .dataType1,
+.ecnmy-trnd #contents #layout8 .dataType4 {
+	margin-left: 0;
+}
+
+.ecnmy-trnd #contents #layout8 .dataType2 {
+    margin-left: 0.513rem;
+}
+
+.ecnmy-trnd #contents #layout8 .dataType3 {
+    margin-left: -0.188rem;
+}
+
+.ecnmy-trnd #contents #layout8 clipPath {
+/* 	display: none; */
+}
+
+.ecnmy-trnd #contents #layout8 .tit {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.event-effect #d3plus_graph_background {
+	fill: #fff;
+}
+
+.event-effect #layout3 .dataType1,
+.event-effect #layout3 .dataType2,
+.event-effect #layout4 .dataType1 {
+	margin-left: 0.5rem;
+}
+
+.event-effect #layout3 table.brd_dl {
+    min-width: 11.063rem;
+}
+
+.event-effect #contents #layout6 .tit {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+#header .logo	 a {
+	width: 113px;
+    height: 20px;
+    display: inline-block;
+}
+
+div.ui-datepicker div.ui-datepicker-header div.ui-datepicker-title {
+	line-height: 1.75rem;
+	font-size: 1rem;
+}
+
+.bar {
+	opacity: 0.9;
+}
+
+.bar:hover {
+	opacity: 1;
+}

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.CompareTrendDao">
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>	 
+	
+		
+	<!-- 경제트렌드 지역간비교 :  지도가져오기 -->
+	<select id="getCompareRegion" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1
+	]]>  
+	<if test='ctyCd != "" and ctyCd != null'>
+			AND B.PARENT_ID = substr(#{ctyCd},1,2)
+	</if>
+	<![CDATA[	
+		  	AND B.RGN_CLSS = #{rgnClss} 
+	]]>	
+	</select>
+
+	<!-- 경제트렌드 지역간비교 : 시도 경계 가져오기 -->
+	<select id="getCompareMegaShape" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1
+	]]>  
+	<if test='ctyCd != "" and ctyCd != null'>
+			AND B.ID = substr(#{ctyCd},1,2)
+	</if>
+	<![CDATA[	
+		  	AND B.RGN_CLSS = #{rgnClss} 
+	]]>	
+	</select>
+	
+	
+	<!-- 1-1. 시군구 평균 거래금액 -->
+	<select id="getCompareAvgAmt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+       SELECT SUM(AVG_SALE_AMT) AS SALE_AMT
+         FROM TBMEGA_DATE_INFO 
+        WHERE 1=1
+          AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+     ]]>	
+	</select>
+	
+	<!-- 1-2. 시군구 평균 거래금액(bar chart) -->
+	<select id="getCompareRegionLv" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+       SELECT  CTY_CD AS ID
+	           , SUM(SALE_AMT)  AS SALE_AMT 
+	   FROM TBCTY_DATE_INFO 
+	   WHERE CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	   GROUP BY ID
+	   UNION
+	   SELECT MEGA_CD AS ID
+       		   , SUM(AVG_SALE_AMT) AS SALE_AMT 
+       	FROM TBMEGA_DATE_INFO 
+       WHERE MEGA_CD = SUBSTR(#{ctyCd},1,2)
+          AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+       GROUP BY ID
+     ]]>	
+	</select>
+
+	<!-- 1-3. 시도평균 대비 시군구 평균 -->
+	<select id="getMegaDiff" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT 
+       		(TOT_CTY/TOT_MEGA)*100 RATE
+		FROM
+			(
+				SELECT 
+					SUM(AVG_SALE_AMT) AS TOT_MEGA 
+				FROM 
+					TBMEGA_DATE_INFO 
+				WHERE 
+					MEGA_CD = SUBSTR(#{ctyCd},1,2)
+				AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			) A
+		   ,(
+		   		SELECT 
+		   			SUM(SALE_AMT) AS TOT_CTY 
+		   		FROM 
+		   			TBCTY_DATE_INFO 
+		   		WHERE CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+		   		AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   	) B
+     ]]>	
+	</select>
+	
+	<!-- 2-1. 시군구 평균 최대매출업종 리스트(3) -->
+	<select id="getCompareBestUpjong" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+      	SELECT  MEGA_CD 
+		      	,  B.CODE
+		      	,  B.CD_NM
+		     	,  SUM(AVG_SALE_AMT)AS SALE_AMT 
+		FROM  TBMEGA_UPJONG_INFO_D_NEW A
+				, TBCOMM_CODE B 
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE 
+		AND MEGA_CD = SUBSTR(#{ctyCd},1,2)
+		AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		GROUP BY MEGA_CD, B.CODE, B.CD_NM 
+		ORDER BY SALE_AMT DESC
+		LIMIT 3
+     ]]>	
+	</select>
+	
+	<!-- 2-2 : 업종별 거래금액 treemap  그래프 -->
+	<select id="getCompareInduty" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	   SELECT SUBSTR(UPJONG2_CD,1,1) AS UPJONG1_CD 
+            , (SELECT CD_NM FROM TBCOMM_CODE WHERE SUBSTR(A.UPJONG2_CD,1,1)= CODE AND CD_ID ='UPJONG1_CD' ) AS UPJONG1_NM
+            , B.CODE AS UPJONG2_CD
+            , B.CD_NM 
+            , ROUND(SUM(AVG_SALE_AMT) / (SUM(SUM(AVG_SALE_AMT)) OVER()) *100,1) PERCENT
+            , SUM(AVG_SALE_AMT) AS SALE_AMT  
+         FROM 
+              TBMEGA_UPJONG_INFO_D_NEW A
+            , TBCOMM_CODE B
+        WHERE 1=1
+          AND A.UPJONG2_CD = B.CODE
+          AND B.CD_ID ='UPJONG2_CD'
+          AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND MEGA_CD =  substr(#{ctyCd},1, 2)
+     GROUP BY UPJONG2_CD,B.CODE,B.CD_NM   
+     ORDER BY 1,5 DESC
+	]]>	
+	</select>
+
+	<!-- 3-1. 시군구 평균 유입인구 수 -->
+	<select id="getCompareAvgCnt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+        SELECT SUM(AVG_CUST_CNT) AS AVG_CUST_CNT 
+        FROM TBMEGA_VISIT_D 
+        WHERE 1=1
+          AND LOC_CLSS_CD ='E' 
+          AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+          AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+     ]]>	
+	</select>
+	
+	<!-- 3-2. 시군구 평균 유입인구(bar chart) -->
+	<select id="getCompareCntRegionLv" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	    SELECT  CTY_CD AS ID
+	           , SUM(total_cnt) as avg_cnt 
+	    FROM TBCTY_VISIT_INFO_D 
+	    WHERE 1=1
+	    AND LOC_CLSS_CD ='E' 
+	    AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+	    AND STDR_DATE between #{startDate} AND #{endDate}
+	    GROUP BY ID
+	    UNION
+	    SELECT MEGA_CD AS ID
+       		   , SUM(AVG_cust_cnt) AS avg_cnt 
+       	FROM TBMEGA_VISIT_D 
+        WHERE 1=1 
+       	AND LOC_CLSS_CD ='E' 
+        AND MEGA_CD = SUBSTR(#{ctyCd},1,2)
+        AND STDR_DATE between #{startDate} AND #{endDate}
+        GROUP BY ID
+     ]]>	
+	</select>
+
+	<!-- 3-3. 시도평균 대비 시군구 평균 유입인구 수 -->
+	<select id="getMegaDiffCnt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+	    select 
+	    	(cty_cnt/mega_cnt)*100 as cnt_rate
+		from 
+		    (
+			    SELECT  SUM(total_cnt) as cty_cnt 
+			    FROM TBCTY_VISIT_INFO_D 
+			    WHERE 1=1
+			    AND LOC_CLSS_CD ='E' 
+			    AND CTY_CD like SUBSTR(#{ctyCd},1,4)||'%'
+			    AND STDR_DATE between #{startDate} AND #{endDate}
+		    ) A
+		 , (
+			 	SELECT SUM(AVG_cust_cnt) AS mega_cnt 
+		       	FROM TBMEGA_VISIT_D 
+		        WHERE 1=1 
+		       	AND LOC_CLSS_CD ='E' 
+		        AND MEGA_CD = SUBSTR(#{ctyCd},1,2)
+		        AND STDR_DATE between #{startDate} AND #{endDate}
+	        ) B
+     ]]>	
+	</select>
+	
+	<!-- 4-1. 시군구 성/연령별 대표 유입, 상주인구 유형  -->
+	<select id="getCompareAgeGender" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+			SELECT 
+			(CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+					            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+					            WHEN SUM(M_20_CNT) THEN '20대 남성'
+					            WHEN SUM(M_30_CNT) THEN '30대 남성'
+					            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+					            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+					            WHEN SUM(M_60_CNT) THEN '60대 남성' 
+					            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+					            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+					            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+					            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+					            WHEN SUM(F_60_CNT) THEN '60대 여성' 
+					      END) CHR
+			FROM TBMEGA_VISIT_INFO_D 
+			WHERE 1=1
+			AND LOC_CLSS_CD =#{locCd}
+			AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+     ]]>	
+	</select>
+
+	<!--  4.2  시군구 성/연령별 대표 유입, 상주인구 bar 그래프  -->
+	<select id="getCompareManType" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_20_CNT END)/SUM(total_cnt)*100,1) AS E_M_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_20_CNT END)/SUM(total_cnt)*100,1) AS H_M_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_30_CNT END)/SUM(total_cnt)*100,1) AS E_M_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_30_CNT END)/SUM(total_cnt)*100,1) AS H_M_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_40_CNT END)/SUM(total_cnt)*100,1) AS E_M_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_40_CNT END)/SUM(total_cnt)*100,1) AS H_M_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_50_CNT END)/SUM(total_cnt)*100,1) AS E_M_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_50_CNT END)/SUM(total_cnt)*100,1) AS H_M_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN M_60_CNT END)/SUM(total_cnt)*100,1) AS E_M_60_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN M_60_CNT END)/SUM(total_cnt)*100,1) AS H_M_60_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_20_CNT END)/SUM(total_cnt)*100,1) AS E_F_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_20_CNT END)/SUM(total_cnt)*100,1) AS H_F_20_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_30_CNT END)/SUM(total_cnt)*100,1) AS E_F_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_30_CNT END)/SUM(total_cnt)*100,1) AS H_F_30_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_40_CNT END)/SUM(total_cnt)*100,1) AS E_F_40_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_40_CNT END)/SUM(total_cnt)*100,1) AS H_F_40_RATE       
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_50_CNT END)/SUM(total_cnt)*100,1) AS E_F_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_50_CNT END)/SUM(total_cnt)*100,1) AS H_F_50_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD ='E'  THEN F_60_CNT END)/SUM(total_cnt)*100,1) AS E_F_60_RATE
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'   THEN F_60_CNT END)/SUM(total_cnt)*100,1) AS H_F_60_RATE      
+		  FROM TBMEGA_VISIT_INFO_D A
+		 WHERE 1=1       
+			AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+     ]]>	
+	</select>
+	
+	<!--  5.1  시군구 유입인구 소비총액  -->
+	<select id="getCompareVisitAmt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT SUM(AVG_SALE_AMT ) AS SALE_AMT
+		FROM TBMEGA_VISIT_UPJONG_INFO_D
+		WHERE 1=1       
+		AND LOC_CLSS_CD ='E'
+		AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+		AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	]]>	
+	</select>
+	
+	<!-- 5-2. 시군구 평균 유입인구 소비금액 vs 선택 시군구 유입인구 소비금액 (bar chart) -->
+	<select id="getCompareAmtRegionLv" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+       SELECT  CTY_CD AS ID
+	           , SUM(SALE_AMT)  AS SALE_AMT 
+	   FROM TBCTY_VISIT_UPJONG_INFO_D 
+	   WHERE 1=1
+	   AND CTY_CD LIKE SUBSTR(#{ctyCd},1,4)||'%'
+	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	   GROUP BY ID
+	   UNION
+	   SELECT MEGA_CD AS ID
+       		   , SUM(AVG_SALE_AMT) AS SALE_AMT 
+       	FROM TBMEGA_VISIT_UPJONG_INFO_D 
+       WHERE 1=1
+       AND LOC_CLSS_CD ='E'
+       AND MEGA_CD  =  SUBSTR(#{ctyCd},1,2)
+       AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+       GROUP BY ID
+     ]]>	
+	</select>
+	
+		
+	<!-- 5-3. 시도평균 대비 시군구 평균 유입인구 소비금액 -->
+	<select id="getMegaDiffAmt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+	    SELECT 
+	    	(CTY_AMT/MEGA_AMT)*100 AS CNT_RATE
+		FROM 
+		    (
+			    SELECT  SUM(SALE_AMT) as CTY_AMT 
+			    FROM TBCTY_VISIT_UPJONG_INFO_D 
+			    WHERE 1=1
+			    AND CTY_CD LIKE SUBSTR(#{ctyCd},1,4)||'%'
+	   			AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		    ) A
+		 , (
+			 	SELECT SUM(AVG_SALE_AMT) AS MEGA_AMT 
+		       	FROM TBMEGA_VISIT_UPJONG_INFO_D 
+		        WHERE 1=1 
+		       	AND LOC_CLSS_CD ='E'
+		        AND MEGA_CD  =  SUBSTR(#{ctyCd},1,2)
+		        AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	        ) B
+     ]]>	
+	</select>
+	
+	<!-- 6-1. 업종별 유입인구 소비특성(활성업종 리스트) -->
+	<select id="getCompareActUpjong3" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CODE
+		, B.CD_NM
+		, ROUND(SUM(AVG_SALE_AMT) / (SUM(SUM(AVG_SALE_AMT)) OVER()) *100,1) RATE
+		FROM TBMEGA_VISIT_UPJONG_INFO_D A
+		, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND A.LOC_CLSS_CD ='E'
+		AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		AND MEGA_CD  =  SUBSTR(#{ctyCd},1,2)
+		GROUP BY  B.CODE , B.CD_NM
+		ORDER BY 3 DESC 
+		LIMIT 3
+    ]]>	
+	</select>
+	
+	<!-- 6-2. 업종별 유입인구 소비특성(활성업종 그래프) -->
+	<select id="getCompareActUpjong10" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CODE
+		, B.CD_NM
+		, ROUND(SUM(AVG_SALE_AMT) / (SUM(SUM(AVG_SALE_AMT)) OVER()) *100,1) RATE
+		FROM TBMEGA_VISIT_UPJONG_INFO_D A
+		, TBCOMM_CODE B
+		WHERE 1=1
+		AND A.UPJONG2_CD = B.CODE
+		AND B.CD_ID ='UPJONG2_CD'
+		AND A.LOC_CLSS_CD ='E'
+		AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		AND MEGA_CD  =  SUBSTR(#{ctyCd},1,2)
+		GROUP BY  B.CODE , B.CD_NM
+		ORDER BY 3 DESC 
+		LIMIT 10
+    ]]>	
+	</select>
+	
+	<!--  7.1 유입인구 주요 소비시간대 -->
+	<select id="getCompareBestTime" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT T.CD_NM 
+		FROM (
+			SELECT B.CD_NM  
+			     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E' THEN avg_cust_cnt END)/ SUM(SUM(avg_cust_cnt)) OVER()*100,1)   AS RATE
+			  FROM TBMEGA_TIMEZON_INFO_D A
+			     , TBCOMM_CODE B  
+			 WHERE 1=1
+			   AND A.TIMEZON_CD = B.CODE
+			   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+			   AND CD_ID ='TIMEZON_CD'
+			GROUP BY CD_NM   
+			ORDER BY 2 DESC
+			LIMIT 1
+		) T
+	]]>	
+	</select>
+	
+	<!--  7.2 유입인구 주요 소비시간대 리스트(3) -->
+	<select id="getCompareBestTimeList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.CD_NM  
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E' THEN AVG_CUST_CNT END)/ SUM(SUM(AVG_CUST_CNT)) OVER()*100,1)   AS RATE
+		  FROM TBMEGA_TIMEZON_INFO_D A
+		     , TBCOMM_CODE B  
+		 WHERE 1=1
+		   AND A.TIMEZON_CD = B.CODE
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND MEGA_CD =  SUBSTR(#{ctyCd},1,2)
+		   AND CD_ID ='TIMEZON_CD'
+		GROUP BY CD_NM   
+		ORDER BY 2 DESC
+		LIMIT 3
+	]]>	
+	</select>
+	
+	<!--  7.3 유입인구 주요 소비시간대 리스트(all) -->
+	<select id="getCompareBestTimeListAll" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='1' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_1_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='1' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_1_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='2' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_2_RATE  
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='2' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_2_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='3' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_3_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='3' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_3_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='4' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_4_RATE    
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='4' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_4_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='5' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_5_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='5' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_5_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='6' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_6_RATE    
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='6' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_6_RATE 
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'  AND TIMEZON_CD ='7' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS E_7_RATE   
+		     , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'  AND TIMEZON_CD ='7' THEN AVG_CUST_CNT END)/SUM(AVG_CUST_CNT) *100,1) AS H_7_RATE 
+		  FROM TBMEGA_TIMEZON_INFO_D A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND MEGA_CD  =  SUBSTR(#{ctyCd},1,2)
+	]]>	
+	</select>
+	
+	
+	<!--  8.1 유입인구 주요 유입지역 -->
+	<select id="getCompareBestInflow" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT B.FULL_NAME  as NM
+		     , ROUND(SUM(avg_cust_cnt)/SUM(SUM(avg_cust_cnt)) OVER() *100,1) AS RATE  
+		     , SUM(avg_cust_cnt) AS IN_CNT
+		  FROM TBMEGA_INFLOW_INFO_D_NEW A
+		     , TBREGION B  
+		 WHERE 1=1
+		   AND A.IN_CTY_CD = B.ID
+		   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND MEGA_CD = SUBSTR(#{ctyCd},1,2)
+		   AND B.RGN_CLSS = 'H2'
+		GROUP BY B.FULL_NAME   
+		ORDER BY 2 DESC, 3DESC
+		LIMIT 1
+	]]>	
+	</select>
+	
+	<!--  8.2 유입인구 주요 유입지역 리스트 -->
+	<select id="getCompareBestInflowList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT B.NM  
+			     , SUM(avg_cust_cnt)  AS IN_CNT
+			     , ROUND(SUM(avg_cust_cnt)/SUM(SUM(avg_cust_cnt)) OVER() *100,1) AS RATE  
+			  FROM TBMEGA_INFLOW_INFO_D_NEW A
+			     , TBREGION B  
+			 WHERE 1=1
+			   AND A.IN_CTY_CD = B.ID
+			   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND A.MEGA_CD = SUBSTR(#{ctyCd},1,2)
+			   AND B.RGN_CLSS ='H2'
+			GROUP BY B.ID , B.NM
+			ORDER BY 2 DESC, 3DESC
+			LIMIT 3
+			
+	]]>	
+	</select>
+	
+	<!--  8.3 유입인구 주요 유입지역 지도 -->
+	<select id="getCompareBestInflowMap" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT B.ID
+				 , B.NM  
+			     , SUM(avg_cust_cnt)  AS IN_CNT
+			     , ROUND(SUM(avg_cust_cnt)/SUM(SUM(avg_cust_cnt)) OVER() *100,1) AS RATE  
+			  FROM TBMEGA_INFLOW_INFO_D_NEW A
+			     , TBREGION B  
+			 WHERE 1=1
+			   AND A.IN_CTY_CD = B.ID
+			   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+			   AND A.MEGA_CD = SUBSTR(#{ctyCd},1,2)
+			   AND B.RGN_CLSS ='H2'
+			GROUP BY B.ID , B.NM
+	]]>	
+	</select>
+	
+</mapper>	

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:component-scan base-package="com.openmate.onmap" />
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/api/**" />
+			<mvc:exclude-mapping path="/*.m" />
+
+			<beans:bean	id="useMenuInterceptor"   class="com.openmate.frmwrk.usemenu.UseMenuInterceptor">
+				<beans:property name="service">
+					<beans:bean class="com.openmate.onmap.user.service.impl.UseMenuLogginSerivceImpl" ></beans:bean>
+				</beans:property>
+				<beans:property name="urlInfo">
+					<beans:map>
+						<beans:entry key="/onmap/crfc_main.do" value="사용자 메인 페이지"></beans:entry>
+						<beans:entry key="/onmap/admin/main.do" value="관리자 메인 페이지"></beans:entry>
+						<beans:entry key="/onmap/ecnmy_24/main.do" value="경제 24시"></beans:entry>
+						<beans:entry key="/onmap/ecnmy_trnd/main.do" value="경제트렌드"></beans:entry>
+						<beans:entry key="/onmap/event_effect/main.do" value="이벤트효과"></beans:entry>
+					</beans:map>
+				</beans:property>
+			</beans:bean>
+
+
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/onmap/**" />
+			<mvc:exclude-mapping path="/admin/**" />
+			<mvc:exclude-mapping path="/common/**" />
+			<mvc:exclude-mapping path="/report/**" />
+			<mvc:exclude-mapping path="/report.pdf" />
+			<mvc:exclude-mapping path="/*.m" />
+			
+			
+			<beans:bean	class="com.openmate.onmap.api.ApiInterceptor"/>
+		</mvc:interceptor>
+		
+		
+		
+	</mvc:interceptors>
+
+	
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="onmapTransactionManager"/>
+				
+	<mvc:cors>
+		<mvc:mapping path="/**" allowed-origins="*"/>
+	</mvc:cors>
+       
+	
+	
+</beans:beans>

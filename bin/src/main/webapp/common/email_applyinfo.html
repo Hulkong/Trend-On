@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table cellpadding='0' cellspacing='0' border='0' width='100%' style='text-align:center;'>
+		<tr>
+		<td bgcolor='#2d4575' style='padding:20px 20px;'>
+		<table cellpadding='0' cellspacing='0' border='0' width='100%'>
+		<tr>
+		<td width='100'><h1 style='margin:0;'><img src='http://trend-on.co.kr/images/common/logo.png' alt='logo' style='' /></h1></td>
+		<td style='padding-right:100px;text-align:center;'><h2 style='margin:0; font-size:26px; font-weight:bold; color:#FFF;'>사용 신청 등록 메일</h2></td>
+		</tr>
+		</table>
+		</td>
+		</tr>
+		<tr>
+		<td style='padding:50px;'>
+		<table cellpadding='0' cellspacing='0' border='0' width='700px' style='margin:0 auto;'>
+		<tr><td style='line-height:2.0; padding:40px 0 20px 0; font-size:18px; font-weight:bold; color:#555; text-align:center;'>" + applyinfo.get("publicNm") + " 사용신청 등록이 완료되었습니다.</br>신청 내용은 아래와 같습니다.</td></tr>
+		<tr>
+		<td style='padding:20px 50px 70px 50px; '>
+		<table cellpadding='0' cellspacing='0' border='1' width='100%' style='text-align:center;'>
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>등록일자</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("date") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>기관명</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("publicNm") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>담당자</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("name") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>부서</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("dept") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>직함</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("position") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>연락처</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("mobile") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>이메일</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("email") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>뉴스레터</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("newsletterYn") + "</td>
+		</tr>
+		
+		<tr>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>신청내용</td>
+		<td style='line-height:2.0; font-size:15px; font-weight:bold; color:#555;'>" + applyinfo.get("memo") + "</td>
+		</tr>
+		</table>
+		</td>
+		</tr>
+		<tr>
+		<td style='line-height:2.0; padding:0 0 30px 0; font-size:18px; font-weight:bold; color:#333; text-align:center;'>
+		<a href='https://www.trend-on.co.kr/onmap/login/admin.do' style='height: 50px; padding: 20px 80px; border: 1px solid #4b7311; font-family:malgun gothic; font-size: 18px; font-weight: bold; color: #FFF; background: #0099ff;' target='_blank' > 
+		Trend-ON 서비스 접속 
+		</a>
+		</td>
+		</tr>
+		</table>
+		</td>
+		</tr>
+		</table>
+</body>
+</html>

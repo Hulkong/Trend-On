@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+	<!-- fontFamily name 속성에 입력하는 값는 Jasper Studio에서 폰트를 등록할때 지정한 폰트명과 동일해야한다. -->
+	
+	<fontFamily name="나눔고딕">
+		<!-- fonts 패키지내에 등록된 트루타입 폰트 파일의 경로 -->
+		<bold>fonts/NanumGothic-Bold.ttf</bold>
+		<normal>fonts/NanumGothic-Regular.ttf</normal>
+		<!-- pdfEncoding 파입. Jasper Studio에서 폰트 한글 설정을 할때의 값과 동일하다. -->
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+	</fontFamily>
+	<fontFamily name="nanum">
+		<!-- fonts 패키지내에 등록된 트루타입 폰트 파일의 경로 -->
+		<bold>fonts/NanumGothic-Bold.ttf</bold>
+		<normal>fonts/NanumGothic-Regular.ttf</normal>
+		<!-- pdfEncoding 파입. Jasper Studio에서 폰트 한글 설정을 할때의 값과 동일하다. -->
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+	</fontFamily>
+</fontFamilies>

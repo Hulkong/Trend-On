@@ -1,0 +1,46 @@
+/* font */
+@import url("//fonts.googleapis.com/earlyaccess/nanumgothic.css");
+
+/* reset */
+html, body, blockquote, caption, dd, div, dl, dt, fieldset, form, frame, h1, h2, h3, h4, h5, h6, hr, iframe, input, legend, li, object, ol, p, pre, q, select, table, textarea, tr, td, ul {margin:0;padding:0;}
+body, input, textarea {font-size:13px; line-height:1.4;  font-family: "Nanum Gothic", sans-serif; color:#666;}
+ul, ol, dl {list-style:none;}
+table {width:100%; border-collapse:separate ; border:0; border-spacing:0; empty-cells:show;}
+
+th, td {vertical-align:middle;}
+fieldset {border:0;}
+img {border:0; vertical-align:top;}
+h1, h2, h3, h4, h5, h6 {font-size:100%; font-weight:normal;}
+address, caption, em, strong, th {font-style:normal; font-weight:normal;}
+a {color:#666; text-decoration:none; background:transparent;}
+a:link, a:focus, a:active, a:visited, a:hover {color:inherit; *color:#666;}
+
+hr {position:absolute; visibility:hidden; width:0; height:0px; border:0;}
+legend {position:absolute; visibility:hidden; overflow:hidden; width:0; height:0; line-height:0; font-size:0;}
+caption {visibility:hidden; overflow:hidden; width:0; height:0; line-height:0; font-size:0; text-indent:-3000em;}
+
+input, select, label, button {vertical-align:middle;}
+input:focus {color:inherit; *color:#666;}
+textarea {width:100%; padding:6px 7px; border:1px solid #c6c6c6; *padding:1%; *width:97%; box-sizing:border-box; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -ms-box-sizing:border-box; resize:none /* size fix for webkit engine browser */;}
+input[type="text"], 
+input[type="number"], 
+input[type="password"] {height:24px; padding:0 0 0 5px; border:1px solid #c6c6c6; box-sizing:border-box; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -ms-box-sizing:border-box; *height:21px; *padding:0;}
+input[type="button"], 
+button {height:24px; padding:0 8px; border:1px solid #c6c6c6; box-sizing:border-box; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -ms-box-sizing:border-box; *height:21px; *padding:0;}
+input[type="radio"], 
+input[type="checkbox"] {margin-top:-4px; margin-left: 18px;}
+label input[type="radio"],
+label input[type="checkbox"] {margin-right:5px;}
+input[type="file"], 
+select {height:24px;}
+
+span {margin-left:5px;}
+
+input::-webkit-input-placeholder	{color:#8d97a6;} /* Webkit */
+input:-moz-placeholder				{color:#8d97a6;} /* Firefox 4-18 */
+input::-moz-placeholder				{color:#8d97a6;} /* Firefox 19+ */
+input:-ms-input-placeholder			{color:#8d97a6;} /* IE10+ */
+
+.clearfix {*zoom:1;}
+.clearfix:after {content:""; display:block; clear:both;}
+.hide {visibility:hidden; overflow:hidden; position:absolute; width:0; height:0; font-size:0; line-height:0;}

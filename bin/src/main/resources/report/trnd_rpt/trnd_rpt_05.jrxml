@@ -1,0 +1,2873 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="trnd_rpt_05" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d0e67e45-d46c-44fb-896d-47e4b2111510">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="trend-k"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<subDataset name="Dataset1" uuid="a4a8c7d8-fec5-4fab-9179-e62d1782533f">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="admiNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].admi_nm]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="842" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="0adcdc23-af33-48ab-bd65-574e100fd9cf">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="802" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="497447a8-7efc-4277-b231-e919e0600f64">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<frame>
+				<reportElement x="62" y="145" width="480" height="606" uuid="11e481c9-41db-4f94-a498-127f26e56b8d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="22" width="70" height="20" forecolor="#000000" backcolor="#CFCFCF" uuid="24ed2e8a-52b6-4962-9e76-d3cf83d2a7cd">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[중분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="66" width="70" height="132" forecolor="#000000" backcolor="#FFEEDC" uuid="8fbf9421-7656-4eee-8dc1-655a7aed49c8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[특화병원]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="294" width="70" height="120" forecolor="#000000" backcolor="#FFD9D1" uuid="38301442-4daa-42a4-92e0-f5952061f321">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[닭/오리요리]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="414" width="70" height="96" forecolor="#000000" backcolor="#FFD9D1" uuid="c341fa1f-f1af-45cf-9a6c-bd2eb7ff7fb0">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[별식/퓨전요리]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="510" width="70" height="60" forecolor="#000000" backcolor="#FFD9D1" uuid="c7a8f47a-7bc9-46bc-b9dd-96672a8e3857">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="198" width="70" height="96" forecolor="#000000" backcolor="#FFD9D1" uuid="b45d2c20-51ac-444c-899b-488f5e0a8e1a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[고기요리]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="570" width="70" height="36" forecolor="#000000" backcolor="#FFD9D1" uuid="f334739b-a8ca-4cc9-bd45-dcbb49f02295">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[분식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="42" width="70" height="24" forecolor="#000000" backcolor="#FFEEDC" uuid="d6827bb0-2c34-40f1-acdf-93e564c19c47">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[일반병원]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="22" width="90" height="20" backcolor="#CFCFCF" uuid="f03db70c-5e23-4c5f-80a2-be2af055d7ca">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[소분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="186" width="90" height="12" uuid="99bae9ec-63ab-4ac3-adbb-855935e18a2b">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[피부과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="198" width="90" height="12" uuid="6bbb9e3f-9a2e-4573-84c8-695025143625">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[갈매기살]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="210" width="90" height="12" uuid="943d638f-89a0-4c04-9ec5-dabd73ba4cd5">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[갈비/삼겹살]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="222" width="90" height="12" uuid="101ed00c-85a7-4fcc-8991-077416830c5c">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[곱창/양구이전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="234" width="90" height="12" uuid="9f07087c-187b-4853-8d29-032f35ca10c1">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[기타고기요리]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="246" width="90" height="12" uuid="08757790-8caf-456e-af6c-914e0cef01f3">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[막창구이]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="258" width="90" height="12" uuid="bcb94e2d-dd06-4513-b4b1-a86207e96930">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[불고기전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="270" width="90" height="12" uuid="862f251f-e418-47e8-96ca-a72ab8beb877">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[사철탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="282" width="90" height="12" uuid="8762724b-eab5-4e2e-9edb-b269ed96c085">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[족발/보쌈전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="294" width="90" height="12" uuid="3f91fb1f-17bb-43ef-b7ab-86a6e378a0d0">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[닭갈비전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="306" width="90" height="12" uuid="3bf8a20a-58af-480e-aae6-9aa8dd7937b1">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[닭내장/닭발요리]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="318" width="90" height="12" uuid="0f48286a-3bcb-4a0d-bcfd-6e3ce1644e4a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[닭도리탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="330" width="90" height="12" uuid="8c081180-5a78-470b-8147-70a25fea54d6">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[불닭전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="342" width="90" height="12" uuid="418476a6-6fd4-4b1b-8429-a6d69759c5f7">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[삼계탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="354" width="90" height="12" uuid="5f966974-af07-463f-8a46-0aa54c04a29f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[오리고기전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="366" width="90" height="12" uuid="496db9fe-f29f-437f-b4a4-91a458621c1c">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[옻닭전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="378" width="90" height="12" uuid="4e941bcc-af24-4365-ae47-96348dc106dc">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[찜닭전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="390" width="90" height="12" uuid="d71d1148-4382-403e-8db7-2f35078d9dd4">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[토종닭전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="402" width="90" height="12" uuid="8ccda4d9-cf46-4ee3-9771-4e7b85e0f0e7">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[후라이드/양념치킨]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="414" width="90" height="12" uuid="2773eaa5-1516-4177-8b67-6a7fef524416">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[돌구이요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="426" width="90" height="12" uuid="14232b8a-559e-4ac3-806e-2a8b74fd1959">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[동남아음식전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="438" width="90" height="12" uuid="65e9b433-b57f-404f-bc09-647e9df65122">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[샤브샤브전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="450" width="90" height="12" uuid="f16c0304-f37b-40d7-90a6-70284a0be753">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[순대전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="462" width="90" height="12" uuid="167f7303-c82e-408b-8d91-66a10eb527fd">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[죽전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="474" width="90" height="12" uuid="f88f76d8-0b7a-4c67-8e31-045fc4e61456">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[징기스칸요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="486" width="90" height="12" uuid="6b4471c6-0b9c-48fa-b75d-4d32d4d30d4d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[철판구이요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="498" width="90" height="12" uuid="c7e8eaf2-6988-4a96-bd13-d00ba5ccee48">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[퓨전음식전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="510" width="90" height="12" uuid="5a517fd7-e189-4161-893f-67ba0a63616b">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[고기부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="522" width="90" height="12" uuid="60179568-069a-441e-a7d8-51b3df9cf625">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="534" width="90" height="12" uuid="a2771e3c-16f0-4cf0-975f-2b8088f90de7">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[채식/한식부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="546" width="90" height="12" uuid="8e175f39-a950-4e99-b0aa-8ad12c616289">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[한식부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="558" width="90" height="12" uuid="102bb8a8-5ea2-40e2-bc46-13bf1f15f3ad">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[해물부페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="570" width="90" height="12" uuid="fef6e85f-7e99-45ec-a344-5e5a9f34fdea">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[국수/만두/칼국수]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="582" width="90" height="12" uuid="b678ea18-08fb-4b8d-ae9e-1824eb39fc80">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[극장식당]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="594" width="90" height="12" uuid="9900d7ae-9f41-49b9-934f-e89799178caf">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[떡볶이전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="138" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="02f8e213-1398-431a-a805-c7c7eb596fd3">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[영상의학과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="102" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="9b39299a-edbc-4406-85e4-a1cb1e8d3c34">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[신경과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="114" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="42a0ad09-4976-4eff-93b6-cf1f16befd38">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[신경외과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="150" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="2c8b3577-ecbe-4a0d-9615-4b3ae5039d78">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[재활의학과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="90" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="9fcb6b9f-5d17-4e33-b5c4-a22d3d5586ed">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[성형외과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="162" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="584c3099-9170-4919-887f-1c2a4f5eb647">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[정신건강의학과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="126" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="82535cec-c6ff-46c1-99bd-f2f11af1126e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[안과의원]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="174" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="92f2046c-ece2-4fef-a16e-c1cacd87393c">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[치과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="42" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="8522d6f2-a427-4ddf-ab10-e1b0bdf7021d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[한방병원]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="54" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="30fb840d-4610-47dd-8dfa-ca42778ceef5">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[한의원]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="66" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="cdf897ee-fc07-4863-a36c-6523eddc4bff">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[마취통증의학과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="70" y="78" width="90" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="aa3e9122-93e5-41ab-89f2-d50dfa030e6a">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[방사선과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="22" width="70" height="20" forecolor="#000000" backcolor="#CFCFCF" uuid="75c16438-a5f4-410e-ad58-00953ee31a31">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[중분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="174" width="70" height="48" forecolor="#000000" backcolor="#FFD9D1" uuid="5fe70778-4149-491f-824f-2606b35a7d78">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[유흥주점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="222" width="70" height="60" forecolor="#000000" backcolor="#FFD9D1" uuid="1794c1cf-1d33-4a53-8978-60f9eeeec41f">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[일반주점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="282" width="70" height="240" forecolor="#000000" backcolor="#FFD9D1" uuid="e55e627d-1aac-4924-829e-b7faf3e1a73a">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[일식/수산물]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="522" width="70" height="84" forecolor="#000000" backcolor="#FFD9D1" uuid="12b433ab-c6e5-401e-af39-1038d274a684">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[제과/제빵/떡]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="78" width="70" height="96" forecolor="#000000" backcolor="#FFD9D1" uuid="155ec301-f8be-4901-b24f-65e14600e46f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[양식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="160" y="42" width="70" height="36" forecolor="#000000" backcolor="#FFD9D1" uuid="e88bbc23-2a84-4e62-b070-fbca88298929">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="false"/>
+					</textElement>
+					<text><![CDATA[분식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="230" y="22" width="90" height="20" backcolor="#CFCFCF" uuid="434836f8-bb00-4313-882d-dbffdaa7a76f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[소분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="186" width="90" height="12" uuid="e7f2706c-efeb-4a85-810d-5c2c2a583732">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[룸살롱/단란주점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="198" width="90" height="12" uuid="f6ce3e1b-5b13-4cd4-8515-8ef10baac02c">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[빠/카페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="210" width="90" height="12" uuid="daa1ae4d-ca8d-424b-a357-b38d5889dcb8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[일반유흥주점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="222" width="90" height="12" uuid="af66fd35-347c-4387-999d-f1e7c498a83b">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[꼬치구이전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="234" width="90" height="12" uuid="667604e0-7685-48cc-a89f-d0e07c3f3bbd">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[민속주점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="246" width="90" height="12" uuid="a9fcacec-c6ad-4f1d-9324-807336a45730">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[소주방/포장마차]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="258" width="90" height="12" uuid="8652d5d6-eb34-4ca0-9398-6351d79170e0">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[이자까야]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="270" width="90" height="12" uuid="d08f3a6e-92dd-401b-8274-7db11e864912">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[호프/맥주]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="282" width="90" height="12" uuid="d4991794-73e0-4ebc-b548-10e6a61bb8ba">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[갈치/생선구이]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="294" width="90" height="12" uuid="dab89987-b151-4edb-82eb-f02cec93514a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[게장전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="306" width="90" height="12" uuid="fc646e90-1cfd-4da1-a7da-50eccfb695ae">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[고등어전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="318" width="90" height="12" uuid="182c18dd-c05b-4710-b0b0-d2a9422c29ab">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[곰장어전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="330" width="90" height="12" uuid="c453e80c-198b-424e-9426-10063b1abeda">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[굴요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="342" width="90" height="12" uuid="4694cd67-4474-4605-a6a0-e16e73b9a5ed">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[낙지/오징어]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="354" width="90" height="12" uuid="da616f39-fa72-45d0-b13e-6348d091a186">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[매운탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="366" width="90" height="12" uuid="76f2eab7-869f-43f5-a03f-9741d33106b4">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[민물장어전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="378" width="90" height="12" uuid="27c4863f-1f9a-4fa0-b1f6-3b552f1449e2">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[바닷가재/게요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="390" width="90" height="12" uuid="74f355dd-a4f7-4108-ba8e-d1314cd703f6">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[복전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="402" width="90" height="12" uuid="617ee518-c353-4817-9046-e2671fbbe248">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[생선찜전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="414" width="90" height="12" uuid="2f572478-5968-40dc-80c2-2a72ef1f9253">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[수산물전문음식점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="438" width="90" height="12" uuid="9bf7b54f-5da6-4505-b67e-414e2346022a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[일식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="42" width="90" height="12" uuid="bfd4c04d-1066-4a1e-a552-6a286d666710">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[라면김밥분식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="54" width="90" height="12" uuid="11f466d5-ee52-4182-8eaa-9cc4f5a35e77">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[스낵]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="66" width="90" height="12" uuid="a5068907-99b3-48cf-982f-5e6c2a92b4a0">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[우동전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="426" width="90" height="12" uuid="57d78acb-1dbb-4fb4-a721-04ffa6dbfad8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[아구전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="450" width="90" height="12" uuid="1432a38e-1396-488c-a4a6-d2235b4d590d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[조개구이전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="498" width="90" height="12" uuid="ce0ba558-466b-4179-aa7b-7b2f4ba90c5e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[홍어전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="522" width="90" height="12" uuid="98c1cc9f-df41-4329-b948-58c771f06d66">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[떡/한과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="474" width="90" height="12" uuid="864fb4a7-fbe8-48a2-a627-8d3c0855371b">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[초밥전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="486" width="90" height="12" uuid="107ca6e9-99af-4ac0-8f81-e1cb7e39ed20">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[해물찜/탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="534" width="90" height="12" uuid="efc79514-1b67-46c8-b064-3572cba72de6">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[와플/파이/디저트]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="546" width="90" height="12" uuid="029d572b-b47d-461c-b02f-8504ade2bed9">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[제과점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="570" width="90" height="12" uuid="d9ef065b-bfe5-4d74-9940-0c2f5d59e532">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[케익전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="582" width="90" height="12" uuid="a968bb52-9c8b-4426-a89f-59cad096966f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[호두과자]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="510" width="90" height="12" uuid="39995031-d609-43e5-9eb7-c73ac47aabb5">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[횟집]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="558" width="90" height="12" uuid="4b6d1109-13c4-488f-9fbd-fa69f56dfbed">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[찐빵/만두]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="462" width="90" height="12" uuid="45862cd8-b397-448f-9206-cee980a9f088">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[참치전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="594" width="90" height="12" uuid="25b3d7e7-9262-4293-b9e9-a5e34949f38e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[호떡/붕어빵]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="90" width="90" height="12" uuid="72aed039-daab-4b4d-855e-381811ef4826">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[돈가스전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="162" width="90" height="12" uuid="def10096-f4cc-4ce8-8133-5d3ee42ed51e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[패밀리레스토랑]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="126" width="90" height="12" uuid="d304ec86-32a2-48fb-aa5b-cbdb5d982297">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[스파게티전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="102" width="90" height="12" uuid="31f5d8f0-600e-4297-b1f8-aad39aa3cb86">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[바베큐전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="114" width="90" height="12" uuid="1a7b789f-f5a2-4c92-8ddf-f7264a640035">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[스테이크전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="138" width="90" height="12" uuid="ea413bc1-7608-4532-8633-ecb855970339">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[전통양식/경양식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="150" width="90" height="12" uuid="429d52e1-d1f2-4771-a6a8-463076c8694d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[카레전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="174" width="90" height="12" uuid="d58ef7de-d4fe-467c-b863-bc09ee174779">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[나이트클럽]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="230" y="78" width="90" height="12" uuid="4c4abe99-85da-4186-87d0-81639e3a5b78">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[기타서양음식전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="320" y="22" width="70" height="20" forecolor="#000000" backcolor="#CFCFCF" uuid="6693bbfb-ab75-4787-af5d-019696dc6738">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[중분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="320" y="42" width="70" height="24" forecolor="#000000" backcolor="#FFD9D1" uuid="64790adb-fa68-4ad1-913f-f8dc1bbf9cd4">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[중식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="320" y="126" width="70" height="84" forecolor="#000000" backcolor="#FFD9D1" uuid="4a786c59-f260-4ce4-b9ae-a451f02e24cb">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[패스트푸드]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="320" y="210" width="70" height="216" forecolor="#000000" backcolor="#FFD9D1" uuid="aa3641c2-68a5-4f6c-bf37-23daf66391c0">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[한식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="320" y="426" width="160" height="180" uuid="541fcfb0-81b3-44da-8bfd-cfc7f1c1f336">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="320" y="66" width="70" height="60" forecolor="#000000" backcolor="#FFD9D1" uuid="7b2aa56a-befa-44e5-88d4-79377c03f1ef">
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[커피/음료/디저트]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="390" y="22" width="90" height="20" backcolor="#CFCFCF" uuid="ea50ff3c-143f-4eac-a95b-393e50ea189a"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[소분류]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="54" width="90" height="12" uuid="5eb3c118-2e32-4534-aa35-9527f7d55e20">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[탕수육전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="150" width="90" height="12" uuid="b5e69c15-4c6f-42cc-afe3-3f1b643e5ae4">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[샌드위치/브런치/샐러드]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="90" width="90" height="12" uuid="21d34322-b9d1-4a89-9b3b-03d50f8ad02f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[아이스크림/빙수]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="114" width="90" height="12" uuid="b0de6ac8-35f0-4b8c-9f7a-b08ea894c02e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[커피전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="138" width="90" height="12" uuid="c536808e-54c4-4c7d-91f0-cc3cfc55026d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[도시락전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="42" width="90" height="12" uuid="b160fae9-c96b-4cb8-9df1-21b8e276bd67">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[중국음식]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="66" width="90" height="12" uuid="d6cb9185-79c4-480b-af49-feb4a80f4831">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[보드게임카페]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="102" width="90" height="12" uuid="e61d3597-83ae-4f59-b244-248659845627">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[전통찻집/인삼찻집]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="126" width="90" height="12" uuid="b58e87af-cddd-4233-b3d6-9f011a3c0534">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[도너츠전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="162" width="90" height="12" uuid="6e278093-c578-47fc-aa71-ffc387b210dc">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[토스트전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="186" width="90" height="12" uuid="b649d284-93ea-44ac-8e80-bdfa98751a21">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[피자전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="198" width="90" height="12" uuid="0627b375-f51f-4ae7-aa9d-130d2d5bb6b9">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[핫도그]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="210" width="90" height="12" uuid="3191ee9a-a5ed-405d-adc1-00b3ae3dd528">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[기사식당]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="222" width="90" height="12" uuid="9d9aa222-57f8-4ab6-b065-bf7ff5bf39ca">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[냉면집]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="234" width="90" height="12" uuid="539f741a-c548-4cc2-b02a-40c10473c910">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[돌솥/비빔밥전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="246" width="90" height="12" uuid="8642a7c6-5d8b-4d63-a19e-527c599fc0a9">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[두부요리전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="258" width="90" height="12" uuid="b7b0881d-85a9-42b4-912c-072be5a0456f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[버섯전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="270" width="90" height="12" uuid="948d324a-b9e3-49f0-8834-6e3668211601">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[보리밥전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="282" width="90" height="12" uuid="f0959444-8f03-40d2-9fe1-eaeb5b04408a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[부대찌개/섞어찌개]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="294" width="90" height="12" uuid="93bbc401-5024-489f-a9f7-ac3e1aef8391">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[설렁탕집]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="306" width="90" height="12" uuid="d74a0568-6a5c-4851-8385-753c6493734a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[순두부전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="318" width="90" height="12" uuid="24e635dd-48e7-435e-b235-6a757057fb68">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[쌈밥전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="330" width="90" height="12" uuid="4dc2947a-89ec-4782-bea4-fb820edae47e">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[일반한식/백반]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="342" width="90" height="12" uuid="a81472ca-27ec-484a-8bb9-1e4f0d095164">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[재첩국전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="354" width="90" height="12" uuid="688f90de-2ecc-4c25-8032-dd14f73bb8f4">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[추어탕전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="366" width="90" height="12" uuid="cf85edb3-5698-49dc-a4fa-7973172cd9d9">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[콩나물국밥]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="378" width="90" height="12" uuid="dc7bf085-8a1a-4837-9f85-615179cc25a8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[파전전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="390" width="90" height="12" uuid="4ca7116b-3ced-4f8d-971f-76c20c3e2ace">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[한정식전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="402" width="90" height="12" uuid="b32b9267-f0b0-4fff-a204-ec9ec85031c8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[해장국/감자탕]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="414" width="90" height="12" uuid="bac3616f-becd-47c1-ad15-3f6573f0b6c3">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[황태전문]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="174" width="90" height="12" uuid="2d4ad6e8-2059-4679-a48d-725d1114ff19">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[패스트푸드]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="78" width="90" height="12" uuid="4521efee-a40b-47e5-9dcb-b3a0c91db1f8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#B5B5B5"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+					</textElement>
+					<text><![CDATA[생과일주스전문점]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="0" width="478" height="14" uuid="98b48d0d-9ca8-4d38-9fa7-d9ffaab0684a">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<box leftPadding="10"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0" spacingAfter="0"/>
+					</textElement>
+					<text><![CDATA[[표 1] 업종분류 표
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="113" y="0" width="60" height="14" uuid="2ae4643b-4f78-4604-97c2-cffbf695361f">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+					</textElement>
+					<text><![CDATA[소매/유통]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="255" y="0" width="60" height="14" uuid="d2120d26-8283-4c49-8363-a16eb74ad355">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+					</textElement>
+					<text><![CDATA[여가/오락]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="326" y="0" width="60" height="14" uuid="054c157d-cd79-4caf-bfe9-da5f9632fdbe">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+					</textElement>
+					<text><![CDATA[의료/건강]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="316" y="2" width="10" height="10" backcolor="#FFEEDC" uuid="c17647fb-a41d-4775-8588-45ab5f8eb548">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement x="245" y="2" width="10" height="10" backcolor="#BAECEC" uuid="47a2dc52-c556-4dec-8256-24765b06fcc8">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement x="387" y="2" width="10" height="10" backcolor="#FFD9D1" uuid="c89e97de-1830-403c-bc3e-954f5f4546f3">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement x="103" y="2" width="10" height="10" backcolor="#C1D1DF" uuid="6446d83e-9a27-4e52-9c86-bfc3f55636f6">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle>
+					<reportElement x="174" y="2" width="10" height="10" backcolor="#C8FBE8" uuid="249ee074-935e-4933-a990-ffb7413404a5">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="0.5"/>
+					</graphicElement>
+				</rectangle>
+				<staticText>
+					<reportElement x="184" y="0" width="60" height="14" uuid="3fa403da-c710-4313-8bf6-6f703152a482">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+					</textElement>
+					<text><![CDATA[생활서비스]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="397" y="0" width="35" height="14" uuid="927f1a2a-3ae2-4193-b51b-446ab9c67164">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="나눔고딕" size="8"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+					</textElement>
+					<text><![CDATA[음식]]></text>
+				</staticText>
+			</frame>
+			<textField>
+				<reportElement x="40" y="23" width="515" height="16" forecolor="#666666" uuid="f350d085-7779-4743-969f-62ee58deca75">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["빅데이터를 활용한 " + $F{megaNm} + " " + $F{ctyNm} + " 경제트렌드 보고서"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#666666" uuid="7de46fa7-b89c-4667-b2bb-9c121a43f77d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="802" width="515" height="40" uuid="95e0f8ed-6fcf-4493-a62d-ce4bc4376263"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[- 5 -]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

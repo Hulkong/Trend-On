@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.api.dao.ApiAuthDao">
+
+    <!-- API인증키 체크 -->
+    <select id="checkApiAuth" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT API_NO
+		     ,(SELECT CASE WHEN USE_EXP_DATE >= TO_CHAR(NOW(), 'YYYYMMDD') THEN 1 
+		                    ELSE 0 END EXP_CHECK
+		          FROM TBCOM_CONTRACT D
+		         WHERE 1 = 1
+		           AND D.ORG_ID = A.PUBLIC_ID
+		           AND D.CONTRACT_ID = A.CONTRACT_ID) AS EXP_CHECK
+		      ,(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS DOMAIN_CHECK
+		          FROM TBCOM_API_INFO B
+		         WHERE 1 = 1
+		          AND B.API_NO = A.API_NO
+		           AND B.API_DOMAIN = #{apiDomain}
+		        ) AS DOMAIN_CHECK
+		      ,(SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS REGION_CHECK
+		          FROM TBCOM_API_REGION C
+		         WHERE 1 = 1
+		          AND C.API_NO = A.API_NO
+		           AND C.RGN_ID = #{rgnId}
+		        ) AS REGION_CHECK
+		 FROM TBCOM_API A
+		WHERE 1 = 1
+		  AND A.API_KEY = #{apiKey}
+    </select>
+    
+    <!-- API인증키만 체크 featuer데이터 용 -->
+    <select id="checkApiKeyAuth" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+		SELECT COUNT(1) AS CNT
+		 FROM TBCOM_API A
+		WHERE 1 = 1
+		  AND A.API_KEY = #{apiKey}
+    </select>
+                           
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.user.dao.UserLoginDao">
+
+
+    <!-- 사용자ID로 상세 조회 -->
+    <select id="getUserInfo" parameterType="java.lang.String" resultType="com.openmate.frmwrk.user.UserInfo">
+        SELECT ORG_ID AS orgId
+        	 , USER_ID AS userId
+		     , MNG_NM AS userName
+		     , PASSWORD AS password
+		     , (SELECT CONTRACT_ID 
+		     	  FROM TBCOM_CONTRACT B
+		     	 WHERE ORG_ID = A.ORG_ID 
+		      	 ORDER BY
+				 	   CASE 
+				 			WHEN B.SERVICE_CLSS = '1' THEN 0
+				 			WHEN B.SERVICE_CLSS = '3' THEN 1
+				 		    WHEN B.SERVICE_CLSS = '5' THEN 2
+				 		    WHEN B.SERVICE_CLSS = '2' THEN 3
+				 		    WHEN B.SERVICE_CLSS = '4' THEN 4
+				 		    WHEN B.SERVICE_CLSS = '6' THEN 5
+				 		END ASC
+				 	 , B.USE_EXP_DATE DESC	 
+		      	LIMIT 1
+		      ) AS contractId
+		  FROM TBCOM_ORG AS A
+		 WHERE 1=1
+		   AND USER_ID = #{userId}
+
+    </select>
+
+    <!-- 로그인 사용자 권한 조회 -->
+    <select id="getLoginAuth" parameterType="com.openmate.frmwrk.user.UserInfo" resultType="java.util.HashMap">
+    <![CDATA[
+        SELECT AUTHORITY
+		  FROM TBCOM_AUTHORITY
+		 WHERE ORG_ID = ${orgId}
+		 ORDER BY CASE WHEN AUTHORITY = 'ROLE_ADMIN' THEN 1  END
+    ]]>
+    </select>
+
+	<!-- 사용자 정보 조회(상세정보) -->
+	<select id="getUserInfoMap" parameterType="java.lang.String" resultType="java.util.Map">
+		<!-- SELECT A.MNG_NM AS user_name		         
+		     , A.USER_ID AS user_id
+		   	 , A.ORG_ID AS org_id       
+		     , A.ORG_NM AS org_nm
+			 , B.CONTRACT_ID AS contract_id                 
+			 , A.MEGA_CD AS mega_cd                 
+			 , A.CTY_CD AS cty_cd                 
+			 , (SELECT NM FROM TBREGION WHERE ID = A.MEGA_CD AND RGN_CLSS='H1') AS mega_nm                 
+			 , (SELECT NM FROM TBREGION WHERE ID = A.CTY_CD AND RGN_CLSS='H3') AS cty_nm                 
+			 , (SELECT CD_NM FROM TBCOMM_CODE WHERE CD_ID = 'SERVICE_CLSS' AND CODE = B.SERVICE_CLSS) AS cd_nm                 
+			 , B.service_clss                 
+			 , B.use_str_date                 
+			 , B.use_exp_date      
+			 , (select path_url||new_name  from tbcom_image where type='bg' and org_id=A.org_id) as bg_image
+			 , (select path_url||new_name  from tbcom_image where type='sg' and org_id=A.org_id) as sg_image           
+			 , to_char(CURRENT_DATE, 'YYYYMMDD') as today        
+		 FROM TBCOM_ORG AS A 
+		 LEFT OUTER JOIN TBCOM_CONTRACT AS B
+		   ON A.ORG_ID = B.ORG_ID
+		 WHERE 1=1
+		  AND A.USER_ID = #{userId} 
+		 ORDER BY
+		 	   CASE 
+		 			WHEN B.SERVICE_CLSS = '1' THEN 0
+		 			WHEN B.SERVICE_CLSS = '3' THEN 1
+		 		    WHEN B.SERVICE_CLSS = '5' THEN 2
+		 		    WHEN B.SERVICE_CLSS = '2' THEN 3
+		 		    WHEN B.SERVICE_CLSS = '4' THEN 4
+		 		    WHEN B.SERVICE_CLSS = '6' THEN 5
+		 		END ASC
+		 	 , B.USE_EXP_DATE DESC			   
+		 LIMIT 1 -->	
+		  SELECT A.MNG_NM AS user_name		         
+		     , A.USER_ID AS user_id
+		   	 , A.ORG_ID AS org_id       
+		     , A.ORG_NM AS org_nm
+			 , B.CONTRACT_ID AS contract_id                 
+			 , (select MEGA_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1) AS mega_cd                 
+			 , case 
+				when substring((select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1), 3,3) = '000' 
+				then ( select id::varchar from TBREGION WHERE RGN_CLSS='H3'and parent_id = (substring((select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1), 1,2)) order by nm limit 1 ) 
+				else ( select id::varchar from TBREGION WHERE RGN_CLSS='H3'and id = (select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1))
+			   end AS cty_cd
+			 , (select nm::varchar from TBREGION WHERE RGN_CLSS='H1'and id = (select MEGA_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1)) as mega_nm
+			 , case 
+				when substring((select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1), 3,3) = '000' 
+				then ( select nm::varchar from TBREGION WHERE RGN_CLSS='H3'and parent_id = (substring((select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1), 1,2)) order by nm limit 1 ) 
+				else ( select nm::varchar from TBREGION WHERE RGN_CLSS='H3'and id = (select CTY_CD from TBCOM_ORG_REGION where org_id = B.org_id limit 1))
+			   end AS cty_nm  
+			 , (SELECT CD_NM FROM TBCOMM_CODE WHERE CD_ID = 'SERVICE_CLSS' AND CODE = B.SERVICE_CLSS) AS cd_nm 
+			 , (SELECT CD_NM FROM TBCOMM_CODE WHERE CD_ID = 'SERVICE_CLSS' AND CODE = B.SERVICE_CLSS) AS cd_nm                 
+			 , B.service_clss                 
+			 , B.use_str_date                 
+			 , B.use_exp_date      
+			 , (select path_url||new_name  from tbcom_image where type='bg' and org_id=A.org_id) as bg_image
+			 , (select path_url||new_name  from tbcom_image where type='sg' and org_id=A.org_id) as sg_image           
+			 , to_char(CURRENT_DATE, 'YYYYMMDD') as today        
+		 FROM TBCOM_ORG AS A 
+		 LEFT OUTER JOIN TBCOM_CONTRACT AS B
+		   ON A.ORG_ID = B.ORG_ID	
+	     LEFT OUTER JOIN TBCOM_ORG_REGION AS C
+		   ON C.ORG_ID = B.ORG_ID
+		 WHERE 1=1
+		  AND A.USER_ID = #{userId} 
+		 ORDER BY
+		 	   CASE 
+		 			WHEN B.SERVICE_CLSS = '1' THEN 0
+		 			WHEN B.SERVICE_CLSS = '3' THEN 1
+		 		    WHEN B.SERVICE_CLSS = '5' THEN 2
+		 		    WHEN B.SERVICE_CLSS = '2' THEN 3
+		 		    WHEN B.SERVICE_CLSS = '4' THEN 4
+		 		    WHEN B.SERVICE_CLSS = '6' THEN 5
+		 		END ASC
+		 	 , B.USE_EXP_DATE DESC			   
+		 LIMIT 1
+	</select>
+	
+	<!-- 최종 로그인 날짜 변경 -->
+	<update id="updateUserLastLogin" parameterType="java.lang.String" >
+		UPDATE TBCOM_ORG 
+		   SET LAST_UPT_DATE = NOW() 
+		 WHERE USER_ID = #{userId}
+	</update>
+	
+	<!-- 로그인 기록 남기기 -->
+	<insert id="userLoginLogging" parameterType="java.util.HashMap">
+		INSERT INTO TBCOM_LOG
+		(
+		  org_id
+		, contract_id
+		, user_id
+		, url
+		, menu_nm
+		, log_time
+		, user_ip
+		, log_msg
+	    ) VALUES (
+   		  #{orgId}
+		, #{contractId}
+		, #{userId}
+		, #{url}
+		, #{menuNm}
+		, NOW()
+		, #{userIp}
+		, #{logMsg}
+	   )
+	</insert>
+
+</mapper>

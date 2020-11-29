@@ -1,0 +1,56 @@
+---
+config:
+  report:
+   path: report
+   
+  phantomjs:
+   host: https://trend-on.co.kr/cs
+   
+  trendOn:
+   title: Trend-ON
+   host: https://trend-on.co.kr
+   
+  vworld:
+   host: http://xdworld.vworld.kr:8080
+    
+  jdbc:
+   postgisdb:
+     driverClassName: org.postgresql.Driver
+     url: jdbc:postgresql://115.68.235.73:15432/samsung_new?stringtype=unspecified
+     username: postgres
+     password: "@dnsdud395&%$)"
+     
+  email:
+   host: smtp.office365.com
+   portNumber: "587"
+   senderAddress: sales@openmate-on.co.kr
+   username: sales@openmate-on.co.kr
+   password: "@dnsdud395&%$)"
+   salesId: sales@openmate-on.co.kr;
+   
+  auth:
+   login: #로그인 페이지 정보
+    url: /onmap/login/login.do #url 
+    jspPath: redirect:/onmap/main.do #jsp 파일 위치
+   ajaxlogin: #ajax로그인 페이지 정보
+    url: /onmap/ajax-login.json #url 
+    jspPath: void
+   encStr: #문자열 암호화
+    url: /onmap/login/gen-pw.do #url 
+    jspPath: void
+   info: #로그인 정보 샘플
+    url: /onmap/login-info.do #url 
+    jspPath: onmap/user_info #jsp 파일 위치
+   
+  service:
+   url: https://trend-on.co.kr
+   type: release
+   
+  excelFile:
+   path: /home/samsung_new/
+   
+  fileUpload:
+   path: /home/samsung_new/tomcat7/fileUpload/
+   path-url: /upload/attach/
+  
+  version: ${timestamp}

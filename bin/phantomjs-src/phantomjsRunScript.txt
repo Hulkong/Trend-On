@@ -1,0 +1,20 @@
+version : 2.1.1
+
+
+linux : 
+/trend-on-was/phantomjs/bin/phantomjs  --web-security=false /trend-on-was/phantomjs/bin/screen_shot_server_v0.js &
+
+/trend-on-was/phantomjs/bin/phantomjs  --web-security=false /trend-on-was/phantomjs/bin/screen_shot_server.js &
+
+
+windows :
+E:\phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin\phantomjs.exe  --web-security=false screen_shot_server.js 
+
+
+
+test 서버 :
+/home/trend-on/kb/phantomjs/bin/phantomjs  --web-security=false /home/trend-on/kb/phantomjs/bin/screen_shot_server.js &
+/home/trend-on/samsung/phantomjs/bin/phantomjs  --web-security=false /home/trend-on/samsung/phantomjs/bin/screen_shot_server.js &
+
+
+/home/trend-on/kb_test/phantomjs/bin/phantomjs  --web-security=false /home/trend-on/kb_test/phantomjs/bin/screen_shot_server.js &

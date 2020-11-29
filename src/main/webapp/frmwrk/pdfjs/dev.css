@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+
+.mb20 {margin-bottom:20px;}
+#loadingreport {width:100%; height:200px; position:absolute;top:100px;}
+#loadingreport p {text-align:center; }
+
+#loadingreport_tit {color:#fff; font-size:20px;}
+#loadingreport_desc {color:#fff; font-size:15px;}

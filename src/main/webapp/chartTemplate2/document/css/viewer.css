@@ -1,0 +1,78 @@
+.viewer {
+	padding: 42px;
+	z-index: 1;
+	position: relative;	
+	margin-left: 380px;
+}
+
+.viewer h2 {
+	font-size: 1.75em;
+	padding-bottom: 18px;
+	border-bottom: 1px solid #bfbfbf;
+	top: 42px;
+}
+
+.viewer p button {
+	padding: 7px 12px;
+	margin: 0 6px 4px 0;
+	border : 1px solid #dbdbdb;
+	background-color:#fff;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0,0,0,.04);
+	
+}
+
+.viewer .wrap_tab {
+	position: relative;
+	margin-top: 31px;
+}
+
+.viewer .tab {
+	font-size: 12px;
+	font-weight:700;
+	float: left;
+	margin-right: -1px;
+	border: 1px solid #e1e0e0;
+	border-bottom: 1px solid #fff;
+	height: 36px;
+	line-height: 36px;
+	padding: 0 20px;
+	background-color: #fff;
+	color: #000;
+}
+
+.viewer .tab.off {
+	font-weight: 400;
+	background-color: #f7f8f8;
+	border-bottom-color: #e1e0e0;
+	color: #78797a;
+	cursor: pointer;
+}
+
+.viewer .tabBody {
+	display: block;
+	position: absolute;
+	top: 37px;
+	left:0;
+	width: 100%;
+	z-index: -1;
+}
+
+.viewer .tabBody.off {
+	display: none;
+}
+
+.viewer .highlight {
+	background: #fbfbfb;
+	background-color: #fff;
+	border: 1px solid #e9e9e9;
+	overflow: auto;
+	margin-bottom: 40px;
+	padding: 20px;
+}
+
+.viewer figure.highlight {
+	margin-left: 0;
+	margin-right: 0;
+}
+

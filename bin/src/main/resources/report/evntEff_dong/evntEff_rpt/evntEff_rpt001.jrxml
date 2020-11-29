@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evntEff_rpt001" pageWidth="595" pageHeight="842" sectionType="Part" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" uuid="d2716064-8ae4-40cf-a575-33afba400e3a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
+	<property name="com.jaspersoft.studio.book.group.cover.header" value="Cover and Table of Contents"/>
+	<property name="com.jaspersoft.studio.book.group.cover.footer" value="Backcover"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<group name="cover">
+		<groupHeader>
+			<part uuid="7aed05b9-1301-4a53-b47e-34289560bc0c">
+				<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff_rpt001_cover.jasper"]]></subreportExpression>
+				</p:subreportPart>
+			</part>
+		</groupHeader>
+		<groupFooter>
+			<part uuid="88decbbe-63ad-45cc-9e03-5dadc50004d5">
+				<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff_rpt001_backcover.jasper"]]></subreportExpression>
+				</p:subreportPart>
+			</part>
+			<part uuid="b7c1e932-55f8-459d-831a-d54ee14a487b">
+				<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+					<subreportParameter name="REPORT_DATA_SOURCE">
+						<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page15.jasper"]]></subreportExpression>
+				</p:subreportPart>
+			</part>
+		</groupFooter>
+	</group>
+	<detail>
+		<part uuid="f8ec75a7-a0da-411b-be23-6789d5ec25e0">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/eventEff_rpt001_contents.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="24b6002d-dcb0-42e5-b882-96090ad0c6b1">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page03.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="77b59c43-5169-4b4a-8264-45d161c864e3">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page04.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="f6d9da74-4a07-46c8-ae97-8f442117a675">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page05.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="01f6ebc7-263c-4351-a222-01b1314144ac">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page06.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="6accfeff-5941-4a50-a987-1dba89dd6a9b">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page07.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="05cfb64e-6baa-4fcc-834b-ccbe96351e80">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page08.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="7441f534-ac95-4d97-973e-8d6ac2a3f75a">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page09.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="0cc9b825-1149-4fba-b184-7e964e05b935">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page10.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="61848a8b-055b-4629-a13b-c1e16c208d76">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page11.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="f2205ff0-3364-4974-b3cb-39096c094167">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page12.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+		<part uuid="f5359eab-10b0-4d85-b001-b390a8ed47ed">
+			<p:subreportPart xmlns:p="http://jasperreports.sourceforge.net/jasperreports/parts" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/parts http://jasperreports.sourceforge.net/xsd/parts.xsd">
+				<subreportParameter name="REPORT_DATA_SOURCE">
+					<subreportParameterExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource()]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["report/evntEff_dong/evntEff_rpt/evntEff-page13.jasper"]]></subreportExpression>
+			</p:subreportPart>
+		</part>
+	</detail>
+</jasperReport>

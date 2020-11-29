@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.MainDao">	
+
+	<!-- 최신 월 가져오기 -->
+	<select id="getDates" parameterType="java.util.Map" resultType="java.util.Map" >
+		SELECT STDR_YM AS this_month
+			 , TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) - INTERVAL '1 MONTH ','YYYYMM')::TEXT AS last_month
+			 , TO_CHAR(TO_DATE(STDR_YM,'YYYYMMDD')::DATE,'MM')::TEXT AS this_date
+		FROM TBCOM_STDR
+	</select>
+	
+	<!-- 해당 월, 해당 지역의 매출 총액 가져오기 -->
+	<select id="getTotalAmt" parameterType="java.util.Map" resultType="java.util.Map" >
+		SELECT THIS_AMT
+			 , LAST_AMT
+			 , ROUND(((THIS_AMT - LAST_AMT)/LAST_AMT)*100,1) AS AMT_RATE
+		FROM 
+		( 
+			SELECT SUM(SALE_AMT) AS THIS_AMT 
+			FROM TBCTY_DATE_INFO 
+			WHERE CTY_CD = #{ctyCd} 
+			AND STDR_DATE LIKE ${thisDate}||'%' 
+		) A,
+		(
+			SELECT SUM(SALE_AMT) AS LAST_AMT
+			FROM TBCTY_DATE_INFO 
+			WHERE CTY_CD = #{ctyCd} 
+			AND STDR_DATE LIKE ${lastDate}||'%' 
+		) B
+	</select>
+	
+	<!-- 일등 행정동 찾기  -->
+	<select id="getNoOneDong" parameterType="java.util.Map" resultType="java.util.Map" >
+		SELECT ADMI_CD
+		     , SUM(SALE_AMT) 
+		     , NM
+		FROM TBADMI_DATE_INFO A
+			, TBREGION B
+		WHERE 1=1
+		AND STDR_DATE LIKE ${thisDate}||'%' 
+		AND ADMI_CD LIKE #{ctyCd} ||'%'
+		AND ADMI_CD = B.ID
+		GROUP BY ADMI_CD, NM
+		ORDER BY SUM(SALE_AMT) DESC 
+		LIMIT 1
+	</select>
+	
+	<!-- 일등 행정동의 전월대비 매출액 가져오기 -->
+	<select id="getadmiRate" parameterType="java.util.Map" resultType="java.lang.String" >
+		SELECT 
+			ROUND(((THIS_AMT - LAST_AMT)/LAST_AMT)*100,1) AS AMT_RATE
+		FROM 
+		( 
+			SELECT SUM(SALE_AMT) AS THIS_AMT 
+			FROM TBADMI_DATE_INFO 
+			WHERE admi_cd = #{admiCd}
+			AND STDR_DATE LIKE ${thisDate}||'%' 
+		) A,
+		(
+			SELECT SUM(SALE_AMT) AS LAST_AMT
+			FROM TBADMI_DATE_INFO 
+			WHERE admi_cd = #{admiCd}
+			AND STDR_DATE like ${lastDate}||'%' 
+		) B
+	</select>
+
+
+	<select id="getCtyTotData" parameterType="java.util.Map" resultType="java.lang.String" >
+		SELECT SUM(TOT_CNT) as totCnt
+		FROM TBCOM_TOTAL
+	    WHERE 1=1
+	    AND CTY_CD = #{ctyCd}
+	    AND STDR_YM BETWEEN TO_CHAR(DATE_TRUNC('MONTH', (#{thisDate}||'01')::DATE) - INTERVAL '23 MONTH ','YYYYMM')::TEXT AND #{thisDate}
+	</select>
+	
+	<select id="getMonTotData" parameterType="java.util.Map" resultType="java.lang.String" >
+		SELECT SUM(TOT_CNT) as totCnt
+		FROM TBCOM_TOTAL
+	    WHERE 1=1
+	    AND CTY_CD = #{ctyCd}
+	    AND STDR_YM = #{thisDate}
+	</select>
+</mapper>

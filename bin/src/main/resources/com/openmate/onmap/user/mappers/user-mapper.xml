@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.user.dao.UseMenuLogginDao">
+
+<!-- 접속 로그 데이터 삽입 -->
+<insert id="logging">
+	INSERT INTO TBCOM_LOG
+		(
+		  org_id
+		, contract_id
+		, user_id
+		, url
+		, menu_nm
+		, log_time
+		, user_ip
+		, log_msg
+	    ) VALUES (
+   		  #{orgId}
+		, #{contractId}
+		, #{userId}
+		, #{url}
+		, #{menuNm}
+		, NOW()
+		, #{userIp}
+		, #{logMsg}
+	   )
+</insert>
+
+</mapper>

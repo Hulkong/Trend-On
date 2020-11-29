@@ -1,0 +1,625 @@
+@charset "utf-8"; 
+
+/* 개발자 CSS ==================================================================================================== */
+/* 메인 */
+/* 메인 메인 */
+.apply_btn {width:300px;height:100px;background-color:#ff6f15;position:fixed;top:120px;left:50px;z-index:3;border-radius:20px;cursor:pointer;}
+.apply_btn p {font-size:30px; color:#fff; text-align:center;position:absolute;width:100%;height:100%;top:30%;font-weight:bold;}
+/* // 메인 메인 */
+
+/* 로그인 버튼 font 크기 */
+#mainHeader2 .gnb > ul li a {font-size:16px;}
+
+/* 로그인 팝업 밑 버튼 */
+#loginDiv .layer_btm {clear:both; margin:20px 0;}
+#loginDiv .layer_btm ul {text-align:center;}
+#loginDiv .layer_btm ul li {display:inline-block; margin:0 10px;width:150px;}
+#loginDiv .layer_btm ul li a {display:block; height:40px; line-height:40px; padding:0 10px; border-radius:40px; border:none; font-size:14px; font-weight:bold; color:#FFF; text-align:center; background:#d7d7d7;}
+#loginDiv .layer_btm ul li a.btn_confirm {background:#ff6f15;}
+#loginDiv .layer_btm ul li a.btn_cancel {}
+/* ///로그인 팝업 밑 버튼 */
+
+
+/* 서브 메인 */
+.infoPop{width:450px;height:400px;background-color:#fff;position:absolute;top:30%;left:45%;z-index:3;}
+.infoPop_close {right:0;margin:10px;position:absolute;cursor:pointer;}
+.infoPop h1 {font-size:32px;font-weight:bold;text-align:center;padding:25px 10px 30px 10px;}
+.infoPop p {font-size:20px;line-height:2;text-align:center;}
+.infoPop p strong{font-weight:bold;}
+
+/* 서브 메인 가운데 이미지 */
+/* .crtfcContents {width:100%; min-width:1024px; height:100%; background-repeat:no-repeat; background-position:center top;background:url("../images/main/visual_bg_01.jpg");filter: opacity(70%); -webkit-filter: opacity(70%);background-position: center; */
+.crtfcContents {width:100%; min-width:1024px; height:100%; background-repeat:no-repeat; background-position:center top; overflow-y: hidden;}
+/* //서브 메인 가운데 이미지 */
+/* 서브 메인 수치 text*/
+#mainContents #data_area {padding: 0px 70px 0;}
+#mainContents .navi_menu {top:400px;  min-width: 847px;}
+/* @media (max-width: 1215px) { */
+/* 	#mainContents .navi_menu ul li {display: block;} */
+/* 	#mainContents .navi_menu ul li p {display:inline-block; padding:15px;} */
+	
+/* } */
+#mainContents .navi_menu ul li {margin: 15px; background-color: rgba(3,3,3,0.3); height: 121px; float:left;}
+#mainContents .navi_menu ul li p {font-size:18px; color:#FFF; padding: 4px 0;}
+/* #mainContents .navi_menu ul li p.mCenter {padding:20px 0 10px; } */
+#mainContents .navi_menu ul li p.mCenter span{font-size:30px;}
+#mainContents .navi_menu ul li p.mLast span{font-size:14px;}
+
+#mainContents .navi_menu .menu1,
+#mainContents .navi_menu .menu3,
+#mainContents .navi_menu .menu4,
+#mainContents .navi_menu .menu6 {
+	width: calc(35% - 30px);
+}
+
+#mainContents .navi_menu .menu2,
+#mainContents .navi_menu .menu5 {
+	width: calc(30% - 30px);
+}
+
+#mainContents .navi_menu .menu3 {
+    height: calc(136px * 2);
+    float: right;
+}
+
+#mainContents .navi_menu .menu3 div {
+	padding: 60px 0px;
+}
+
+#mainContents .navi_menu .menu3 p {
+	padding: 10px 0;
+}
+
+
+/* //서브 메인 수치 text*/
+#mainContents .bottomBtn { position:absolute; left:0; top:730px; width:100%; text-align:center; }
+#mainContents .bottomBtn .contents_btn {
+   border :2px solid #fff;
+   color:#fff;
+   padding : 15px 50px;
+   border-radius: 5px;
+   display: inline-block;
+   cursor:pointer;
+}
+/* // 서브 메인 */
+
+
+/* 메인 끝 */
+.rolling.visual ul.list li {width:100%;height:100%;}
+.rolling.visual ul.list li > div {min-width:1024px; height:100%; background-repeat:no-repeat; background-position:center top;}
+.rolling.visual .mask {position:absolute; left:0; top:0px; width:100%; height:100%; background:url("../images/main/visual_mask.png") no-repeat center 0; background-size:100% 100%;}
+
+.pop_layer2.layer_join {display:none; top:50px; left:50%; width:630px; margin-left:-345px;}
+
+.bx_area .region_btn { padding:2px 10px; border-radius:5px; border:none; font-weight:bold; color:#FFF; background:#b2b2b2;}
+
+.section_top .article_rgt .group_period .btn_period {float:left; margin:0 0 0 18px;}
+.section_top .article_rgt .group_period .btn_period a {display:block; height:28px; line-height:28px; padding: 0 24px; border-radius:28px; border:none; font-size:14px; font-weight:bold; color:#FFF; background:#2f6ac2;}
+
+.section_top .txt_infor_top {float:left;width:55%; line-height:1.8; margin:10px 0 0 140px; color:#999;position:absolute;}
+
+.map_reLoad {position:absolute; z-index:1; right: 20px; top:80px; padding:7px; border:2px solid #BBB; border-radius:4px; cursor:pointer; background:#FFF;}
+
+.dot {position:absolute; display:block;}
+
+.fs14 {font-size:14px;}
+.pb100 {padding-bottom:100px;}
+
+/* 경제 24시 ======================================================================================== */
+
+/* 경제24의 오른쪽위 버튼에 엑셀 다운로드 추가 */
+.section_top .article_rgt.withExcel {float:right;margin:6px 0 3px;width: 352px;display:inline-flex;}
+.section_top .article_rgt .excelBtn {float:left;margin-left:2px;}
+.section_top .article_rgt .excelBtn a {display:block; height:26px; line-height:26px; padding:0 20px 0 40px; border-radius:28px; font-weight:bold; font-size:12px; color:#fff; background:#2e7c29 url("../images/common/icon_excel.png") no-repeat 20px center; }
+/* .section_top .article_rgt .excelBtn a:hover {display:block; height:26px; line-height:26px; padding:0 20px 0 40px; border-radius:28px; font-weight:bold; font-size:12px; color:#2e7c29;border:1px solid #2e7c29; background:#ffffff url("../images/common/btn_excel_hover.png") no-repeat 20px center; } */
+
+/* 경제 24 시계열 그래프 테두리 추가 */
+#time24Chart {border:1px solid #E3E3E3; height:101px;}
+
+/* 경제 24의 시계열 그래프위의 안내메시지 */
+.section_top .top_graph .group_help {position:absolute; left:50%; top:8px; margin-left:-178px; padding:10px 30px; border-radius:5px; font-size:14px; color:#FFF; background:rgba(51, 51, 51, .8);text-align:center;cursor:pointer;}
+.section_top .top_graph .group_help p.fs13 {font-size:13px;}
+.section_top .top_graph .group_help p .fs11 {font-size:11px;}
+
+/* 경제24의 지도  */
+div#map24 {width:100%; height:650px; /*margin-top:180px;*/}
+/* 경제24의 지도 범례  */
+#ecnmy24_legend {position:absolute; z-index:1; right: 20px; bottom:20px; width:200px; height:50px; background-color:rgba(255, 255, 255, .5); padding-left:3px; padding-right:3px;}
+
+/* 경제24의 지도위의 chart */
+.chart24 {width:50%; position: absolute; z-index: 1; left: 20px; bottom: 20px;letter-spacing:0em;max-width:911px; min-width:690px;}
+/* .chart24 {width:540px; position: absolute; z-index: 1; left: 20px; bottom: 20px;} */
+/* 경제24의 지도위의 chart의 배경투명도 */
+.chart24 #bg {opacity:0.8 !important;}
+/* 경제 24의 지도위의 chart open, close 버튼 추가 */
+.chartCloseBtn {position:absolute;top:5px;left:5px;display:block;}
+.chartOpenBtn {width:25px;height:24px;background-color:#666;display:none;}
+
+/* 경제 24의 지도위의 selectbox 스타일 적용*/
+/* .regionSelect {z-index:2;position: absolute; top:30px;right:80px;} */
+.box_pos.pos_ty3 .select_box {display:block; position:absolute; z-index:1; right:120px; top:212px;}
+.box_pos.pos_ty3 .select_box.eventSelect {z-index:1; float:none; margin:0;}
+.box_pos.pos_ty3 .select_box.regionSelect {z-index:1; float:none; margin:0;}
+
+/* 경제 트렌드 ======================================================================================== */
+
+/* 경제 트렌드 시계열 그래프의 테두리 추가 */
+#rangeChart {border:1px solid #E3E3E3; height:101px;}
+
+/* 경제 트렌드의 지도 영역 설정 */
+div#trendMap1_1, 
+div#trendMap1_2, 
+div#trendMap1_3, 
+div#trendMap1_4 {width:100%; height:310px;}
+
+/* 경제 트렌드의 지도 범례 설정 */
+#ecnmyTrnd_salamt_legend, 
+#ecnmyTrnd_cnt_legend, 
+#ecnmyTrnd_expndtr_legend, 
+#ecnmyTrnd_inflow_legend {position:absolute; z-index:1; width:210px; background-color:rgba(255, 255, 255, .5); bottom:20px; right:10px; padding-left:3px; padding-right:3px;}
+
+/* 경제 트렌드의 그래프 영역 설정 */
+#amtTreemap, 
+#cntBar, 
+#inflowBar		{width:100%; height:310px;}
+
+#expndtrBar1,
+#expndtrBar2	{height:310px;}
+
+/* 경제 트렌드의 '성/연령변 대표 유입인구'그래프(stackedgrouped_chart)의 스타일  */
+/* 축 & 그리드선 */
+#cntBar .axis path,
+#cntBar .axis line {   fill: none;   stroke: #333; stroke-width: 0.3px; stroke-opacity: 0.7; }
+#cntBar .axisStack path,
+#cntBar .axisStack line {   fill: none;   stroke: #333; stroke-width: 0.3px;  stroke-opacity: 0.7;}
+#cntBar .axisStack .tick line{ stroke-opacity : 0.3; }
+/* #cntBar line{ 	fill: none;    stroke: blue;    stroke-width: 0.3px;  } */
+
+/* text */
+#cntBar text { fill-opacity : 0.7; font-size:12px;}
+
+/* 경제 트렌드 text의 번호 표시*/
+table.brd_dl dt em.rank {display:inline-block; width:19px; height:19px; line-height:19px; margin-right:6px; border-radius:19px; font-size:14px; font-weight:bold; color:#FFF; text-align:center; background:#f26522;}
+
+/* 경제트렌드 '유입인구 소비시간' 그래프(barChart_plus)의 tooltip때문에 ie에서 스크롤 생김 방지 */
+#inflowBar > div {overflow:hidden;}
+
+
+
+/* 경제 트렌드 지역간 비교 ======================================================================================== */
+/* 지역간 비교의 메뉴 숨기기(처음 지역검색시) */
+div.section_compare .tooltip {text-align: left;}
+.menu_compare {display:none;}
+
+/*지역간 비교의 '기본 지역'의 지도 영역 설정 */
+div#map_trend2_1, 
+div#map_trend2_2, 
+div#map_trend2_3, 
+div#map_trend2_4 {width:100%; height:206px;}
+
+div.map_container {height:205px;}
+
+/* 지역간 비교의 '선택한 지역'의 지도 영역 설정 */
+div#map_trend3_1, 
+div#map_trend3_2, 
+div#map_trend3_3 {width:55%; height:205px; float: left;}
+div#map_trend3_4 {width:100%; height:206px;}
+
+div#map_trend3_1 .d3plus_tooltip_header, 
+div#map_trend3_2 .d3plus_tooltip_header, 
+div#map_trend3_3 .d3plus_tooltip_header {text-align: center; color: #333}
+
+div#map_trend3_1 .d3plus_tooltip_data_container, 
+div#map_trend3_2 .d3plus_tooltip_data_container, 
+div#map_trend3_3 .d3plus_tooltip_data_container {display: none;}
+
+div#map_trend3_1 .leaflet-control-zoom, 
+div#map_trend3_2 .leaflet-control-zoom, 
+div#map_trend3_3 .leaflet-control-zoom {display: none;}
+
+div._bar_chart {width: 30%; background: transparent; height: 206px; float: left;}
+div._bar_chart .axis text {fill-opacity: 0.7; font-size: 10px;}
+div._bar_chart .axis.left path,
+div._bar_chart .axis.bottom path {fill: none; stroke: #333; stroke-opacity:0.3; shape-rendering: crispEdges;}
+div._bar_chart .axis.bottom ._tspan {fill-opacity: 0.7; font-size: 16px;}
+div._bar_chart .axis.top {display: none;}
+div._bar_chart .axis.left .tick line {stroke:#333; stroke-opacity:0.2;}
+
+div._right_text {width: 15%; background: transparent; height: 206px; float: left; font-weight: bold; color: black;}
+div._right_text ._title  {margin-top: 80px;}
+div._right_text ._contents  {}
+
+/*지역간 비교의 '기본 지역'의 지도 범례 스타일 설정 */
+#ecnmyTrnd_salamt_legend1, 
+#ecnmyTrnd_cnt_legend1, 
+#ecnmyTrnd_expndtr_legend1, 
+#ecnmyTrnd_inflow_legend1 {position:absolute; z-index:1; width:160px; background-color:rgba(255, 255, 255, .5); bottom:20px; right:5px; padding-left:3px; padding-right:3px;}
+
+/* 지역간 비교의 '선택한 지역'의 지도 범례 스타일 설정 */
+#ecnmyTrnd_salamt_legend2, 
+#ecnmyTrnd_cnt_legend2, 
+#ecnmyTrnd_expndtr_legend2, 
+#ecnmyTrnd_inflow_legend2 {position:absolute; z-index:1; width:160px; background-color:rgba(255, 255, 255, .5); bottom:20px; right:5px; padding-left:3px; padding-right:3px;}
+
+/*지역간 비교의 '기본 지역'의 그래프 영역 설정 */
+#amtTreemap1, 
+#cntBar1, 
+#inflowBar1		{width:100%; height:206px;}
+#expndtrBar11	{height:206px;}
+#expndtrBar21	{height:206px;}
+
+/* 지역간 비교의 '기본 지역'의 '성/연령별 대표 유입인구'의 text */
+#vst_char_ET1 {margin-right:15px;}
+/* 지역간 비교의 '선택한 지역'의 '성/연령별 대표 유입인구'의 text */
+#vst_char_ET2 {margin-right:15px;}
+/* 지역간 비교의 '기본 지역'의 '업종별 유입인구 소비특성'의 text */
+#up_cnsmpTotal_ET1 {margin-right:15px;}
+/* 지역간 비교의 '선택한 지역'의 '업종별 유입인구 소비특성'의 text */
+#up_cnsmpTotal_ET2 {margin-right:15px;}
+
+/* 지역간 비교의 '기본지역'의 '성/연령별 대표 유입인구'의 그래프(stackedgrouped_chart) 스타일  */
+/* 축  & 그리드 선 */
+#cntBar1 .axis path,
+#cntBar1 .axis line {   fill: none;   stroke: #333; stroke-width: 0.3px; stroke-opacity: 0.7; }
+#cntBar1 .axisStack path,
+#cntBar1 .axisStack line {   fill: none;   stroke: #333; stroke-width: 0.3px;  stroke-opacity: 0.7;}
+#cntBar1 .axisStack .tick line{ stroke-opacity : 0.3; }
+#cntBar1 line{ 	fill: none;    stroke: blue;    stroke-width: 0.3px;  }
+/* text */
+#cntBar1 text { fill-opacity : 0.7; font-size:10px;}
+#cntBar1 tspan, #cntBar1 textPath {
+    white-space: inherit;font-size:8px;
+}
+
+
+/*지역간 비교의 '선택한 지역'의 그래프 영역 설정 */
+#amtTreemap2, 
+#cntBar2, 
+#inflowBar2		{width:100%; height:206px;}
+#expndtrBar12	{height:206px; width: 100%;}
+#expndtrBar22	{height:206px;}
+
+/* 지역간 비교의 '선택한 지역'의 '성/연령별 대표 유입인구'의 그래프(stackedgrouped_chart) 스타일  */
+/* 축  & 그리드 선 */
+#cntBar2 .axis path,
+#cntBar2 .axis line {   fill: none;   stroke: #333; stroke-width: 0.3px; stroke-opacity: 0.7; }
+#cntBar2 .axisStack path,
+#cntBar2 .axisStack line {   fill: none;   stroke: #333; stroke-width: 0.3px;  stroke-opacity: 0.7;}
+#cntBar2 .axisStack .tick line{ stroke-opacity : 0.3; }
+#cntBar2 line{ 	fill: none;    stroke: blue;    stroke-width: 0.3px;  }
+/* text */
+#cntBar2 text { fill-opacity : 0.7; font-size:10px;}
+#cntBar2 tspan, #cntBar2 textPath {
+    white-space: inherit;font-size:8px;
+}
+
+#amt_list2,
+#vst_list2,
+#cnsmp_list2 {
+	color: #fff;
+}
+
+#up_cnsmpTotal_ET2 {
+	color: black;
+}
+
+
+/* article_top */
+/* article_compare */
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp dt:after {content:" "; display:inline-block; margin:0 5px;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp dd { font-size:12px; }
+/* article_top */
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol {margin:0px; *zoom:1;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol:after {content:""; display:block; clear:both;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li {float:left; margin-right:15px; font-size:12px; color:#5b666d;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl {*zoom:1;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl:after {content:""; display:block; clear:both;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl dt {float:left; display:flex;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl dt:after {content:" "; display:inline-block; margin:0 3px;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl dt em {display:inline-block; width:17px; height:17px; line-height:16px; margin-right:2px; border-radius:17px; font-size:14px; font-weight:bold; color:#FFF; text-align:center; background:#f26522;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl dt span {display:inline-block;font-size:12px;}
+.layer_compare .compare_result .section_compare .article_compare .article_top dl.total.mega_up_cnsmp ol li dl dd {float:left;}
+
+/* 이벤트 효과 ======================================================================================== */
+
+/* 이벤트 효과 시계열 그래프의 테두리 추가 */
+#rangeEventChart {border:1px solid #E3E3E3; height:101px;}
+.article_group .article_lf .tit .thisAmdi {font-size:27px;}
+.device_tb .article_group .article_lf .tit .thisAmdi {font-size:18px;}
+
+/* 이벤트 효과의 행정동선택을 위한 selectBox 스타일 */
+.select_box.select_ty2 {margin-top:5px;}
+.select_box.select_ty2 .tit {height:25px; line-height:25px; padding:0 60px 0 10px; border-radius:3px; border:1px solid #ff6f15;}
+.select_box.select_ty2 .tit:before {right:0; top:0; width:32px; height:27px; border-radius:3px; color:#FFF; text-align:center;background-color:#ff6f15;}
+
+/* 이벤트 효과의 '주변지역 총 경제효과' text 정렬 스타일  */
+.article_group .article_lf .tit_dl.sub_tit {margin-top:0px; font-size:15px; font-weight:bold; color:#f26522;margin-left:0px;}
+.device_tb .article_group .article_lf .tit_dl.sub_tit {margin-top:0px; font-size:12px;margin-left:0px;}
+.article_group .article_lf .tit_dl.sub_tit #sAdmiAmt,
+.article_group .article_lf .tit_dl.sub_tit #sAdmiRate { margin-left:10px; font-size:18px; }
+.device_tb .article_group .article_lf .tit_dl.sub_tit #sAdmiAmt,
+.device_tb .article_group .article_lf .tit_dl.sub_tit #sAdmiRate { margin-left:10px;font-size:14px; }
+
+/* 이벤트 효과의 '주변지역 업종별 경제효과' text 정렬 스타일  */
+.article_group .article_lf .tit_dl.sub_tit #mxmAmtUpjong_value strong,
+.article_group .article_lf .tit_dl.sub_tit #mxmRateUpjong_value strong { font-size:18px; }
+.device_tb .article_group .article_lf .tit_dl.sub_tit #mxmAmtUpjong_value strong,
+.device_tb .article_group .article_lf .tit_dl.sub_tit #mxmRateUpjong_value strong { font-size:14px; }
+
+/* 이벤트 효과의 지도 영역 설정 */
+div#eventMap1, 
+div#eventMap2, 
+div#eventMap3, 
+div#eventMap4, 
+div#eventMap5, 
+div#eventMap6 {width:100%; height:310px;}
+
+/* 이벤트 효과의 지도 범례 스타일 */
+#event1_legend, 
+#event2_legend, 
+#event3_legend, 
+#event4_legend, 
+#event5_legend, 
+#event6_legend {position:absolute; z-index:1; width:200px; background-color:rgba(255, 255, 255, .5); bottom:10px; right:10px; padding-left:3px; padding-right:3px;}
+
+/* 이벤트 효과의 그래프 영역 설정 */
+#eventChart1, 
+#eventChart2, 
+#eventChart3, 
+#eventChart4	{width:100%; height:310px;}
+#eventChart5_1	{height:310px;}
+#eventChart5_2	{height:310px;}
+#eventChart6	{width:100%; height:310px;}
+
+/* 이벤트 효과의 '총 경제효과' 그래프(lineChartMulti_plus)의 추가 스타일 적용 */
+#eventChart1  text {font-size:12px;}
+#eventChart1 tspan, #eventChart1 textPath {
+	font-size:12px;
+}
+
+/* 이벤트 효과의 '성/연령별 대표 유입인구' 그래프(stackedgrouped_chart) 스타일 */
+/* 축  & 그리드 선 */
+#eventChart4 .axis path,
+#eventChart4 .axis line {   fill: none;   stroke: #333; stroke-width: 0.3px; stroke-opacity: 1; }
+#eventChart4 .axisStack path,
+#eventChart4 .axisStack line {   fill: none;   stroke: #333; stroke-width: 0.3px;  stroke-opacity: 1;}
+#eventChart4 .axisStack .tick line{ stroke-opacity : 1; }
+/* #eventChart4 line{ 	fill: none;    stroke: blue;    stroke-width: 1px;  } */
+
+/* text */
+#eventChart4 text { fill-opacity : 0.7;  font-size:12px;}
+#eventChart4 tspan, #eventChart4 textPath {
+    white-space: inherit;
+}
+
+/* 이벤트 효과의 '주변지역 업종별 경제효과'지도위의 selectbox 스타일  */
+#upAmtSelectText  , 
+#upRateSelectText {font-size:14px; font-weight: normal}
+/* .eventSelect {z-index:1; right:20px; top:5px; position:absolute;} */
+.eventSelect {z-index: 1; float: right; margin: 12px 65px;}
+.box_pos.pos_ty2 .select_box {display:block; position:absolute; z-index:1; right:65px; top:12px;}
+.box_pos.pos_ty2 .select_box.eventSelect {z-index:1; float:none; margin:0;}
+
+
+/* 이벤트 효과 text */
+.article_group .article_lf .tit_dl_black {margin-top:0px; font-size:18px; font-weight:bold; color:#333333;}
+
+/* 이벤트효과 '유입인구 소비시간' 그래프(barChart_plus)의 tooltip때문에 ie에서 스크롤 생김 방지 */
+#eventChart6 > div {overflow:hidden;}
+
+/* 데이터가 너무 적을 경우 다른 조건 선택 유도 메시지 */
+.message_layer {display:none; position:fixed; z-index:4; top:0; left:0; bottom:0; right:0; background:rgba(0, 0, 0, 0.7);}
+.message_layer .messageBox{width:500px;hegiht:100%; margin:20% auto; background-color:#fff;padding:50px 0;border-radius: 5px;}
+.message_layer .messageBox p{text-align:center;font-size:15px; font-weight:bold;line-height:2;}
+.message_layer .messageBox .tit{font-size:20px; font-weight:bold;}
+.message_layer .messageBox .desc{font-size:15px;}
+/* common style ======================================================================================== */
+
+/* 기간직접입력  */
+/* 경제 트렌드 & 이벤트 효과  : 기간직접입력 팝업창의 데이터 기준일, 조회가능 범위 text 스타일 */
+.pop_period_txt {text-align:center;}
+.pop_period_txt strong {font-weight:bold;}
+
+/* 경제트렌드 - 달력 (datepicker) */
+/* 선택 */
+div.ui-datepicker {display:none; width:280px; padding:3px 2px; border:1px solid #AAA; border-radius:3px; background:#FFF;}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td a.ui-state-active {color:#FFF; background: #ff6f15 50% 50% repeat-x;}
+/* disable */
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td.ui-state-disabled {opacity:.35;}
+div.ui-datepicker table.ui-datepicker-calendar tbody tr td span {display:block; padding:.4em .2em .1em;}
+
+/* 지도 범례 스타일 */
+.map .legend small {font-size:9px;}
+.map .legend ul li.key {border-top-width: 15px; border-top-style: solid; font-size: .75em; width: 20%; height:9.8px; padding-bottom:5px; padding-left: 0; padding-right: 0; display:inline-block; vertical-align:top;;}
+
+/* 팝업 지도 범례 스타일 */
+.pop_map.pop_legend ul li.key {border-top-width: 15px; border-top-style: solid; font-size: .75em; width: 20%; height:9.8px; padding-left: 0; padding-right: 0; display:inline-block;}
+
+/* 시계열 그래프 slider 스타일 */
+.bx_graph svg {font: 10px sans-serif;}
+.bx_graph path.line {fill: none; stroke: #666; stroke-width: 1.5px;}
+.bx_graph path.area {fill: #e7e7e7;}
+.bx_graph .axis {shape-rendering: crispEdges;}
+/* .bx_graph .x.axis line {stroke: #fff;} */
+.bx_graph .x.axis .minor {stroke-opacity: .5;}
+.bx_graph .x.axis path {display: none;}
+/* .bx_graph .y.axis line{fill: none; stroke: #fff;} */
+.bx_graph .y.axis .minor {stroke-opacity: .5;}
+.bx_graph .y.axis path {display: none;}
+.bx_graph .guideline {stroke: rgb(255, 0, 0); stroke-width:2;}
+.bx_graph .marker .dot {fill: #FF0000;}
+/* .bx_graph .gslider {width: 20px; height: 29px; position:absolute; background-image: url('/images/map/pointer.png'); background-repeat:no-repeat; top:80px; z-index:2;} */
+
+/*   .bx_graph .gslider {position:absolute; z-index:1; top:102px; height: 22px; padding:0 8px; font-size:11px; line-height:22px; color:#FFF; background-color:#f26522; } */
+/*   .bx_graph .gslider.startSlider {text-align:right;} */
+/*   .bx_graph .gslider.startSlider:after {content:""; position:absolute; left:-14px; top:0; width:14px; height:22px; background-position:0 0; background-image: url('/images/map/pointer_bg.png'); background-repeat:no-repeat;} */
+/*   .bx_graph .gslider.endSlider {text-align:left;} */
+/*   .bx_graph .gslider.endSlider:before {content:""; position:absolute; right:-14px; top:0; width:14px; height:22px; background-position:right 0; background-image: url('/images/map/pointer_bg.png'); background-repeat:no-repeat;} */
+  
+/*   .bx_graph.dateRage .gslider {position:absolute; z-index:1; top:81px; height: 22px; padding:0 8px; font-size:11px; line-height:22px; color:#FFF; background-color:#f26522; } */
+/* 20170821 수정  .bx_graph .gslider {position:absolute; z-index:1; top:82px; height: 20px; padding:0 8px; font-size:11px; line-height:22px; color:#FFF; background-color:#f26522;cursor:move; } */
+.bx_graph .gslider {position:absolute; z-index:1; top:82px; height: 20px; padding:0 8px; font-size:14px; font-weight:bold; line-height:22px; color:#FFF; background-color:#f26522;cursor:move; }
+
+.bx_graph .gslider.startSlider {text-align:right;}
+.bx_graph .gslider.startSlider:after {content:""; position:absolute; left:-14px; top:0; border-style:solid; border-color:transparent transparent #f26522 transparent; border-width:0 0 20px 14px;}
+
+.bx_graph .gslider.endSlider {text-align:left;}
+.bx_graph .gslider.endSlider:after {content:""; position:absolute; right:-14px; top:0; border-style:solid; border-color:#f26522 transparent transparent transparent; border-width:20px 14px 0 0 ; }
+  
+
+/* tooltip  */
+/* .d3plus_tooltip_dev_contents {color: rgb(68, 68, 68); font-family: Helvetica; font-weight: 200; font-size: 12px; box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 3px; position: absolute; max-height: 610px; z-index: 2000; top: 7px; left: 721px;} */
+.d3plus_tooltip_dev_contents {color: rgb(68, 68, 68); font-family: Nanum Gothic; font-weight: 200; font-size: 12px; box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 3px; position: absolute; max-height: 700px; z-index: 5; }
+.d3plus_tooltip_dev_container {background-color: rgb(255, 255, 255); padding: 6px; width: 250px;}
+.d3plus_tooltip_dev_header {position: relative; z-index: 1;}
+.d3plus_tooltip_dev_title {max-width: 260px; color: rgb(207, 176, 23); vertical-align: top; width: 240px; display: inline-block; overflow: hidden; text-overflow: ellipsis; word-wrap: break-word; z-index: 1; font-size: 16px; line-height: 17px; padding: 3px;}
+.d3plus_tooltip_dev_data_container {overflow-y: auto; z-index: -1; max-height: 144px;}
+.d3plus_tooltip_dev_data_block {font-size: 12px; padding: 3px 6px; position: relative; color: rgb(0, 0, 0);}
+.d3plus_tooltip_dev_data_name {display: inline-block; width: 155px; min-height: 14px;}
+.d3plus_tooltip_dev_data_value {display: block; position: absolute; text-align: right; top: 3px; right: 6px; }
+.d3plus_tooltip_dev_data_seperator {background-color: rgb(221, 221, 221); display: block; height: 1px; margin: 0px 3px;}
+.d3plus_tooltip_dev_footer {font-size: 10px; position: relative; text-align: center;}
+  
+
+/* map tooltip */
+#map24 .leaflet-popup-content-wrapper,
+#trendMap1_1 .leaflet-popup-content-wrapper, 
+#trendMap1_2 .leaflet-popup-content-wrapper, 
+#trendMap1_3 .leaflet-popup-content-wrapper, 
+#trendMap1_4 .leaflet-popup-content-wrapper,
+div#eventMap1 .leaflet-popup-content-wrapper, 
+div#eventMap2 .leaflet-popup-content-wrapper,
+div#eventMap3 .leaflet-popup-content-wrapper,
+div#eventMap4 .leaflet-popup-content-wrapper, 
+div#eventMap5 .leaflet-popup-content-wrapper,
+div#eventMap6 .leaflet-popup-content-wrapper {border-radius:0px;}
+#trendMap2_1 .leaflet-popup-content-wrapper, 
+#trendMap2_2 .leaflet-popup-content-wrapper, 
+#trendMap2_3 .leaflet-popup-content-wrapper, 
+#trendMap2_4 .leaflet-popup-content-wrapper,
+#trendMap3_1 .leaflet-popup-content-wrapper, 
+#trendMap3_2 .leaflet-popup-content-wrapper, 
+#trendMap3_3 .leaflet-popup-content-wrapper, 
+#trendMap3_4 .leaflet-popup-content-wrapper{border-radius:0px;}
+
+
+/* 롤링 이미지 & 롤링하는 동안의 background 효과  */
+#fog {display:none; position:fixed; z-index:9999; top:0; left:0; bottom:0; right:0; background:rgba(0, 0, 0, 0.7);}
+.loadingImg {position:absolute; width:100%; height:100%; z-index:2; border:1px solid #DDD; background:rgba(50, 50, 50, .5);}
+.loadingImg img {position:absolute; left:50%; top:50%; margin:-16px 0 0 -16px;}
+
+#fog .reportDataLoading {width:100%; height:200px; margin-top:300px;}
+#fog .reportDataLoading .loadingBox{width:500px;height:100%; margin:0 auto; background-color:#fff;padding:50px 0;}
+#fog .reportDataLoading .loadingBox p{text-align:center;margin-bottom:20px;}
+#fog .reportDataLoading .loadingBox .tit{font-size:20px; font-weight:bold;}
+#fog .reportDataLoading .loadingBox .desc{font-size:15px;}
+
+#fog2 {display:none; position:fixed; z-index:9999; top:0; left:0; bottom:0; right:0; background:rgba(0, 0, 0, 0.7);}
+#fog2 ._dataReady {width:100%; height:280px; margin-top:300px;}
+#fog2 ._dataReady ._container{width:600px;height:100%; margin:0 auto; background-color:#fff;}
+#fog2 ._header {text-align: right; height: 50px;}
+#fog2 ._header p {text-align: right; cursor: pointer; display: inline-block; font-size: 25px; margin-right: 15px; margin-top: 11px;}
+#fog2 ._dataReady ._container ._contents p{text-align:center;margin-bottom:20px;}
+#fog2 ._dataReady ._container ._contents .tit{font-size:20px; font-weight:bold;}
+#fog2 ._dataReady ._container ._contents .desc{font-size:15px;}
+
+
+/* 전체 z-index 설정  */
+.section_map .leaflet-pane {z-index:0;}
+.section_map .leaflet-top, 
+.section_map .leaflet-bottom {z-index:1;}
+
+.article_group .article_rg .leaflet-pane {z-index:0;}
+.article_group .article_rg .leaflet-top,
+.article_group .article_rg .leaflet-bottom {z-index:1;}
+
+.section_compare .group_chart .leaflet-pane {z-index:0;}
+.section_compare .group_chart .leaflet-top, 
+.section_compare .group_chart .leaflet-bottom {z-index:1;}
+
+/* stackedgroupedChart font color change =================== */
+text.changeColor {background-color:#ffffff !important;}  
+
+/* 화면 크기에 따른 사이즈 조절 'class = device_tb' ======================================================================================== */
+/* 경제 트렌드   */
+.device_tb div#trendMap1_1, 
+.device_tb div#trendMap1_2, 
+.device_tb div#trendMap1_3, 
+.device_tb div#trendMap1_4, 
+.device_tb #amtTreemap, 
+.device_tb #cntBar, 
+.device_tb #inflowBar {width:100%; height:200px;}
+
+.device_tb #expndtrBar1, 
+.device_tb #expndtrBar2 {height:200px;}
+
+/* 이벤트 효과   */
+.device_tb div#eventMap1, 
+.device_tb div#eventMap2, 
+.device_tb div#eventMap3, 
+.device_tb div#eventMap4, 
+.device_tb div#eventMap5, 
+.device_tb div#eventMap6, 
+.device_tb #eventChart1, 
+.device_tb #eventChart2, 
+.device_tb #eventChart3, 
+.device_tb #eventChart4		{width:100%; height:170px;}
+.device_tb #eventChart5_1	{height:170px;}
+.device_tb #eventChart5_2	{height:170px;}
+.device_tb #eventChart6		{width:100%; height:170px;}
+
+/* 임시 ================================================== */
+.temp_font {font-size:12px;}
+
+/* error 페이지  */
+ .er_wrab {width:70%;height:80%;margin:0 auto;margin-top:5%}
+ .imageBx {width:50%;height:100%;float:left;}
+ .textBx {width:50%;height:100%;float:right;}
+ .textBx .middleBx {width:100%; height:50%;margin-top:25%;}
+ .textBx h1 {text-align:center; font-weight:bold; font-size:32px;margin-bottom:20px;}
+ .textBx p {text-align:center; font-size:18px;margin-bottom:15px;}
+ 
+  .er_wrab2 {width:100%;height:100%;margin:0 auto;}
+ .imageBx2 {width:40%;height:30%;margin:0 auto;}
+ .textBx2 {width:50%;height:100%;margin:0 auto;}
+ .textBx2 h1 {text-align:center; font-weight:bold; font-size:32px;margin-bottom:20px;}
+ .textBx2 p {text-align:center; font-size:18px;margin-bottom:15px;}
+ 
+ .layer_btm {clear:both; margin:25px 0;}
+ .layer_btm ul {text-align:center;}
+ .layer_btm ul li {display:inline-block; margin:0;}
+ .layer_btm ul li a {display:block; height:40px; line-height:40px; padding:0 56px; border-radius:40px; border:none; font-size:14px; font-weight:bold; color:#FFF; text-align:center; background:#d7d7d7;}
+ .layer_btm ul li a.btn_confirm {background:#ff6f15;}
+
+ 
+ /************ 약관 ************/
+@media (min-width: 768px) {
+    .contents_body_ty2 {width:1080px; margin:0 auto 50px; padding:80px 40px 0;}
+}
+
+/* 약관 */
+@media (max-width: 767px) {
+    .contents_body_ty2 { width:90%; margin:0 auto; padding:80px 0px; }
+    table.brd_clause tr td,table.brd_clause tr th {font-size:0.8vw; line-height:1.0; letter-spacing: 0px;}
+    #footer .inner.off {display:block;padding:30px 0 25px;}
+    #footer .inner .f_menu {display:block;}
+    #footer .inner .toggle_footer {display:none;}
+}
+
+/**  동영상 팝업   **/
+.pop_layer3 {display:none; position:fixed; z-index:9999; top:0; left:0; bottom:0; right:0; background:rgba(0, 0, 0, 0.7);text-align:center;}
+.media_pop {position:absolute;left:50%;top:50%;margin-left:-450px;margin-top:-283px;}
+.media_pop .layer_top {text-align:right; width:100%;height:50px;}
+.media_pop .layer_bottom {position:relative;text-align:left; color:#fff;height:20px;font-size:18px;cursor:pointer;}
+
+
+/* 이벤트 효과 메뉴별  ban 화면 */
+/* .eResult1, .eResult2, .eResult3 { */
+/* 	position:absolute; */
+/* 	width : 100%; */
+/* 	height : 90%; */
+/* 	background-color:rgba(0,0,0,0.7); */
+/* 	z-index:2; */
+/* 	display:none; */
+/* } */
+

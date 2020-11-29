@@ -1,0 +1,59 @@
+---
+config:
+  report:
+    path: report
+
+  phantomjs:
+    host: http://localhost:48000ß
+
+  trendOn:
+    title: Trend-ON
+    host: http://www.trend-on.co.kr
+
+  vworld:
+    host: http://xdworld.vworld.kr:8080
+
+  jdbc:
+    postgisdb:
+      driverClassName: org.postgresql.Driver
+      url: jdbc:postgresql://ip:port/database?stringtype=unspecified
+      username: "input the username"
+      password: "input the password"
+
+  email:
+    host: smtp.office365.com
+    portNumber: "587"
+    senderAddress: "input the email"
+    username: "input the email"
+    password: "input the password"
+    salesId: "input the email"
+
+  auth:
+    login: #로그인 페이지 정보
+      url: /onmap/login/login.do #url
+      jspPath: redirect:/onmap/main.do #jsp 파일 위치
+    ajaxlogin: #ajax로그인 페이지 정보
+      url: /onmap/ajax-login.json #url
+      jspPath: void
+    encStr: #문자열 암호화
+      url: /onmap/login/gen-pw.do #url
+      jspPath: void
+    info: #로그인 정보 샘플
+      url: /onmap/login-info.do #url
+      jspPath: onmap/user_info #jsp 파일 위치
+
+  service:
+    url: http://localhost:8080
+
+  fileUpload:
+    path: "input the upload path"
+    path-url: /images/upload/
+
+  excelFile:
+    path: "input the excel download path"
+
+  version: ${timestamp}
+
+  naverApi:
+    clientId: "input the clientId"
+    clientSecret: "input the clientSecret"

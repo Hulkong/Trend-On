@@ -1,0 +1,2867 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.EventEffectDao">	
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>	
+
+	<!-- 지도 shape -->
+	<!-- 이벤트 효과 : 지도 (행정동) -->
+	<select id="getEventMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		select id
+		     , nm
+		     , FULL_NAME
+		     , shape as geometry
+		  from tbregion
+		 where id = #{admiCd}
+	     union all
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1
+	]]>  
+	<if test='ctyCd != null and ctyCd !=""'><if test='ctyCd != "ALL"'>
+		   AND B.ID like #{ctyCd}||'%'
+	</if></if>
+	<if test='ctyCd != "ALL"'>
+		<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>  
+    <![CDATA[		       
+		    		 AND B.ID IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    		 AND B.ID IN (SELECT B.ID  
+		    		    			   FROM TBREGION A
+		    		    			      , TBREGION B 
+		    		    			  WHERE A.ID = #{admiCd} 
+		    		    			    AND B.ID like #{ctyCd}||'%'
+		    		    			    AND B.ID != #{admiCd}
+		    		    			    AND B.RGN_CLSS ='H4' 
+		    		    			  ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+	</if>
+    <![CDATA[	 
+		   AND B.RGN_CLSS = #{rgnClss} 
+	]]>	
+	</select>
+	
+		<!-- 이벤트 효과 : 지도 (행정동) -->
+	<select id="getEventMapAll" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		select id
+		     , nm
+		     , FULL_NAME
+		     , shape as geometry
+		  from tbregion
+		 where 1 = 1
+		   AND PARENT_ID like substr(#{admiCd},1,4)||'%' 
+		   AND RGN_CLSS = 'H4'
+	]]>	
+	</select>
+	
+	<!-- 이벤트 효과 : 지도 (시군구) -->
+	<select id="getEventCtyMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.FULL_NAME
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1  
+		   AND B.RGN_CLSS = #{rgnClss} 		   
+	]]>	
+	<if test='rgnClss == "H3"'>
+	<![CDATA[	
+		   AND B.PARENT_ID <> '0'
+	]]>	
+	</if>
+	</select>
+	
+	<!-- /// 지도 shape -->
+	
+	
+	
+
+	<!-- 이벤트효과내 공통쿼리  -->
+	<!-- 시계열 그래프 : 거래금액 -->
+	<select id="getEventEffectGraphData" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+			SELECT A.STDR_DATE
+				 , #{admiCd}::TEXT AS ADMI_CD
+				 , COALESCE(B.TOTAL_CNT,0) AS TOTAL_CNT
+				 , COALESCE(B.SALE_CNT,0) AS SALE_CNT
+				 , COALESCE(B.SALE_AMT,0) AS SALE_AMT
+			FROM (
+        ]]>
+        <if test='serviceClss == "3"'>
+        <![CDATA[
+            SELECT TO_CHAR(GENERATE_SERIES( '20180101'::DATE, '20181231'::DATE, '1 day'),'YYYYMMDD') STDR_DATE
+              FROM TBCOM_STDR
+        ]]>
+        </if>
+        <if test='serviceClss != "3"'>
+        <![CDATA[
+            SELECT TO_CHAR(GENERATE_SERIES( TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) - INTERVAL '23 MONTH ','YYYYMMDD')::DATE
+                                                              , TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) + INTERVAL '1 MONTH - 1 day','YYYYMMDD')::DATE
+                                                              ,'1 day'),'YYYYMMDD'
+                   ) STDR_DATE
+              FROM TBCOM_STDR
+        ]]>
+        </if>
+        <![CDATA[ 
+			) A
+			LEFT OUTER JOIN
+			TBADMI_DATE_INFO B
+			ON 1=1
+			AND A.STDR_DATE = B.STDR_DATE
+			AND B.ADMI_CD = #{admiCd}
+			ORDER BY A.STDR_DATE
+			
+		]]>
+	</select>
+	
+	<!-- 시계열 그래프 : 유동인구  -->
+	<select id="getEventEffectGraphData02" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT A.STDR_DATE, SUM(TOTAL_CNT)AS TOTAL_CNT 
+		FROM(
+    ]]>
+    <if test='serviceClss == "3"'>
+    <![CDATA[
+        SELECT TO_CHAR(GENERATE_SERIES( '20180101'::DATE, '20181231'::DATE, '1 day'),'YYYYMMDD') STDR_DATE
+          FROM TBCOM_STDR
+    ]]>
+    </if>
+    <if test='serviceClss != "3"'>
+    <![CDATA[
+        SELECT TO_CHAR(GENERATE_SERIES( TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) - INTERVAL '23 MONTH ','YYYYMMDD')::DATE
+                                              , TO_CHAR(DATE_TRUNC('MONTH', (STDR_YM||'01')::DATE) + INTERVAL '1 MONTH - 1 day','YYYYMMDD')::DATE
+                                              , '1 day'),'YYYYMMDD'
+                       ) STDR_DATE
+                  FROM TBCOM_STDR
+    ]]>
+    </if>
+    <![CDATA[  
+		) A
+		LEFT OUTER JOIN
+		TBADMI_FLOAT_ALL_CNT B 
+		ON 1=1
+		AND A.STDR_DATE = B.STDR_DATE
+		AND B.ADMI_CD = #{admiCd}
+		GROUP BY A.STDR_DATE, CTY_CD
+		ORDER BY A.STDR_DATE
+	]]>
+	</select>
+	
+	<!-- 선택한 행정동 인접 행정동 리스트 -->
+		<select id="getAdmiCnt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.ID
+		  FROM TBREGION A
+		     , TBREGION B 
+		 WHERE 1=1 
+		   AND A.ID =  #{admiCd} 
+		   AND B.ID !=  #{admiCd}
+		   AND B.RGN_CLSS ='H4'  
+		   AND B.ID like #{ctyCd}||'%'
+		   AND ST_Distance(A.SHAPE,B.SHAPE) <500
+	]]>  
+	</select>
+	
+	<!-- 선택한 행정동의 읍면동 구분 코드 조회 -->
+	<select id="getFlg" parameterType="java.util.Map" resultType="java.lang.String">
+		SELECT admi_div_cd 
+		FROM TBADMI_FLG 
+		WHERE admi_cd = #{admiCd}
+	</select>
+		
+	<!-- /// 이벤트효과내 공통쿼리  -->
+	
+	
+	<!-- page01 -->
+	<!-- 이벤트효과[카드] : page1. 총 경제효과 변화  text  , page2. 거래금액기준 선택한 행정동의 경제효과 text -->
+	<select id="getThisAmtChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	 	SELECT ROUND(LW5,1) AS LW5    
+		     , ROUND(LW4,1) AS LW4         
+		     , ROUND(LW3,1) AS LW3    
+		     , ROUND(TERM,1) AS TERM    
+		     , ROUND(LW2,1) AS LW2    
+		     , ROUND(LW1,1) AS LW1    
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3,1)     
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) )/5,1)        
+                     ELSE 0 END ) AS DAYS_RATE
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7  and  ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END  ) AS RATE  
+		  FROM
+		      (
+		        SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_AMT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_AMT/ 7
+		                		ELSE NULL 
+		               	   END) AS LW1
+		             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+		         FROM TBADMI_UPJONG_INFO_D A
+		        WHERE 1=1
+		          AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+		          AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		          AND ADMI_CD = #{admiCd}
+			      AND SALE_AMT > 0
+			      AND SALE_CNT > 0 			      
+		      ) T
+		 WHERE 1=1
+           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0 
+	]]>	
+	</select>
+		
+	<!-- 이벤트효과[카드] : page1. 이벤트 기간동안의 거래총액 (선택기간) - 그래프  -->
+	<select id="getEventEffectThisAmtList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	  SELECT ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW1  
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW2   
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW3  
+           , COALESCE(ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/(#{endDate}::date - #{startDate}::date + 1)),0) AS LAW4
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                    AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7 
+		                    THEN SALE_AMT / 7		              
+				            ELSE NULL 
+				       END)) AS LAW5
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                    AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                    THEN SALE_AMT/ 7		                        
+		                	ELSE NULL 
+		               END)) AS LAW6            
+        FROM TBADMI_UPJONG_INFO_D A
+       WHERE 1=1
+         AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+	     AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+         AND ADMI_CD = #{admiCd}
+		 AND SALE_AMT > 0
+		 AND SALE_CNT > 0  		 
+	]]>	
+	</select>
+
+	<!-- 이벤트효과[카드] : page1. 이벤트 기간동안의 거래총액 (비교기간) - 그래프  -->
+	<select id="getEventEffectLastAmtList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	  SELECT ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW1  
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW2   
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END) / 7) AS LAW3  
+           , COALESCE(ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  #{lastStartDate} AND #{lastEndDate} THEN SALE_AMT END)/(#{lastEndDate}::date - #{lastStartDate}::date + 1)),0) AS LAW4 
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 7,'YYYYMMDD') 
+				            AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) >= 7
+				            THEN SALE_AMT 
+				            ELSE NULL 
+				       END) / 7) AS LAW5 
+		   , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 14,'YYYYMMDD') 
+             				AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) >= 14 
+             				THEN SALE_AMT 
+             				ELSE NULL 
+             		   END) / 7) AS LAW6
+        FROM TBADMI_UPJONG_INFO_D A
+       WHERE 1=1
+         AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -21,'YYYYMMDD') 
+	     AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') +14,'YYYYMMDD')
+         AND ADMI_CD = #{admiCd}
+	     AND SALE_AMT > 0
+		 AND SALE_CNT > 0	 
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page1. 총 유동인구 변화(총 유동인구 변화률, 평상시평균, 이벤트기간평균)  text  -->
+	<select id="getThisFloatChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(LW5,1) AS LW5    
+		     , ROUND(LW4,1) AS LW4         
+		     , ROUND(LW3,1) AS LW3    
+		     , ROUND(TERM,1) AS TERM    
+		     , ROUND(LW2,1) AS LW2    
+		     , ROUND(LW1,1) AS LW1    
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3,1)     
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) )/5,1)        
+                     ELSE 0 END ) AS DAYS_RATE
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7  and  ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END  ) AS RATE  
+		  FROM
+		      (
+		        SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW5  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW4  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN TOTAL_CNT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN TOTAL_CNT/ 7
+		                		ELSE NULL 
+		               	   END) AS LW1
+		             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN TOTAL_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+		         FROM TBADMI_FLOAT_ALL_CNT A
+		        WHERE 1=1
+		          AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+		          AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		          AND ADMI_CD = #{admiCd}
+			      AND TOTAL_CNT > 0	      
+		      ) T
+		 WHERE 1=1
+           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0
+	]]>	
+	</select>
+			
+	<!-- 이벤트효과[통신] : page1. 이벤트 기간동안의 유동인구 	변화 (이벤트기간) - 그래프  -->
+	<select id="getEventEffectThisFloatList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	  SELECT ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW1  
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW2   
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW3  
+           , COALESCE(ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN TOTAL_CNT END)/(#{endDate}::date - #{startDate}::date + 1)),0) AS LAW4
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                    AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7 
+		                    THEN TOTAL_CNT / 7		              
+				            ELSE NULL 
+				       END)) AS LAW5
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                    AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                    THEN TOTAL_CNT/ 7		                        
+		                	ELSE NULL 
+		               END)) AS LAW6            
+        FROM TBADMI_FLOAT_ALL_CNT A
+       WHERE 1=1
+         AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+	     AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+         AND ADMI_CD = #{admiCd}
+		 AND TOTAL_CNT > 0		 
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page1. 비교기간동안의 유동인구 변화 (비교기간) - 그래프  -->
+	<select id="getEventEffectLastFloatList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	  SELECT ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW1  
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW2   
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END) / 7) AS LAW3  
+           , COALESCE(ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  #{lastStartDate} AND #{lastEndDate} THEN TOTAL_CNT END)/(#{lastEndDate}::date - #{lastStartDate}::date + 1)),0) AS LAW4 
+           , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 7,'YYYYMMDD') 
+				            AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) >= 7
+				            THEN TOTAL_CNT 
+				            ELSE NULL 
+				       END) / 7) AS LAW5 
+		   , ROUND(SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') + 14,'YYYYMMDD') 
+             				AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) >= 14 
+             				THEN TOTAL_CNT 
+             				ELSE NULL 
+             		   END) / 7) AS LAW6
+        FROM TBADMI_FLOAT_ALL_CNT A
+       WHERE 1=1
+         AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{lastStartDate},'YYYYMMDD') -21,'YYYYMMDD') 
+	     AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{lastEndDate},'YYYYMMDD') +14,'YYYYMMDD')
+         AND ADMI_CD = #{admiCd}
+	     AND TOTAL_CNT > 0 
+	]]>	
+	</select>
+	<!-- /// page01 -->
+	
+	<!-- page02 -->
+	<!-- 이벤트효과[카드] : page2. 주변지역 경제효과 해당행정동 값  (거래량)  text  -->
+	<select id="getThisCntChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	 	SELECT ROUND(LW5,1) AS LW5
+		     , ROUND(LW4,1) AS LW4   
+		     , ROUND(LW3,1) AS LW3    
+		     , ROUND(TERM,1) AS TERM    
+		     , ROUND(LW2,1) AS LW2    
+		     , ROUND(LW1,1) AS LW1   
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) < 7
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3,1)     
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{lastEndDate},'YYYYMMDD') from tbcom_stdr) >= 14
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) )/5,1)        
+                     ELSE 0 
+                END ) AS DAYS_RATE  
+             , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END) AS RATE  
+            
+		  FROM
+		      (
+		        SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+	             	 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_CNT / 7
+		               			ELSE NULL 
+	               		   END) AS LW2 
+	             	 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_CNT/ 7
+	                			ELSE NULL 
+	                	   END) AS LW1 	 
+		             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+		         FROM TBADMI_UPJONG_INFO_D A
+		        WHERE 1=1
+	              AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+	              AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+		          AND ADMI_CD = #{admiCd} 		          
+		      ) T
+		 WHERE 1=1
+           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[카드] : page2.  주변지역 경제효과 list (매출액 기준) - text  -->
+	<select id="getMxmIncrsAmt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ID
+		     , NM
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END) AS RATE  
+		  FROM
+		      (
+			    SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_AMT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_AMT/ 7
+		                		ELSE NULL 
+		                   END) AS LW1
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				     , B.ID
+				     , B.NM
+				 FROM  TBADMI_UPJONG_INFO_D A
+				     , TBREGION B
+			    WHERE 1=1
+				  AND A.ADMI_CD = B.ID
+				  AND SALE_AMT > 0
+			      AND SALE_CNT > 0
+				  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+				  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')  				  
+	]]>			         
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		          AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+	    		  AND ADMI_CD IN (SELECT B.ID  
+	    		    			    FROM TBREGION A
+	    		    			       , TBREGION B 
+	    		    			   WHERE A.ID = #{admiCd} 
+	    		    			     AND B.ID like substr(#{admiCd},1,4)||'%'
+	    		    			     AND B.ID != #{admiCd}
+	    		    			     AND B.RGN_CLSS ='H4' 
+	    		    			   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if>   
+	<![CDATA[
+				GROUP BY ID, NM
+		      ) T 
+		  WHERE 1=1
+            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+		  ORDER BY 3 DESC
+	  	  LIMIT 3 
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[카드] : page2.  주변지역 경제효과 list(거래량 기준) - text  -->
+	<select id="getMxmIncrsRate" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ID
+		     , NM
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		      (
+			    SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_CNT / 7		              
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_CNT/ 7		                        
+		                		ELSE NULL 
+		                   END) AS LW1	
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				     , B.ID
+				     , B.NM
+				 FROM  TBADMI_UPJONG_INFO_D A
+				     , TBREGION B
+			    WHERE 1=1
+				  AND A.ADMI_CD = B.ID
+				  AND SALE_AMT > 0
+			          AND SALE_CNT > 0
+				  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD')
+				  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD') 				  
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		          AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    		 AND ADMI_CD IN (SELECT B.ID  
+		    		    			   FROM TBREGION A
+		    		    			      , TBREGION B 
+		    		    			  WHERE A.ID = #{admiCd} 
+		    		    			    AND B.ID like substr(#{admiCd},1,4)||'%'
+		    		    			    AND B.ID != #{admiCd}
+		    		    			    AND B.RGN_CLSS ='H4' 
+		    		    			  ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if>    
+	<![CDATA[
+				GROUP BY ID, NM
+		      ) T 
+		  WHERE 1=1
+            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+		  ORDER BY 3 DESC
+	  	  LIMIT 3 
+	]]>	
+	</select>
+		
+	<!-- 이벤트효과[카드] : page2. 주변지역 경제효과  - 주제도  -->
+	<select id="getEventSalamtChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT T111.NM
+		     , T111.ID
+		     , T111.RATE
+		     , T111.CNT_RATE
+		     , T111.SALE_AMT
+		     , CASE T111.GRD WHEN 1 THEN '#D7191C' 
+			                 WHEN 2 THEN '#FDAE61'
+			                 WHEN 3 THEN '#FFFFBF'
+			                 WHEN 4 THEN '#ABDDA4'
+			                 WHEN 5 THEN '#2C7BB6'
+			                 ELSE '#000000' END AS D_COLOR
+			 , CASE T111.CNT_GRD WHEN 1 THEN '#D7191C' 
+			                	 WHEN 2 THEN '#FDAE61'
+			                	 WHEN 3 THEN '#FFFFBF'
+			                	 WHEN 4 THEN '#ABDDA4'
+			                	 WHEN 5 THEN '#2C7BB6'
+			                	 ELSE '#000000' END AS CNT_D_COLOR 
+		     , MIN(T111.RATE) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(T111.RATE) OVER(PARTITION BY GRD) AS GRD_MAX
+		     , MIN(T111.CNT_RATE) OVER(PARTITION BY CNT_GRD) AS CNT_GRD_MIN
+		     , MAX(T111.CNT_RATE) OVER(PARTITION BY CNT_GRD) AS CNT_GRD_MAX
+		 FROM (  
+				SELECT T11.NM
+				     , T11.ID
+				     , T11.RATE
+				     , T11.CNT_RATE  
+				     , T11.SALE_AMT   
+				     , NTILE(5) OVER( ORDER BY T11.RATE DESC) AS GRD
+				     , NTILE(5) OVER( ORDER BY T11.CNT_RATE DESC) AS CNT_GRD
+				  FROM (
+						SELECT NM 
+						     , ID 
+						     , ROUND(TERM) AS SALE_AMT
+				             , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                     ELSE 0 
+				                END) AS RATE
+				             , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0)) != 0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0))/4) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) )/4) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0)) != 0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) )/3) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0))/3) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0)) !=0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0))/5) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0))/5) * 100,1)
+				                     ELSE 0 
+				                END) AS CNT_RATE
+						  FROM
+						      (
+						        SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		                             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                                             AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                                        THEN SALE_AMT / 7
+		                              ELSE NULL END) AS LW2 
+		                            , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                       AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                                       THEN SALE_AMT/ 7
+		                               ELSE NULL END) AS LW1 
+						             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM 
+							     	 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW5  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW4  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW3 
+		                             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                                             AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                                        THEN SALE_CNT / 7
+		                              ELSE NULL END) AS CNT_LW2 
+		                            , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                       AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                                       THEN SALE_CNT/ 7
+		                               ELSE NULL END) AS CNT_LW1
+						             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS CNT_TERM 
+								     , B.ID 
+								     , B.NM 
+								 FROM TBADMI_UPJONG_INFO_D A
+								    , TBREGION B 
+							        WHERE 1=1
+								      AND A.ADMI_CD = B.ID
+							          AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+							          AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+							          AND ADMI_CD = #{admiCd} 							          
+								  AND SALE_AMT > 0
+								  AND SALE_CNT > 0
+								GROUP BY ID, NM 
+						     ) T1
+						 WHERE 1=1
+				           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+							UNION ALL  
+						SELECT NM 
+						     , ID 
+						     , ROUND(TERM) AS SALE_AMT
+				  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                     ELSE 0 
+				                END ) AS RATE  
+						     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0)) != 0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0))/4) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) )/4) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0)) != 0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) )/3) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0))/3) * 100,1)
+				                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0)) !=0
+				                     THEN ROUND((CNT_TERM - ( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0))/5) /(( COALESCE(CNT_LW5,0) + COALESCE(CNT_LW4,0) + COALESCE(CNT_LW3,0) + COALESCE(CNT_LW2,0) + COALESCE(CNT_LW1,0))/5) * 100,1)
+				                     ELSE 0 
+				                END ) AS CNT_RATE  
+						  FROM
+						      (
+						        SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		                             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                                             AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                                        THEN SALE_AMT / 7
+		                              ELSE NULL END) AS LW2 
+		                            , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                       AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                                       THEN SALE_AMT/ 7
+		                               ELSE NULL END) AS LW1 
+						             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM 
+							     	 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW5  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW4  
+						             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS CNT_LW3 
+		                             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                                             AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                                        THEN SALE_CNT / 7
+		                              ELSE NULL END) AS CNT_LW2 
+		                            , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                       AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                                       THEN SALE_CNT/ 7
+		                               ELSE NULL END) AS CNT_LW1 
+						             , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS CNT_TERM 
+								     , B.ID 
+								     , B.NM 
+								 FROM TBADMI_UPJONG_INFO_D A
+								    , TBREGION B 
+							        WHERE 1=1
+								  AND A.ADMI_CD = B.ID
+							          AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+							          AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+								  AND SALE_AMT > 0
+								  AND SALE_CNT > 0								  
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>  
+	<![CDATA[		       
+						  		  AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+						    	  AND ADMI_CD IN (SELECT B.ID  
+						    		    		    FROM TBREGION A
+						    		    			   , TBREGION B 
+						    		    		   WHERE A.ID = #{admiCd} 
+						    		    			 AND B.ID like #{ctyCd}||'%'
+						    		    			 AND B.ID != #{admiCd}
+						    		    			 AND B.RGN_CLSS ='H4' 
+						    		    		   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+	<![CDATA[
+							    GROUP BY ID, NM
+						      ) T2
+						  WHERE 1=1
+				            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0 
+				          ) T11
+				      ) T111
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page2. 주변지역 유동인구 변화율  - text  -->
+	<select id="getRegionFloatTxt" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ID
+		     , NM
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		      (
+			    SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN TOTAL_CNT / 7		              
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN TOTAL_CNT/ 7		                        
+		                		ELSE NULL 
+		                   END) AS LW1	
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN TOTAL_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				     , B.ID
+				     , B.NM
+				 FROM  tbadmi_float_all_cnt A
+				     , TBREGION B
+			    WHERE 1=1
+				  AND A.ADMI_CD = B.ID
+			          AND TOTAL_CNT > 0
+				  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD')
+				  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD') 		
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>  
+	<![CDATA[		       
+				  AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    	  AND ADMI_CD IN (SELECT B.ID  
+		    		    		    FROM TBREGION A
+		    		    			   , TBREGION B 
+		    		    		   WHERE A.ID = #{admiCd} 
+		    		    			 AND B.ID like #{ctyCd}||'%'
+		    		    			 AND B.ID != #{admiCd}
+		    		    			 AND B.RGN_CLSS ='H4' 
+		    		    		   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+	<![CDATA[
+				GROUP BY ID, NM
+		      ) T 
+		  WHERE 1=1
+            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+		  ORDER BY 3 DESC
+	  	  LIMIT 3 
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page2. 주변지역 유동인구 변화율  - 주제도  -->
+	<select id="getRegionFloatMap" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT ID
+		     , NM
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		      (
+			    SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN TOTAL_CNT / 7		              
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN TOTAL_CNT/ 7		                        
+		                		ELSE NULL 
+		                   END) AS LW1	
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN TOTAL_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				     , B.ID
+				     , B.NM
+				 FROM  tbadmi_float_all_cnt A
+				     , TBREGION B
+			    WHERE 1=1
+				  AND A.ADMI_CD = B.ID
+			          AND TOTAL_CNT > 0
+				  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD')
+				  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD') 		
+				  AND ADMI_CD = #{admiCd}
+				GROUP BY ID, NM
+		      ) T 
+		  WHERE 1=1
+            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+		UNION ALL
+		SELECT ID
+		     , NM
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		      (
+			    SELECT SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN TOTAL_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN TOTAL_CNT / 7		              
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN TOTAL_CNT/ 7		                        
+		                		ELSE NULL 
+		                   END) AS LW1	
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN TOTAL_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				     , B.ID
+				     , B.NM
+				 FROM  tbadmi_float_all_cnt A
+				     , TBREGION B
+			    WHERE 1=1
+				  AND A.ADMI_CD = B.ID
+			          AND TOTAL_CNT > 0
+				  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD')
+				  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD') 		
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>  
+	<![CDATA[		       
+				  AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    	  AND ADMI_CD IN (SELECT B.ID  
+		    		    		    FROM TBREGION A
+		    		    			   , TBREGION B 
+		    		    		   WHERE A.ID = #{admiCd} 
+		    		    			 AND B.ID like #{ctyCd}||'%'
+		    		    			 AND B.ID != #{admiCd}
+		    		    			 AND B.RGN_CLSS ='H4' 
+		    		    		   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+	<![CDATA[
+				GROUP BY ID, NM
+		      ) T 
+		  WHERE 1=1
+            AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+	]]>
+	</select>
+	<!-- /// page02 -->
+	
+	<!-- page03 -->
+	<!-- 이벤트효과[카드] : page3. 성/연령별 대표 소비인구 (text) -->
+	<select id="getEventAmtChartr" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+		       END) CHR
+		  FROM TBADMI_VISIT_INFO_D_NEW
+		 WHERE 1=1       
+		   AND ADMI_CD like #{admiCd}||'%'
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page3. 성/연령별 대표 유동인구 (text) -->
+	<select id="getEventFloatChartr" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+		       END) CHR
+		  FROM TBADMI_FLOAT_INFO
+		 WHERE 1=1       
+		   AND ADMI_CD = #{admiCd}
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[카드] : page3. 성/연령별 대표 소비인구 (chart) -->
+	<select id="getEventSaleList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_20_RATE
+		     , ROUND(SUM(M_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_30_RATE
+		     , ROUND(SUM(M_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_40_RATE
+		     , ROUND(SUM(M_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_50_RATE
+		     , ROUND(SUM(M_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_60_RATE
+		     , ROUND(SUM(F_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS	F_20_RATE
+		     , ROUND(SUM(F_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_30_RATE
+		     , ROUND(SUM(F_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_40_RATE
+		     , ROUND(SUM(F_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_50_RATE
+		     , ROUND(SUM(F_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_60_RATE
+		  FROM TBADMI_VISIT_INFO_D_NEW A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND ADMI_CD = #{admiCd}
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page3. 성/연령별 대표 유동인구 (chart) -->
+	<select id="getEventFloatList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_20_RATE
+		     , ROUND(SUM(M_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_30_RATE
+		     , ROUND(SUM(M_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_40_RATE
+		     , ROUND(SUM(M_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_50_RATE
+		     , ROUND(SUM(M_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_60_RATE
+		     , ROUND(SUM(F_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS	F_20_RATE
+		     , ROUND(SUM(F_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_30_RATE
+		     , ROUND(SUM(F_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_40_RATE
+		     , ROUND(SUM(F_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_50_RATE
+		     , ROUND(SUM(F_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_60_RATE
+		  FROM TBADMI_FLOAT_INFO A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND ADMI_CD = #{admiCd}
+	]]>	
+	</select>
+	
+		
+	<!-- 이벤트효과[카드] : page3. 업종별 경제효과 (매출액 기준) - 텍스트   -->
+	<select id="getUpjongAmtChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT CODE
+		     , CD_NM
+		     , ROUND(LW5) AS LW5    
+		     , ROUND(LW4) AS LW4     
+		     , ROUND(LW3) AS LW3     
+		     , ROUND(TERM) as AMT    
+		     , ROUND(LW2) AS LW2     
+		     , ROUND(LW1) AS LW1    
+  		     , ROUND(CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+	                      THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)),1)
+	                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+	                      THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) ),1)     
+	                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                      THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) ),1)        
+	                      ELSE 0 
+                	 END ) AS DAYS_RATE
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		      ( 
+				SELECT B.CD_NM
+				     , A.UPJONG2_CD AS CODE
+				     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+                     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+                                AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+	                            THEN SALE_AMT / 7
+	                   ELSE NULL END) AS LW2 
+	                 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+	                            AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                            THEN SALE_AMT/ 7
+	                    ELSE NULL END) AS LW1 
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+			      FROM TBADMI_UPJONG_INFO_D A
+				     , TBCOMM_CODE B    
+			     WHERE 1=1
+				   AND A.UPJONG2_CD = B.CODE
+				   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+				   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+			       AND ADMI_CD = #{admiCd}
+				   AND SALE_AMT > 0
+			       AND SALE_CNT > 0
+		          AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )  			       
+				 GROUP BY A.UPJONG2_CD,B.CD_NM
+			) T
+		WHERE 1=1
+          AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+          AND COALESCE(TERM,0) > 0
+        ORDER BY RATE DESC
+        LIMIT 1
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[카드] : page3. 업종별 경제효과 (거래량 기준) - 텍스트  -->
+	<select id="getUpjongRateChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT CODE
+		     , CD_NM
+		     , ROUND(LW5) AS LW5    
+		     , ROUND(LW4) AS LW4     
+		     , ROUND(LW3) AS LW3     
+		     , ROUND(TERM) as CNT    
+		     , ROUND(LW2) AS LW2     
+		     , ROUND(LW1) AS LW1      
+  		     , ROUND(CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3,1)     
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) )/5,1)        
+                     ELSE 0 
+                END ) AS DAYS_RATE
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END  ) AS RATE  
+		  FROM
+		      ( 
+				SELECT B.CD_NM
+				     , A.UPJONG2_CD AS CODE 
+				     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+                     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+                                AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+	                            THEN SALE_CNT / 7
+	                   ELSE NULL END) AS LW2 
+	                 , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+	                            AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                            THEN SALE_CNT/ 7
+	                    ELSE NULL END) AS LW1 
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+			      FROM TBADMI_UPJONG_INFO_D A
+				     , TBCOMM_CODE B    
+			     WHERE 1=1
+				   AND A.UPJONG2_CD = B.CODE
+				   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+				   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+			       AND ADMI_CD = #{admiCd}
+				   AND SALE_AMT > 0
+			       AND SALE_CNT > 0
+		          AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )   			       
+				 GROUP BY A.UPJONG2_CD, B.CD_NM
+			  ) T
+		 WHERE 1=1
+           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+           AND COALESCE(TERM,0) > 0
+		  ORDER BY RATE DESC
+		  LIMIT 1
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[카드] : page3.  업종별 경제효과 (매출액 기준) hoz graph - 그래프  -->
+	<select id="getUpjongAmtChngeGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT CODE
+		     , CD_NM
+		     , ROUND(LW5) AS LW5    
+		     , ROUND(LW4) AS LW4     
+		     , ROUND(LW3) AS LW3     
+		     , ROUND(TERM) AS AMT    
+		     , ROUND(LW2) AS LW2     
+		     , ROUND(LW1) AS LW1    
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)),1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) ),1)     
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) ),1)        
+                     ELSE 0 
+                END ) AS DAYS_RATE
+  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+		  FROM
+		       ( 
+				SELECT B.CD_NM
+				     , A.UPJONG2_CD AS CODE 
+				     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+			         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_AMT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_AMT/ 7
+		                		ELSE NULL 
+		                   END) AS LW1
+			         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+			      FROM TBADMI_UPJONG_INFO_D A
+				     , TBCOMM_CODE B    
+			     WHERE 1=1
+				   AND A.UPJONG2_CD = B.CODE
+				   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+				   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+			       AND ADMI_CD = #{admiCd}
+				   AND SALE_AMT > 0
+			       AND SALE_CNT > 0
+		          AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )  			       
+				 GROUP BY A.UPJONG2_CD, B.CD_NM
+			  ) T
+		 WHERE 1=1
+           AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+           AND COALESCE(TERM,0) > 0
+		 ORDER BY RATE DESC nulls last
+	]]>
+    <if test='limitOff == null or limitOff == ""'>  
+	<![CDATA[		       
+		LIMIT 10
+	]]>			 
+    </if>
+	
+	</select>
+	
+	<!-- 이벤트효과[카드] : page3.  업종별 경제효과 (거래량 기준) hoz graph - 그래프  -->
+	<select id="getUpjongRateChngeGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT CODE
+			     , CD_NM
+			     , ROUND(LW5) AS LW5    
+			     , ROUND(LW4) AS LW4     
+			     , ROUND(LW3) AS LW3     
+			     , ROUND(TERM) AS CNT
+			     , ROUND(AMT_TERM) AS AMT    
+			     , ROUND(LW2) AS LW2     
+			     , ROUND(LW1) AS LW1    
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)),1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) ),1)     
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) ),1)        
+	                     ELSE 0 
+                	END ) AS DAYS_RATE
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+	                     ELSE 0 
+                	END ) AS RATE  
+			  FROM ( 
+					SELECT B.CD_NM
+					     , A.UPJONG2_CD AS CODE 
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_CNT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_CNT/ 7
+		                		ELSE NULL 
+		                   END) AS LW1 					         
+				     , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM
+				     , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS AMT_TERM  
+				  FROM TBADMI_UPJONG_INFO_D A
+					 , TBCOMM_CODE B    
+				 WHERE 1=1
+					   AND A.UPJONG2_CD = B.CODE
+					   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+					   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+				       AND ADMI_CD = #{admiCd}
+					   AND SALE_AMT > 0
+				       AND SALE_CNT > 0
+		          AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )   				       
+					 GROUP BY A.UPJONG2_CD, B.CD_NM
+				  ) T
+			  WHERE 1=1
+                AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+                AND COALESCE(TERM,0) > 0
+		      ORDER BY RATE DESC nulls last
+	]]>
+	<if test='limitOff == null or limitOff == ""'>  
+	<![CDATA[		       
+		LIMIT 10
+	]]>			 
+    </if>
+	</select>
+	
+	<!-- /// page03 -->
+	<!-- page04 -->
+	<!-- 이벤트효과[통신] : page4. 유입 유동인구 수 (선택한 행정동 text) -->
+	<select id="getEventInflowFloatCnt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT SUM(TOTAL_CNT)AS TOTAL_CNT 
+		FROM TBADMI_FLOAT_ALL_CNT 
+		WHERE ADMI_CD = #{admiCd}
+		AND STDR_DATE  BETWEEN #{startDate} AND #{endDate}
+		AND LOC_CLSS_CD = 'E'
+	]]>
+	</select>
+
+	<!-- 이벤트효과[통신] : page4. 유입 유동인구 수 ( list) -->
+	<select id="getEventInflowFloatList" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		   SELECT B.NM  
+		        , SUM(TOTAL_CNT) AS IN_CNT
+		     FROM
+		          TBADMI_FLOAT_ALL_CNT A
+		       ,  TBREGION B
+		    WHERE 1=1     	       
+		      AND CTY_CD like substring(#{ctyCd},1,4)||'%'
+		      AND A.ADMI_CD <> #{admiCd}
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <= #{endDate}
+		      AND A.LOC_CLSS_CD = 'E'
+		      AND A.ADMI_CD = B.ID
+		      AND B.RGN_CLSS = #{rgnClss}       
+		 GROUP BY B.NM
+		 	ORDER BY 2 DESC
+			LIMIT 3
+	]]>
+	</select>
+
+	<!-- 이벤트효과[통신] : page4. 유입 유동인구 수 (주제도) -->
+	<select id="getEventInflowFloatMap" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		   SELECT B.NM
+		   		, B.ID  
+		        , SUM(TOTAL_CNT) AS IN_CNT
+		     FROM
+		          TBADMI_FLOAT_ALL_CNT A
+		       ,  TBREGION B
+		    WHERE 1=1     	       
+		      AND CTY_CD like substring(#{ctyCd},1,4)||'%'
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <= #{endDate}
+		      AND A.LOC_CLSS_CD ='E'
+		      AND A.ADMI_CD = B.ID
+		      AND B.RGN_CLSS = #{rgnClss}       
+		 GROUP BY B.NM,  B.ID 
+		 	ORDER BY 2 DESC
+	]]>
+	</select>
+	
+		
+	<!-- 이벤트효과[카드] : page4. 유입 소비인구 성/연령별 방문객 특성 (text)  -->
+	<select id="getEventVisitrChartr" parameterType="java.util.Map" resultType="java.lang.String" >
+	<![CDATA[
+			SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+				            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+				            WHEN SUM(M_20_CNT) THEN '20대 남성'
+				            WHEN SUM(M_30_CNT) THEN '30대 남성'
+				            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+				            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+				            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+				            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+				            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+				            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+				            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+				            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+				   END) CHR
+			  FROM TBADMI_VISIT_INFO_D_NEW
+			 WHERE 1=1       
+			   AND ADMI_CD = #{admiCd}
+			   AND LOC_CLSS_CD ='E'
+			   AND STDR_DATE >= #{startDate}
+		       AND STDR_DATE <= #{endDate}
+		       
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page4. 유입 유동인구 성/연령별 방문객 특성 (text) -->
+	<select id="getEventInflowFloatTxt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+		            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+		            WHEN SUM(M_20_CNT) THEN '20대 남성'
+		            WHEN SUM(M_30_CNT) THEN '30대 남성'
+		            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+		            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+		            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+		            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+		            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+		            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+		            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+		            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+		       END) CHR
+		  FROM tbadmi_inflow_float_info
+		 WHERE 1=1       
+		   AND ADMI_CD = #{admiCd}
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND LOC_CLSS_CD ='E'
+	]]>	
+	</select>
+	
+		
+	<!-- 이벤트효과[카드] : page4. 성/연령별 대표 소비인구 (chart) -->
+	<select id="getInflowSaleList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_20_RATE
+		     , ROUND(SUM(M_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_30_RATE
+		     , ROUND(SUM(M_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_40_RATE
+		     , ROUND(SUM(M_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_50_RATE
+		     , ROUND(SUM(M_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_60_RATE
+		     , ROUND(SUM(F_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS	F_20_RATE
+		     , ROUND(SUM(F_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_30_RATE
+		     , ROUND(SUM(F_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_40_RATE
+		     , ROUND(SUM(F_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_50_RATE
+		     , ROUND(SUM(F_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_60_RATE
+		  FROM TBADMI_VISIT_INFO_D_NEW A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND ADMI_CD = #{admiCd}
+		   AND LOC_CLSS_CD ='E'
+	]]>	
+	</select>
+	
+	<!-- 이벤트효과[통신] : page4. 성/연령별 대표 유동인구 (chart) -->
+	<select id="getInflowFloatList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT ROUND(SUM(M_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_20_RATE
+		     , ROUND(SUM(M_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_30_RATE
+		     , ROUND(SUM(M_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_40_RATE
+		     , ROUND(SUM(M_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_50_RATE
+		     , ROUND(SUM(M_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS M_60_RATE
+		     , ROUND(SUM(F_20_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS	F_20_RATE
+		     , ROUND(SUM(F_30_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_30_RATE
+		     , ROUND(SUM(F_40_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_40_RATE
+		     , ROUND(SUM(F_50_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_50_RATE
+		     , ROUND(SUM(F_60_CNT)/SUM(M_20_CNT+M_30_CNT+M_40_CNT+M_50_CNT+M_60_CNT+F_20_CNT+F_30_CNT+F_40_CNT+F_50_CNT+F_60_CNT)*100,1) AS F_60_RATE
+		  FROM tbadmi_inflow_float_info A
+		 WHERE 1=1       
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		   AND ADMI_CD = #{admiCd}
+		   AND LOC_CLSS_CD ='E'
+	]]>	
+	</select>
+	
+	<!-- /// page04 -->
+	<!-- page05 -->
+		
+	<!-- 이벤트효과[카드] : page5. 유입인구 소비 시간 - text  -->
+	<select id="getEventVisitrCnsmpTime" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		      SELECT B.CD_NM      
+	           , ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E' THEN TOTAL_CNT END)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1)   AS RATE
+	           , SUM(TOTAL_CNT) AS TOTAL_CNT
+	           , ROUND(SUM(TOTAL_CNT) / MAX(STDR_DATE)) AS DAY_TOTAL_CNT
+	        FROM TBCOMM_CODE B
+	        LEFT OUTER JOIN 
+	             (SELECT 
+  	                     '1' as TIMEZON_CD
+  	                   , LOC_CLSS_CD  
+  	                   , sum(timezon_cd_1_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}
+	             group by LOC_CLSS_CD  
+	               UNION ALL
+                  SELECT 
+  	                     '2' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_2_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}
+	               group by LOC_CLSS_CD  
+	               UNION ALL
+                  SELECT 
+  	                     '3' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_3_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}	               
+	               group by LOC_CLSS_CD  
+	               UNION ALL
+                  SELECT 
+  	                     '4' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_4_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}	               
+	               group by LOC_CLSS_CD  
+	               UNION ALL
+                  SELECT 
+  	                     '5' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_5_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}	               
+	               group by LOC_CLSS_CD  
+	               UNION ALL
+                  SELECT 
+  	                     '6' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_6_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}	
+	               group by LOC_CLSS_CD 
+	               union ALL
+                  SELECT 
+  	                     '7' as TIMEZON_CD
+  	                     ,LOC_CLSS_CD
+  	                   , sum(timezon_cd_7_cnt) as TOTAL_CNT
+  	                   , COUNT(DISTINCT STDR_DATE) STDR_DATE
+	                FROM
+	                TBADMI_TIMEZON_INFO_D_U2
+	             WHERE 1=1   
+	        	   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	               AND ADMI_CD = #{admiCd}	
+	               group by LOC_CLSS_CD 
+ 	             )A
+	          ON A.TIMEZON_CD = B.CODE
+	        WHERE CD_ID = 'TIMEZON_CD'
+	    GROUP BY B.CD_NM
+	    ORDER BY RATE DESC
+	    LIMIT 3  
+ 	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page5. 유입인구 유동 시간 - text  -->
+	<select id="getInflowTimeText" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		select (
+				CASE 
+					GREATEST(
+						E_1_RATE,E_2_RATE,E_3_RATE,E_4_RATE,E_5_RATE,E_6_RATE,E_7_RATE
+				    )  
+				    WHEN E_1_RATE THEN '00시~06시'
+		            WHEN E_2_RATE THEN '06시~09시'
+		            WHEN E_3_RATE THEN '09시~12시' 
+		            WHEN E_4_RATE THEN '12시~15시' 
+		            WHEN E_5_RATE THEN '15시~18시' 
+		            WHEN E_6_RATE THEN '18시~21시' 
+		            WHEN E_7_RATE THEN '21시~24시' 
+			     END
+			    ) as cd_nm
+		FROM (
+			SELECT ROUND(SUM(CASE WHEN TIMEZON_CD ='1' THEN TOTAL_CNT/2 END)/SUM(TOTAL_CNT) *100,1) AS E_1_RATE 
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='2' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_2_RATE  
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='3' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_3_RATE 
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='4' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_4_RATE    
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='5' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_5_RATE   
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='6' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_6_RATE    
+			     , ROUND(SUM(CASE WHEN TIMEZON_CD ='7' THEN TOTAL_CNT END)/SUM(TOTAL_CNT) *100,1) AS E_7_RATE  
+			  FROM TBADMI_INFLOW_TIMEZONE A
+			 WHERE 1=1       
+			   AND LOC_CLSS_CD ='E'
+			   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+		       AND ADMI_CD = #{admiCd}
+			) a 
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page5. 유입인구 유동 시간 - chart  -->
+	<select id="getInflowTimeChart" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+ 	  SELECT  ROUND(SUM( timezon_cd_1_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_1_CNT         
+			, ROUND(SUM( timezon_cd_2_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_2_CNT        
+			, ROUND(SUM( timezon_cd_3_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_3_CNT 
+			, ROUND(SUM( timezon_cd_4_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_4_CNT 
+			, ROUND(SUM( timezon_cd_5_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_5_CNT 
+			, ROUND(SUM( timezon_cd_6_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_6_CNT 
+			, ROUND(SUM( timezon_cd_7_cnt )/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_7_CNT 
+		    , ROUND(SUM(case when timezon_cd ='1' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_1_CNT
+	    	, ROUND(SUM(case when timezon_cd ='2' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_2_CNT
+			, ROUND(SUM(case when timezon_cd ='3' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_3_CNT
+	     	, ROUND(SUM(case when timezon_cd ='4' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_4_CNT
+	     	, ROUND(SUM(case when timezon_cd ='5' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_5_CNT
+	     	, ROUND(SUM(case when timezon_cd ='6' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_6_CNT
+	     	, ROUND(SUM(case when timezon_cd ='7' then TOTAL_CNT end)/ SUM(SUM(TOTAL_CNT)) OVER()*100,1) AS F_T_7_CNT
+		FROM (
+				select admi_cd
+					 , sum(timezon_cd_1_cnt) as timezon_cd_1_cnt
+					 , sum(timezon_cd_2_cnt) as timezon_cd_2_cnt
+					 , sum(timezon_cd_3_cnt) as timezon_cd_3_cnt
+					 , sum(timezon_cd_4_cnt) as timezon_cd_4_cnt
+					 , sum(timezon_cd_5_cnt) as timezon_cd_5_cnt
+					 , sum(timezon_cd_6_cnt) as timezon_cd_6_cnt
+					 , sum(timezon_cd_7_cnt) as timezon_cd_7_cnt
+				from TBADMI_TIMEZON_INFO_D_U2
+				where 1=1
+				AND STDR_DATE between #{startDate} AND #{endDate}
+				AND ADMI_CD = #{admiCd}
+				AND LOC_CLSS_CD = 'E'
+				GROUP BY admi_cd	
+		) A
+	    LEFT OUTER join (
+		    	select TIMEZON_CD, admi_cd 
+					 , sum(case
+						 		when timezon_cd = '1' then TOTAL_CNT/2
+						 		else TOTAL_CNT
+						  end) as total_cnt
+				from TBADMI_INFLOW_TIMEZONE tit 
+				where 1=1
+				AND tit.STDR_DATE between #{startDate} AND #{endDate}
+				AND tit.ADMI_CD = #{admiCd}
+				AND LOC_CLSS_CD = 'E'
+				GROUP BY TIMEZON_CD, admi_cd 
+		)  B
+	    ON A.ADMI_CD =B.ADMI_CD  
+	    WHERE 1=1;
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page5. 유입 유동인구 유입지역 - TEXT  -->
+	<select id="getInflowRegionTxt" parameterType="java.util.Map" resultType="java.lang.String">
+	<![CDATA[
+		   SELECT A.NM 
+		     FROM (
+				   SELECT B.FULL_NAME as NM
+				        , ROUND(SUM(total_cnt)/ SUM(SUM(total_cnt)) OVER()*100,1)   AS RATE          
+				        , SUM(total_cnt) AS IN_CNT 
+				     FROM tbadmi_inflow_float A
+				       ,  TBREGION B
+				    WHERE 1=1  
+				      AND IN_CTY_CD <> substr(#{ctyCd},1,5)  
+				      AND A.ADMI_CD = #{admiCd}
+				      AND A.STDR_DATE >= #{startDate}
+				      AND A.STDR_DATE <=#{endDate}
+				      AND substring(A.IN_CTY_CD,1,4) = substring(B.ID,1,4)
+				      AND B.RGN_CLSS ='H3'
+				 	GROUP BY B.FULL_NAME
+				 	ORDER BY 2 DESC, 3DESC
+				 	LIMIT 1
+			  ) A
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page5. 유입 유동인구 유입지역 리스트 - TEXT  -->
+	<select id="getInflowRegionList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		   SELECT B.FULL_NAME as NM
+		        , ROUND(SUM(total_cnt)/ SUM(SUM(total_cnt)) OVER()*100,1)   AS RATE          
+		        , SUM(total_cnt) AS IN_CNT 
+		     FROM tbadmi_inflow_float A
+		       ,  TBREGION B
+		    WHERE 1=1     
+		      AND IN_CTY_CD <> substr(#{ctyCd},1,5)  
+		      AND A.ADMI_CD = #{admiCd}
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <=#{endDate}
+		      AND substring(A.IN_CTY_CD,1,4) = substring(B.ID,1,4)
+		      AND B.RGN_CLSS ='H3'
+		 	GROUP BY B.FULL_NAME
+		 	ORDER BY 2 DESC, 3DESC
+		 	LIMIT 3
+	]]>
+	</select>
+	
+	<!-- 이벤트효과[통신] : page5. 유입 유동인구 유입지역 리스트 - 주제도  -->
+	<select id="getInflowRegionMap" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		   SELECT B.FULL_NAME as NM
+		   		, B.ID
+		        , ROUND(SUM(total_cnt)/ SUM(SUM(total_cnt)) OVER()*100,1)   AS RATE          
+		        , SUM(total_cnt) AS IN_CNT 
+		     FROM tbadmi_inflow_float A
+		       ,  TBREGION B
+		    WHERE 1=1     
+		      AND IN_CTY_CD <> substr(#{ctyCd},1,5)  
+		      AND A.ADMI_CD = #{admiCd}
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <=#{endDate}
+		      AND substring(A.IN_CTY_CD,1,4) = substring(B.ID,1,4)
+		      AND B.RGN_CLSS ='H3'
+		 	GROUP BY B.FULL_NAME, B.ID
+		 	ORDER BY 3 DESC
+	]]>
+	</select>
+	
+	<!-- /// page05 -->
+	
+	<!-- API -->
+	<!-- 시계열 그래프의 데이터 범위 일자 (사용안함) -->
+	<select id="getEventEffectGraphDateRange" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		  SELECT 
+		   MIN(STDR_DATE) AS min_stdr_date
+		  ,MAX(STDR_DATE) AS max_stdr_date
+		  FROM TBADMI_DATE_INFO
+		 WHERE ADMI_CD = #{admiCd}
+	]]>	
+	</select>
+	
+	<!-- 지역별 업종 select option 검색 -->
+	<select id="admiUpjongList" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT DISTINCT(UPJONG2_CD) as CODE
+			 , B.CD_NM
+		  FROM TBADMI_UPJONG_INFO_D A
+		     , TBCOMM_CODE B
+		 WHERE A.UPJONG2_CD = B.CODE
+		   AND ADMI_CD = #{admiCd}
+		   AND STDR_DATE BETWEEN #{startDate} AND #{endDate}
+           AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+                                   FROM TBADMI_UPJONG_INFO_D a
+                                   WHERE 1=1
+                                     AND ADMI_CD = #{admiCd}
+                                     AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                     AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+                                     AND STORE_CNT_FLG = 'N'
+	                             )  		   
+		 ORDER BY B.CD_NM ASC
+    ]]>
+	</select>
+		
+	<!--  이벤트효과2-1 : 주변지역 경제효과 (event : amt) 지도 범례  -->
+	<select id="getSalamtChngeLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	
+		WITH TMP AS 
+				(        
+					 SELECT T1.NM 
+					      , ROUND((T1.AVG_AMT - T2.AVG_AMT) / T2.AVG_AMT *100,1) AS RATE
+					      , ROUND((T1.AVG_CNT - T2.AVG_CNT) / T2.AVG_CNT *100,1) AS CNT_RATE
+					      , ROUND((T1.AVG_AMT - T2.AVG_AMT)) AS AMT
+					      , NTILE(5) OVER(ORDER BY  ROUND((T1.AVG_AMT - T2.AVG_AMT)) DESC) AS GRD      
+					  FROM
+					      (
+					      SELECT B.NM      
+					           , ROUND(SUM(SALE_AMT) / (#{endDate}::date - #{startDate}::date + 1)) AS AVG_AMT
+					           , ROUND(SUM(SALE_CNT) / (#{endDate}::date - #{startDate}::date + 1)) AS AVG_CNT
+					        FROM TBADMI_UPJONG_INFO_D A
+					           , TBREGION B    
+					       WHERE 1=1
+					         AND A.ADMI_CD = B.ID
+					         AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+					         AND CTY_CD like #{ctyCd}||'%'
+		                     AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )   					         
+					    GROUP BY B.NM   
+					      ) T1
+					    ,(
+					      SELECT B.NM      
+					           , ROUND(SUM(SALE_AMT) / COUNT(DISTINCT STDR_DATE)) AS AVG_AMT
+					           , ROUND(SUM(SALE_CNT) / COUNT(DISTINCT STDR_DATE)) AS AVG_CNT
+					        FROM TBADMI_UPJONG_INFO_D A
+					           , TBREGION B    
+					       WHERE 1=1
+					         AND A.ADMI_CD = B.ID
+					         AND A.STDR_DATE BETWEEN TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -1,'YYYYMMDD')
+					         AND CTY_CD like #{ctyCd}||'%'
+		                     AND UPJONG2_CD NOT IN (SELECT DISTINCT UPJONG2_CD
+		                                   FROM TBADMI_UPJONG_INFO_D a
+		                                   WHERE 1=1
+		                                     AND ADMI_CD = #{admiCd}
+                                             AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') 
+                                             AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                                     AND STORE_CNT_FLG = 'N'
+		                                )   				         
+					    GROUP BY B.NM   
+					     ) T2
+					     WHERE 1=1
+					       AND T1.NM = T2.NM
+				)               
+		SELECT MAX(CASE WHEN GRD =1 THEN ${selColumn} END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN ${selColumn} END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN ${selColumn} END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN ${selColumn} END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN ${selColumn} END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN ${selColumn} END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN ${selColumn} END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN ${selColumn} END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN ${selColumn} END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN ${selColumn} END) AS MIN_VALUE5
+		FROM TMP
+	
+	]]>
+	</select>
+		
+	<!-- 이벤트효과2-2 : 주변지역업종별 경제효과 (매출액 기준) - 텍스트 (해당지역, 해당업종)    -->
+	<select id="getThisAreaUpjongAmtChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT CODE
+			     , CD_NM
+			     , ROUND(LW5) AS LW5    
+			     , ROUND(LW4) AS LW4     
+			     , ROUND(LW3) AS LW3     
+			     , ROUND(TERM) as AMT    
+			     , ROUND(LW2) AS LW2     
+			     , ROUND(LW1) AS LW1    
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)),1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) ),1)     
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) ),1)        
+	                     ELSE 0 
+	                END ) AS DAYS_RATE
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+	                     ELSE 0 
+	                END ) AS RATE  
+			  FROM
+			       ( 
+					SELECT B.CD_NM
+					     , A.UPJONG2_CD AS CODE 
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+		                        THEN SALE_AMT / 7
+		               			ELSE NULL 
+		               	   END) AS LW2 
+		             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+		                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+		                        THEN SALE_AMT/ 7
+		                		ELSE NULL 
+		                   END) AS LW1
+				         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				      FROM TBADMI_UPJONG_INFO_D A
+					     , TBCOMM_CODE B    
+				     WHERE 1=1
+					   AND A.UPJONG2_CD = B.CODE
+					   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+					   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+				       AND ADMI_CD = #{admiCd}
+					   AND SALE_AMT > 0
+				       AND SALE_CNT > 0
+					   AND A.UPJONG2_CD = #{upjongCd}
+					 GROUP BY A.UPJONG2_CD, B.CD_NM
+				   )T
+			 WHERE 1=1
+               AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+               AND COALESCE(TERM,0) > 0
+		  	 ORDER BY RATE DESC
+		     LIMIT 1
+	]]>
+	</select>
+	
+		<!-- 이벤트효과2-2 : 주변지역 업종별 경제효과 (거래량 기준) - 텍스트 (해당지역, 해당업종) -->
+	<select id="getThisAreaUpjongRateChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			SELECT CODE
+			     , CD_NM
+			     , ROUND(LW5) AS LW5    
+			     , ROUND(LW4) AS LW4     
+			     , ROUND(LW3) AS LW3     
+			     , ROUND(TERM) as CNT    
+			     , ROUND(LW2) AS LW2     
+			     , ROUND(LW1) AS LW1      
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)),1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) ),1)     
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+	                     THEN ROUND(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0) ),1)        
+	                     ELSE 0 
+	                END ) AS DAYS_RATE
+	  		     , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+	                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+	                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+	                     ELSE 0 
+	                END ) AS RATE  
+			  FROM ( 
+					SELECT B.CD_NM
+					     , A.UPJONG2_CD AS CODE 
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+				         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+			                        THEN SALE_CNT / 7
+			               			ELSE NULL 
+			               	   END) AS LW2 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+			                        THEN SALE_CNT/ 7
+			                		ELSE NULL 
+			                   END) AS LW1
+				         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+				      FROM TBADMI_UPJONG_INFO_D A
+					     , TBCOMM_CODE B    
+				     WHERE 1=1
+					   AND A.UPJONG2_CD = B.CODE
+					   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+					   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+				       AND ADMI_CD = #{admiCd}
+					   AND SALE_AMT > 0
+				       AND SALE_CNT > 0
+					   AND A.UPJONG2_CD = #{upjongCd}
+					 GROUP BY A.UPJONG2_CD, B.CD_NM
+				  ) T
+			  WHERE 1=1
+                AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+			    AND COALESCE(TERM,0) > 0
+		  	  ORDER BY RATE DESC
+			  LIMIT 1
+	]]>
+	</select>
+	
+	<!-- 이벤트효과2-2 : 주변지역 업종별 경제효과 list (매출액 기준)  - 텍스트 -->
+	<select id="getAreaUpjongAmtChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			 SELECT NM 
+			      , ID
+			      , UPJONG2_CD AS CODE
+			      , ROUND(LW5) AS LW5    
+			      , ROUND(LW4) AS LW4     
+			      , ROUND(LW3) AS LW3     
+			      , ROUND(TERM) as SALE_AMT    
+			      , ROUND(LW2) AS LW2     
+			      , ROUND(LW1) AS LW1    
+			      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+                     WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+                     THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+                     ELSE 0 
+                END ) AS RATE  
+			  FROM (
+					SELECT B.NM
+					     , B.ID
+					     , A.UPJONG2_CD
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+			                        THEN SALE_AMT / 7
+			               			ELSE NULL 
+			               	   END) AS LW2 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+			                        THEN SALE_AMT/ 7
+			                		ELSE NULL 
+			                   END) AS LW1
+					     , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+					 FROM TBADMI_UPJONG_INFO_D A
+					    , TBREGION B    
+					WHERE 1=1
+					  AND A.ADMI_CD = B.ID
+					  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+					  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD') 
+					  AND A.UPJONG2_CD = #{upjongCd}
+					  AND SALE_AMT > 0
+					  AND SALE_CNT > 0
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		    		  AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    		  AND ADMI_CD IN (SELECT B.ID  
+		    		    			    FROM TBREGION A
+		    		    			       , TBREGION B 
+		    		    			   WHERE A.ID = #{admiCd} 
+		    		    			     AND B.ID like #{ctyCd}||'%'
+		    		    			     AND B.ID != #{admiCd}
+		    		    			     AND B.RGN_CLSS ='H4' 
+		    		    			   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if>
+    <![CDATA[
+			        GROUP BY A.UPJONG2_CD, B.NM, B.ID  
+			      ) T
+			  WHERE 1=1
+                AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+			    AND COALESCE(TERM,0) > 0
+		  	  ORDER BY RATE DESC
+	]]>
+	<if test='limitOff == null or limitOff == ""'>  
+	<![CDATA[		       
+		LIMIT 3
+	]]>			 
+    </if>
+	</select>
+	
+	
+	<!-- 이벤트효과2-2 : 주변지역 업종별 경제효과 list (거래량 기준)  - 텍스트 -->
+	<select id="getAreaUpjongRateChnge" parameterType="java.util.Map" resultType="java.util.Map">
+		<![CDATA[
+			 SELECT NM 
+			      , CODE
+			      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+	                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+	                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+	                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+	                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+	                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+	                      ELSE 0 
+	                 END ) AS RATE 
+			  FROM (
+					SELECT B.NM
+					     , B.ID
+					     , A.UPJONG2_CD AS CODE 
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+					     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+			                        THEN SALE_CNT / 7
+			               			ELSE NULL 
+			               	   END) AS LW2 
+			             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+			                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+			                        THEN SALE_CNT/ 7
+			                		ELSE NULL 
+			                   END) AS LW1
+					     , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+					 FROM TBADMI_UPJONG_INFO_D A
+					    , TBREGION B    
+					WHERE 1=1
+					  AND A.ADMI_CD = B.ID
+					  AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+					  AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+					  AND SALE_AMT > 0
+			          AND SALE_CNT > 0
+			          AND A.UPJONG2_CD = #{upjongCd}
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		    	 	  AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    		  AND ADMI_CD IN (SELECT B.ID  
+		    		    			    FROM TBREGION A
+		    		    			       , TBREGION B 
+		    		    			   WHERE A.ID = #{admiCd} 
+		    		    			     AND B.ID like #{ctyCd}||'%'
+		    		    			     AND B.ID != #{admiCd}
+		    		    			     AND B.RGN_CLSS ='H4' 
+		    		    			   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+    <![CDATA[	      
+					GROUP BY A.UPJONG2_CD, B.NM, B.ID
+				  ) T
+			  WHERE 1=1
+           		AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+		        AND COALESCE(TERM,0) > 0
+		  	  ORDER BY RATE DESC
+	]]>
+	<if test='limitOff == null or limitOff == ""'>  
+	<![CDATA[		       
+		LIMIT 3
+	]]>			 
+    </if>
+	</select>
+	
+	<!-- 이벤트효과2-2 : 주변지역 업종별 경제효과 - 매출액기준 (event : expndtr) 지도  -->
+	<select id="getEventExpndtrChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT T111.NM
+			 , T111.ID
+			 , T111.RATE
+			 , T111.AMT
+			 , CASE T111.GRD WHEN 1 THEN '#D7191C' 
+			                 WHEN 2 THEN '#FDAE61'
+			                 WHEN 3 THEN '#FFFFBF'
+			                 WHEN 4 THEN '#ABDDA4'
+			                 WHEN 5 THEN '#2C7BB6'
+			                 ELSE '#000000' END AS D_COLOR
+			 , MIN(T111.RATE) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(T111.RATE) OVER(PARTITION BY GRD) AS GRD_MAX
+		  FROM ( 
+				SELECT T11.NM
+					 , T11.ID
+					 , T11.RATE
+					 , T11.AMT
+					 , NTILE(5) OVER( ORDER BY T11.RATE DESC) AS GRD
+				  FROM (
+						 SELECT T1.NM 
+						      , T1.ID
+						      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                      ELSE 0 
+				                END ) AS RATE 
+						      , ROUND(TERM) AS AMT
+						   FROM (
+									SELECT B.NM
+									     , B.ID
+									     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+							                        THEN SALE_AMT / 7
+							               			ELSE NULL 
+							               	   END) AS LW2 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+							                        THEN SALE_AMT/ 7
+							                		ELSE NULL 
+							                   END) AS LW1
+								         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+								      FROM TBADMI_UPJONG_INFO_D A
+									     , TBREGION B    
+								     WHERE 1=1
+									   AND A.ADMI_CD = B.ID
+									   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+									   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+								       AND ADMI_CD = #{admiCd}
+									   AND SALE_AMT > 0
+								       AND SALE_CNT > 0
+									   AND A.UPJONG2_CD = #{upjongCd}
+									 GROUP BY B.ID, B.NM
+						        ) T1
+						    WHERE 1=1
+				              AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+				     UNION ALL	
+						 SELECT NM 
+						      , ID
+						      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                      ELSE 0 
+				                END ) AS RATE 
+						      , ROUND(TERM) AS AMT
+						  FROM (
+									SELECT B.NM
+									     , B.ID
+									     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW5  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW4  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_AMT END)/7 AS LW3 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+							                        THEN SALE_AMT / 7
+							               			ELSE NULL 
+							               	   END) AS LW2 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+							                        THEN SALE_AMT/ 7
+							                		ELSE NULL 
+							                   END) AS LW1
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1) AS TERM  
+								      FROM TBADMI_UPJONG_INFO_D A
+									   	 , TBREGION B    
+								     WHERE 1=1
+									   AND A.ADMI_CD = B.ID
+									   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+									   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+									   AND SALE_AMT > 0
+								       AND SALE_CNT > 0
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		    		   		  		   AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+						    		   AND ADMI_CD IN (SELECT B.ID  
+						    		    			     FROM TBREGION A
+						    		    			        , TBREGION B 
+						    		    			    WHERE A.ID = #{admiCd} 
+						    		    			      AND B.ID like #{ctyCd}||'%'
+						    		    			      AND B.ID != #{admiCd}
+						    		    			      AND B.RGN_CLSS ='H4' 
+						    		    			    ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if> 
+    <![CDATA[
+									   AND A.UPJONG2_CD = #{upjongCd}
+									 GROUP BY B.ID, B.NM
+							    ) T2
+						    WHERE 1=1
+				              AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+				            ) T11
+				        ) T111
+	]]>	
+	</select>
+	
+	<!--  이벤트효과2-2 : 주변지역 업종별 경제효과 - 매출액기준  ( 지도 범례 ) -->
+	<select id="getExpndtrChngeLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	       WITH TMP AS  
+				(        
+					 SELECT T1.NM 
+					      , (CASE WHEN T2.AVG_AMT = 0 THEN 0 ELSE ROUND((T1.AVG_AMT - T2.AVG_AMT) / T2.AVG_AMT *100,1) END) AS RATE
+					      , ROUND((T1.AVG_AMT - T2.AVG_AMT)) AS AMT
+					      , NTILE(5) OVER(ORDER BY  ROUND((T1.AVG_AMT - T2.AVG_AMT)) DESC) AS GRD      
+					  FROM
+					      (
+						      SELECT B.NM      
+						           , ROUND(SUM(SALE_AMT) / COUNT(DISTINCT STDR_DATE)) AS AVG_AMT
+						        FROM TBADMI_UPJONG_INFO_D A
+						           , TBREGION B    
+						       WHERE 1=1
+						         AND A.ADMI_CD = B.ID
+						         AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+						         AND CTY_CD like #{ctyCd}||'%'
+						         AND UPJONG2_CD = #{upjongCd}
+						    GROUP BY B.NM   
+					      ) T1
+					    ,(
+						      SELECT B.NM      
+						           , ROUND(SUM(SALE_AMT) / COUNT(DISTINCT STDR_DATE)) AS AVG_AMT
+						        FROM TBADMI_UPJONG_INFO_D A
+						           , TBREGION B    
+						       WHERE 1=1
+						         AND A.ADMI_CD = B.ID
+		         AND ( A.STDR_DATE BETWEEN TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD')
+			         	OR A.STDR_DATE BETWEEN TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD'))
+						         AND CTY_CD  like #{ctyCd}||'%'
+						         AND UPJONG2_CD = #{upjongCd}
+						    GROUP BY B.NM   
+					     ) T2
+					     WHERE 1=1
+					       AND T1.NM = T2.NM
+				)               
+		SELECT MAX(CASE WHEN GRD =1 THEN AMT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN AMT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN AMT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN AMT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN AMT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN AMT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN AMT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN AMT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN AMT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN AMT END) AS MIN_VALUE5
+		FROM TMP
+	]]>
+	</select>
+	
+	<!-- 이벤트효과2-2 : 주변지역 업종별 경제효과 - 거래량기준  (event : expndtr) 지도  -->
+	<select id="getEventExpndtrRateChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT T111.NM
+			 , T111.ID
+			 , T111.CNT
+			 , T111.AMT
+			 , T111.CNT_RATE
+			 , CASE T111.GRD WHEN 1 THEN '#D7191C' 
+			                 WHEN 2 THEN '#FDAE61'
+			                 WHEN 3 THEN '#FFFFBF'
+			                 WHEN 4 THEN '#ABDDA4'
+			                 WHEN 5 THEN '#2C7BB6'
+			                 ELSE '#000000' END AS D_COLOR
+			 , MIN(T111.CNT_RATE) OVER(PARTITION BY GRD) AS GRD_MIN
+		     , MAX(T111.CNT_RATE) OVER(PARTITION BY GRD) AS GRD_MAX
+	 	  FROM (
+				SELECT T11.NM
+					 , T11.ID
+					 , T11.CNT
+					 , T11.AMT
+					 , T11.CNT_RATE
+					 , NTILE(5) OVER( ORDER BY T11.CNT_RATE DESC) AS GRD
+				  FROM (
+						 SELECT NM 
+						      , ID
+						      , ROUND(TERM) AS CNT
+						      , ROUND(AMT_TERM) AS AMT
+						      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                      ELSE 0 
+				                END ) AS CNT_RATE
+						  FROM (
+									SELECT B.ID
+									     , B.NM
+									     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+							                        THEN SALE_CNT / 7
+							               			ELSE NULL 
+							               	   END) AS LW2 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+							                        THEN SALE_CNT/ 7
+							                		ELSE NULL 
+							                   END) AS LW1 
+								         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS TERM  
+								         , COALESCE(SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1),0) AS AMT_TERM
+								      FROM TBADMI_UPJONG_INFO_D A
+									     , TBREGION B    
+								     WHERE 1=1
+									   AND A.ADMI_CD = B.ID
+									   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+									   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+								       AND ADMI_CD = #{admiCd}
+									   AND SALE_AMT > 0
+								       AND SALE_CNT > 0
+									   AND A.UPJONG2_CD = #{upjongCd}
+									 GROUP BY B.ID, B.NM
+							   ) T1
+						   WHERE 1=1
+				             AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+				     UNION ALL
+						 SELECT NM 
+						      , ID
+						      , ROUND(TERM) AS CNT
+						      , ROUND(AMT_TERM) AS AMT
+						      , (CASE WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) BETWEEN 7 AND 13 and ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0))/4) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) )/4) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) < 7 and (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0)) != 0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) )/3) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0))/3) * 100,1)
+				                      WHEN (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14  AND ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) !=0
+				                      THEN ROUND((TERM - ( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) /(( COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0))/5) * 100,1)
+				                      ELSE 0 
+				                END ) AS CNT_RATE
+						  FROM (
+									SELECT B.ID
+									     , B.NM
+									     , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -15,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW5  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') -14,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 8,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW4  
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 7,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD') THEN SALE_CNT END)/7 AS LW3 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 7,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 7
+							                        THEN SALE_CNT / 7
+							               			ELSE NULL 
+							               	   END) AS LW2 
+							             , SUM(CASE WHEN STDR_DATE BETWEEN  TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 8,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') +14,'YYYYMMDD')
+							                        AND (select (to_date(stdr_ym,'YYYYMM') + INTERVAL '1 MONTH - 1 day')::date  -  TO_DATE(#{endDate},'YYYYMMDD') from tbcom_stdr) >= 14
+							                        THEN SALE_CNT/ 7
+							                		ELSE NULL 
+							                   END) AS LW1 
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_CNT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1) AS TERM
+								         , SUM(CASE WHEN STDR_DATE BETWEEN  #{startDate} AND #{endDate} THEN SALE_AMT END)/ (TO_DATE(#{endDate},'YYYYMMDD') - TO_DATE(#{startDate},'YYYYMMDD') +1) AS AMT_TERM  
+								      FROM TBADMI_UPJONG_INFO_D A
+									     , TBREGION B    
+								     WHERE 1=1
+									   AND A.ADMI_CD = B.ID
+									   AND A.STDR_DATE >= TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') 
+									   AND A.STDR_DATE <= TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD')
+									   AND SALE_AMT > 0
+								       AND SALE_CNT > 0
+									   AND A.UPJONG2_CD = #{upjongCd}
+	]]>			         
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+		    		   		  		   AND ADMI_CD IN (${admiAround})
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+						    		   AND ADMI_CD IN (SELECT B.ID  
+						    		      			     FROM TBREGION A
+						    		    			        , TBREGION B 
+						    		    			    WHERE A.ID = #{admiCd} 
+						    		    			      AND B.ID like #{ctyCd}||'%'
+						    		    			      AND B.ID != #{admiCd}
+						    		    			      AND B.RGN_CLSS ='H4' 
+						    		    			    ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if>  
+	<![CDATA[	
+									 GROUP BY B.ID, B.NM
+								 ) T2
+						     WHERE 1=1
+				               AND (COALESCE(LW5,0) + COALESCE(LW4,0) + COALESCE(LW3,0) + COALESCE(LW2,0) + COALESCE(LW1,0)) > 0  
+             ) T11
+         ) T111
+	]]>	
+	</select>
+	
+	<!--  이벤트효과2-2 : 주변지역 업종별 경제효과 - 거래량기준 (event : expndtr) 지도 범례  -->
+	<select id="getExpndtrRateChngeLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS 
+				(        
+					 SELECT T1.NM 
+					      , (CASE WHEN T2.AVG_AMT = 0 THEN 0 ELSE ROUND((T1.AVG_AMT - T2.AVG_AMT) / T2.AVG_AMT *100,1)  END) AS RATE
+					      , ROUND((T1.AVG_AMT - T2.AVG_AMT)) AS AMT
+					      , NTILE(5) OVER(ORDER BY  (CASE WHEN T2.AVG_AMT = 0 THEN 0 ELSE ROUND((T1.AVG_AMT - T2.AVG_AMT) / T2.AVG_AMT *100,1) END) DESC) AS GRD      
+					  FROM
+					      (
+						      SELECT B.NM      
+						           , ROUND(SUM(SALE_AMT) / COUNT(DISTINCT STDR_DATE)) AS AVG_AMT
+						        FROM TBADMI_UPJONG_INFO_D A
+						           , TBREGION B    
+						       WHERE 1=1
+						         AND A.ADMI_CD = B.ID
+						         AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+						         AND CTY_CD like #{ctyCd}||'%'
+						         AND UPJONG2_CD = #{upjongCd}
+						    GROUP BY B.NM   
+					      ) T1
+					    ,(
+						      SELECT B.NM      
+						           , ROUND(SUM(SALE_AMT) / COUNT(DISTINCT STDR_DATE)) AS AVG_AMT
+						        FROM 
+						             TBADMI_UPJONG_INFO_D A
+						           , TBREGION B    
+						       WHERE 1=1
+						         AND A.ADMI_CD = B.ID
+		         AND ( A.STDR_DATE BETWEEN TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 21,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{startDate},'YYYYMMDD') - 1,'YYYYMMDD')
+			         	OR A.STDR_DATE BETWEEN TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 1,'YYYYMMDD') AND TO_CHAR(TO_DATE(#{endDate},'YYYYMMDD') + 14,'YYYYMMDD'))
+						         AND CTY_CD like #{ctyCd}||'%'
+						         AND UPJONG2_CD = #{upjongCd}
+						    GROUP BY B.NM   
+					     ) T2
+					     WHERE 1=1
+					       AND T1.NM = T2.NM
+				)               
+				SELECT MAX(CASE WHEN GRD =1 THEN RATE END) AS MAX_VALUE1
+				     , MIN(CASE WHEN GRD =1 THEN RATE END) AS MIN_VALUE1
+				     , MAX(CASE WHEN GRD =2 THEN RATE END) AS MAX_VALUE2
+				     , MIN(CASE WHEN GRD =2 THEN RATE END) AS MIN_VALUE2
+				     , MAX(CASE WHEN GRD =3 THEN RATE END) AS MAX_VALUE3
+				     , MIN(CASE WHEN GRD =3 THEN RATE END) AS MIN_VALUE3
+				     , MAX(CASE WHEN GRD =4 THEN RATE END) AS MAX_VALUE4
+				     , MIN(CASE WHEN GRD =4 THEN RATE END) AS MIN_VALUE4
+				     , MAX(CASE WHEN GRD =5 THEN RATE END) AS MAX_VALUE5
+				     , MIN(CASE WHEN GRD =5 THEN RATE END) AS MIN_VALUE5
+				FROM TMP
+	]]>
+	</select>
+	
+	<!-- 이벤트효과3-1 : 지역별 방문객 수 (방문객 총수) - text  -->
+	<select id="getEventVisitrCnt" parameterType="java.util.Map" resultType="java.lang.Integer" >
+	<![CDATA[
+	   SELECT COALESCE(SUM(TOTAL_CNT),0) AS TOTAL_CNT
+	     FROM tbadmi_float_all_cnt A
+	       ,  TBREGION B
+	    WHERE 1=1     
+	      AND A.ADMI_CD = B.ID
+	      AND B.RGN_CLSS ='H4'
+	   	  AND B.ID = #{admiCd}
+	      AND A.STDR_DATE >= #{startDate}
+	      AND A.STDR_DATE <= #{endDate}   
+	]]>
+	</select>
+	
+	<!-- 이벤트효과3-1 : 지역별 방문객 수 (방문객 리스트) - text  -->
+	<select id="getEventVisitrCntList" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		   SELECT B.NM  
+		        , SUM(TOTAL_CNT) AS IN_CNT
+		     FROM
+		          TBADMI_VISIT_UPJONG_INFO_D A
+		       ,  TBREGION B
+		    WHERE 1=1     
+	]]>
+	<!-- ROW COUNT(1) 3이상 일때 -->
+    <if test='admiAround != null and admiAround != ""'>   
+    <![CDATA[		       
+		      AND ADMI_CD IN (${admiAround})
+	]]>			 
+    </if>
+    <!-- ROW COUNT(1) 3 미만 일때 -->
+	<if test='admiAround == null or admiAround == ""'> 
+		    		 AND ADMI_CD IN (SELECT B.ID  
+		    		    			   FROM TBREGION A
+		    		    			      , TBREGION B 
+		    		    			  WHERE A.ID = #{admiCd} 
+		    		    			    AND B.ID like #{ctyCd}||'%'
+		    		    			    AND B.ID != #{admiCd}
+		    		    			    AND B.RGN_CLSS ='H4' 
+		    		    			  ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+	</if>  
+    <![CDATA[
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <= #{endDate}
+		      AND A.ADMI_CD = B.ID
+		      AND B.RGN_CLSS = #{rgnClss}       
+		 GROUP BY B.NM
+		 	ORDER BY 2 DESC
+			LIMIT 3
+	]]>
+	</select>
+	
+	<!-- 이벤트효과3-1 : 지역별 유입인구수에 대한 주제도  (event : visitrCnt) 지도  -->
+	<select id="getEventVisitrCntChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+	    SELECT T2.NM
+		     , T2.ID
+		     , T2.IN_CNT
+		     , T2.GRD
+		     , T2.D_COLOR
+	         , MIN(T2.IN_CNT) OVER(PARTITION BY T2.GRD) AS GRD_MIN
+		     , MAX(T2.IN_CNT) OVER(PARTITION BY T2.GRD) AS GRD_MAX
+		  FROM ( 
+				SELECT T1.NM
+				     , T1.ID
+				     , IN_CNT
+				     , NTILE(5) OVER( ORDER BY IN_CNT DESC) AS GRD
+				     , CASE NTILE(5) OVER( ORDER BY IN_CNT DESC) 
+			     			WHEN 1 THEN '#D7191C' 
+			                WHEN 2 THEN '#FDAE61'
+			                WHEN 3 THEN '#FFFFBF'
+			                WHEN 4 THEN '#ABDDA4'
+			                WHEN 5 THEN '#2C7BB6'
+			                ELSE '#000000' END AS D_COLOR
+		
+				  FROM (
+					   SELECT B.NM
+					   		, B.ID
+					        , SUM(TOTAL_CNT) AS IN_CNT
+					        
+					     FROM TBADMI_VISIT_UPJONG_INFO_D A
+					       ,  TBREGION B
+					    WHERE 1=1     
+			              AND A.ADMI_CD = #{admiCd}
+					      AND A.STDR_DATE >= #{startDate} 
+					      AND A.STDR_DATE <= #{endDate}
+					      AND A.ADMI_CD = B.ID
+					      AND B.RGN_CLSS = #{rgnClss}			       
+					 GROUP BY B.NM , B.ID
+			]]>	
+					UNION ALL	
+			<![CDATA[
+					   SELECT B.NM
+					   		, B.ID
+					        , SUM(TOTAL_CNT) AS IN_CNT
+					     FROM TBADMI_VISIT_UPJONG_INFO_D A
+					       ,  TBREGION B
+					    WHERE 1=1
+			]]>
+			<!-- ROW COUNT(1) 3이상 일때 -->
+		    <if test='admiAround != null and admiAround != ""'>   
+		    <![CDATA[		       
+				     	  AND ADMI_CD IN (${admiAround})
+			]]>			 
+		    </if>
+		    <!-- ROW COUNT(1) 3 미만 일때 -->
+			<if test='admiAround == null or admiAround == ""'> 
+			    		  AND ADMI_CD IN (SELECT B.ID  
+			    		      			    FROM TBREGION A
+			    		    			       , TBREGION B 
+			    		    			   WHERE A.ID = #{admiCd} 
+			    		    			     AND B.ID like #{ctyCd}||'%'
+			    		    			     AND B.ID != #{admiCd}
+			    		    			     AND B.RGN_CLSS ='H4' 
+			    		    			   ORDER BY ST_Distance(A.SHAPE,B.SHAPE) LIMIT 3)
+			</if>  
+		    <![CDATA[
+				      	  AND A.STDR_DATE >= #{startDate} 
+				      	  AND A.STDR_DATE <= #{endDate}
+				      	  AND A.ADMI_CD = B.ID
+				      	  AND B.RGN_CLSS = #{rgnClss}				      	   
+				 	  GROUP BY B.NM , B.ID
+				 	) T1
+				 ) T2
+			]]>	
+	</select>
+	
+	<!--  이벤트효과3-1 : 방문객수 (event : visitrCnt) 지도 범례  -->
+	<select id="getVisitrCntChngeLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+					   SELECT B.NM
+					        , SUM(TOTAL_CNT) AS TOTAL_CNT
+					        , NTILE(5) OVER(ORDER BY SUM(TOTAL_CNT) DESC) AS GRD
+					     FROM TBADMI_VISIT_UPJONG_INFO_D A
+					       ,  TBREGION B
+					    WHERE 1=1     
+					      AND A.CTY_CD like #{ctyCd}||'%'
+					      AND A.STDR_DATE >= #{startDate} 
+					      AND A.STDR_DATE <= #{endDate}
+					      AND A.ADMI_CD = B.ID
+					      AND B.RGN_CLSS = #{rgnClss}					      
+					 GROUP BY B.NM
+					)
+					SELECT MAX(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MAX_VALUE1
+					     , MIN(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MIN_VALUE1
+					     , MAX(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MAX_VALUE2
+					     , MIN(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MIN_VALUE2
+					     , MAX(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MAX_VALUE3
+					     , MIN(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MIN_VALUE3
+					     , MAX(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MAX_VALUE4
+					     , MIN(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MIN_VALUE4
+					     , MAX(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MAX_VALUE5
+					     , MIN(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MIN_VALUE5
+					FROM TMP
+	]]>
+	</select>
+
+
+	<!-- 이벤트효과3-2 : 성/연령별 대표 방문객  (상주인구)  - text  -->
+	<select id="getEventCtznChartr" parameterType="java.util.Map" resultType="java.lang.String" >
+	<![CDATA[
+		SELECT (CASE GREATEST(SUM(M_20_CNT), SUM(M_30_CNT), SUM(M_40_CNT), SUM(M_50_CNT), SUM(M_60_CNT)
+			            , SUM(F_20_CNT), SUM(F_30_CNT), SUM(F_40_CNT), SUM(F_50_CNT), SUM(F_60_CNT)) 
+			            WHEN SUM(M_20_CNT) THEN '20대 남성'
+			            WHEN SUM(M_30_CNT) THEN '30대 남성'
+			            WHEN SUM(M_40_CNT) THEN '40대 남성' 
+			            WHEN SUM(M_50_CNT) THEN '50대 남성' 
+			            WHEN SUM(M_60_CNT) THEN '60대 이상 남성' 
+			            WHEN SUM(F_20_CNT) THEN '20대 여성' 
+			            WHEN SUM(F_30_CNT) THEN '30대 여성' 
+			            WHEN SUM(F_40_CNT) THEN '40대 여성' 
+			            WHEN SUM(F_50_CNT) THEN '50대 여성' 
+			            WHEN SUM(F_60_CNT) THEN '60대 이상 여성' 
+			   END) CHR
+		  FROM TBADMI_VISIT_INFO_D_NEW
+		 WHERE 1=1       
+		   AND ADMI_CD = #{admiCd}
+		   AND LOC_CLSS_CD ='R'
+		   AND STDR_DATE >= #{startDate}
+		   AND STDR_DATE <= #{endDate}
+		   
+	]]>
+	</select>
+	
+	<!-- 이벤트효과3-2 : 상주인구 vs 유입인구  - 그래프  -->
+	<select id="getEventVisitrCtznGraph" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		   	 SELECT COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         M_20_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_M_20_RATE  
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         M_30_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_M_30_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         M_40_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_M_40_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         M_50_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_M_50_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         M_60_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_M_60_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         F_20_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_F_20_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         F_30_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_F_30_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         F_40_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_F_40_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         F_50_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_F_50_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='E' THEN         F_60_CNT         END)/SUM(TOTAL_CNT)*100,1),0) AS E_F_60_RATE  
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN M_20_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_M_20_RATE  
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN M_30_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_M_30_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN M_40_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_M_40_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN M_50_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_M_50_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN M_60_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_M_60_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN F_20_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_F_20_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN F_30_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_F_30_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN F_40_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_F_40_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN F_50_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_F_50_RATE
+                  , COALESCE(ROUND(SUM(CASE  WHEN LOC_CLSS_CD ='R' THEN F_60_CNT END)/SUM(TOTAL_CNT)*100,1),0) AS H_F_60_RATE 
+		       FROM TBADMI_VISIT_INFO_D_NEW
+		      WHERE 1=1
+		        AND ADMI_CD = #{admiCd}
+		        AND STDR_DATE >= #{startDate}
+		        AND STDR_DATE <= #{endDate}
+		        
+	]]>
+	</select>
+
+	
+	<!-- 이벤트효과6-1 : 유입인구와 상주인구의 시간대별 고객수  - 그래프  -->
+	<select id="getCntTimeGraph" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+	      SELECT  ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_1_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_1_CNT         
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_1_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_1_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_2_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_2_CNT        
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_2_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_2_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_3_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_3_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_3_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_3_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_4_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_4_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_4_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_4_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_5_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_5_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_5_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_5_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_6_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_6_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_6_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_6_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'E'      THEN timezon_cd_7_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS E_T_7_CNT 
+				, ROUND(SUM(CASE WHEN LOC_CLSS_CD = 'R'      THEN timezon_cd_7_cnt END)/ SUM(SUM(COALESCE(timezon_cd_1_cnt,0)+COALESCE(timezon_cd_2_cnt,0)+COALESCE(timezon_cd_3_cnt,0)+COALESCE(timezon_cd_4_cnt,0)+COALESCE(timezon_cd_5_cnt,0)+COALESCE(timezon_cd_6_cnt,0)+COALESCE(timezon_cd_7_cnt,0))) OVER()*100,1) AS H_T_7_CNT
+	        FROM TBADMI_TIMEZON_INFO_D_U2 A
+	       WHERE 1=1
+	         AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+	         AND ADMI_CD = #{admiCd}         
+	]]>
+	</select>
+	
+	
+	<!-- 이벤트효과6 : 유입인구 유입지역 - text  -->
+	<select id="getEventVisitrInflow" parameterType="java.util.Map" resultType="java.util.Map" >
+	<![CDATA[
+		   SELECT B.FULL_NAME as NM
+		        , ROUND(SUM(IN_CNT)/ SUM(SUM(IN_CNT)) OVER()*100,1)   AS RATE          
+		        , SUM(IN_CNT) AS IN_CNT 
+		     FROM TBADMI_INFLOW_INFO_D_U2 A
+		       ,  TBREGION B
+		    WHERE 1=1     
+		      AND IN_CTY_CD <> substr(#{ctyCd},1,4)  
+		      AND A.ADMI_CD = #{admiCd}
+		      AND A.STDR_DATE >= #{startDate}
+		      AND A.STDR_DATE <=#{endDate}
+		      AND A.IN_CTY_CD = B.ID
+		      AND B.RGN_CLSS ='H2'
+		 GROUP BY B.FULL_NAME
+		 ORDER BY 2 DESC, 3DESC
+		 LIMIT 3
+	]]>
+	</select>
+	
+		<!-- 이벤트효과6-2 : 유입인구 유입지역 (event : visitrCnsmpTime) 지도  -->
+	<select id="getEventVisitrCnsmpTimeChnge" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+			  WITH TMP AS (   SELECT B.ID    
+							       , B.NM    
+							       , B.FULL_NAME
+							       , SUM(IN_CNT)  AS IN_CNT 
+							       , ROUND(SUM(IN_CNT)/ SUM(SUM(IN_CNT)) OVER()*100,1)   AS RATE   
+							       , RANK() OVER( ORDER BY SUM(IN_CNT) DESC) RNK
+							       , (COUNT(*) OVER() )  -  (COUNT(*) OVER() * 0.1) L_RNK
+		     					FROM TBADMI_INFLOW_INFO_D_U2 A
+							       , TBREGION B  
+							   WHERE 1=1
+							     AND A.IN_CTY_CD = B.ID
+							     AND IN_CTY_CD <> substr(#{ctyCd},1,4) 
+							     AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+							     AND ADMI_CD = #{admiCd}
+							     AND B.RGN_CLSS = #{rgnClss}
+							  GROUP BY B.ID, B.NM, B.FULL_NAME
+						  )
+						  SELECT T1.ID
+							 , T1.NM
+							 , T1.FULL_NAME
+							 , T1.IN_CNT
+							 , T1.RATE
+							 , T1.RNK
+							 --, T1.L_RNK
+							 , T1.GRD
+							 , CASE T1.GRD WHEN 1 THEN '#D7191C' 
+						                   WHEN 2 THEN '#FDAE61'
+						                   WHEN 3 THEN '#FFFFBF'
+						                   WHEN 4 THEN '#ABDDA4'
+						                   WHEN 5 THEN '#2C7BB6'
+						                   ELSE '#000000' END AS D_COLOR
+						     , MIN(T1.IN_CNT) OVER(PARTITION BY GRD) AS GRD_MIN
+		     				 , MAX(T1.IN_CNT) OVER(PARTITION BY GRD) AS GRD_MAX
+					 	  FROM ( 
+								  SELECT ID
+								       , NM
+								       , FULL_NAME
+								       , IN_CNT
+								       , RATE
+								       , RNK
+								       , L_RNK
+								       , NTILE(5) OVER( ORDER BY IN_CNT DESC) AS GRD
+								    FROM TMP
+								   WHERE 1=1
+						) T1
+	]]>	
+	</select>
+	
+	<!--  이벤트효과6-2 : 유입인구 유입지역 (event : visitrCnsmpTime) 지도 범례  -->
+	<select id="getVisitrCnsmpTimeChngeLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP1 AS (
+							WITH TMP AS
+							(
+								SELECT B.ID   
+								     , B.NM    
+								     , SUM(IN_CNT)  AS IN_CNT
+								     , rank() OVER( ORDER BY SUM(IN_CNT) DESC) RNK
+								     , (COUNT(*) OVER() )  -  (COUNT(*) OVER() * 0.1) L_RNK
+		     					 FROM TBADMI_INFLOW_INFO_D_U2 A
+								     , TBREGION B  
+								 WHERE 1=1
+								   AND A.IN_CTY_CD = B.ID
+								   AND A.STDR_DATE BETWEEN #{startDate} AND #{endDate}
+								   AND A.CTY_CD like substr(#{ctyCd},1,4)||'%'
+								   AND B.RGN_CLSS = #{rgnClss}
+
+								GROUP BY B.ID
+								       , B.NM   
+							) 
+							SELECT 
+							       ID
+							     , NM
+							     , IN_CNT
+							     , NTILE(5) OVER( ORDER BY IN_CNT DESC) AS GRD
+							  FROM
+							       TMP
+							 WHERE 1=1
+							   AND RNK <= L_RNK
+					)
+			SELECT MAX(CASE WHEN GRD =1 THEN IN_CNT END) AS MAX_VALUE1
+			     , MIN(CASE WHEN GRD =1 THEN IN_CNT END) AS MIN_VALUE1
+			     , MAX(CASE WHEN GRD =2 THEN IN_CNT END) AS MAX_VALUE2
+			     , MIN(CASE WHEN GRD =2 THEN IN_CNT END) AS MIN_VALUE2
+			     , MAX(CASE WHEN GRD =3 THEN IN_CNT END) AS MAX_VALUE3
+			     , MIN(CASE WHEN GRD =3 THEN IN_CNT END) AS MIN_VALUE3
+			     , MAX(CASE WHEN GRD =4 THEN IN_CNT END) AS MAX_VALUE4
+			     , MIN(CASE WHEN GRD =4 THEN IN_CNT END) AS MIN_VALUE4
+			     , MAX(CASE WHEN GRD =5 THEN IN_CNT END) AS MAX_VALUE5
+			     , MIN(CASE WHEN GRD =5 THEN IN_CNT END) AS MIN_VALUE5
+			FROM TMP1
+	]]>
+	</select>
+	<!-- /// API -->
+
+	
+	
+	
+
+
+	
+	
+
+	
+
+
+
+	
+
+
+	
+
+	
+
+	
+</mapper>

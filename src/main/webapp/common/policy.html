@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<title>Trend-ON</title>
+		<meta charset="utf-8" />
+		<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1">
+		<link rel="stylesheet" href="/css/import.css" />
+		<link rel="stylesheet" href="/css/reset.css" />
+		<link rel="stylesheet" href="/css/common.css" />
+		<link rel="stylesheet" href="/css/style.css" />
+		<link rel="stylesheet" href="/css/dev.css" />
+		<script src="/js/jquery/jquery-1.11.2.min.js"></script>
+		<script src="/js/jquery/jquery.easing.1.3.js"></script>
+		<script src="/js/jquery/jquery-ui.js"></script>
+		<script src="/js/jquery/jquery.fullpage.min.js"></script>
+		<script src="/js/common.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+			
+				$("#public_policy1").load("terms_policy1.html");
+				$("#public_policy2").load("terms_policy2.html");
+			
+				var paramValue = "";
+				if(location.search){
+					var parameter = location.search.substr(1);
+					if(parameter.indexOf("=") != -1){
+						for(var i = 0; i < parameter.split("=").length; i++){
+							paramValue = parameter.split("=")[1];
+						}
+					}
+					$($(".tab_wrap .tab_tit li")[paramValue]).trigger("click")
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<div id="wrap">
+			<!-- header -->
+			<div id="header">
+				<h1 class="logo"><img src="/images/common/logo_white.png" alt="logo" /></h1>
+<!-- 				<div class="gnb"> -->
+<!-- 					<a href="#" class="user"><em>안산시</em>님 안녕하세요</a> -->
+<!-- 				</div> -->
+<!-- 				<div id="nav"> -->
+<!-- 					<ul> -->
+<!-- 						<li class="on"><a href="#">안산 24시</a></li> -->
+<!-- 						<li><a href="#">경제 트랜드</a></li> -->
+<!-- 						<li><a href="#">이벤트 효과</a></li> -->
+<!-- 					</ul> -->
+<!-- 				</div> -->
+			</div>
+			<!-- //header -->
+			
+			<hr />
+			
+			<!-- contents -->
+			<div id="contents">		
+				<!-- 본문 ==================================================================================================== -->
+				<!--  -->
+				<div class="contents_body_ty2">
+					<!--  -->
+					<div class="tab_wrap tab_ty2">
+						<div class="tab_tit">
+							<ul>
+								<li class="on"><a href="#none">서비스 약관</a></li>
+								<li><a href="#none">개인정보 취급방침</a></li>
+							</ul>
+						</div>
+
+						<!-- 서비스 약관 -->
+						<div class="tab_con on" id="public_policy1">
+							
+						</div>
+						<!-- // -->
+
+						<!-- 개인정보처리 취급방침 -->
+						<div class="tab_con" id="public_policy2">
+						
+						</div>
+						<!-- // -->
+					</div>
+				</div>
+				<!-- // -->
+				<!-- //본문 ==================================================================================================== -->
+			</div>
+			<!-- //contents -->
+
+			<!-- footer -->
+			<div id="footer">
+				<div class="inner off">
+					<button type="button" class="toggle_footer">열기</button>
+					<ul class="f_menu">
+						<li><a href="/common/policy.html?page=0" target="_self">서비스 약관</a></li>
+						<li><a href="/common/policy.html?page=1" target="_self">개인정보 취급방침</a></li>
+						<li><a href="http://www.openmate-on.co.kr/" target="_blank">회사소개</a></li>
+					</ul>
+					<address>
+						서울특별시 중구 청계천로 100, 시그니쳐타워 서관 11층 (주)오픈메이트온<br />
+						사업자번호: 763-88-01165    TEL: 02-6956-7541    FAX: 0505-055-7522    EMAIL: sales@openmate-on.co.kr
+					</address>
+					<p class="company_logo">
+						<image src="/images/main/mateon_footer_logo.png" alt="OPENmate_ON"/>
+						<image src="/images/main/NICE_gray.png" alt="nice"/>
+					</p>
+					<p class="copyright">Copyright ⓒ OPENmate_ON All rights reserved.</p>
+				</div>
+			</div>
+			<!-- //footer -->
+		</div>
+	</body>
+</html>

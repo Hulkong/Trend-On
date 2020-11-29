@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.frmwrk.mapapp.dao.MapAppDao">
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>
+
+<!-- 	<select id="getRegion" parameterType="java.util.Map" resultMap="layerFeatureType"> -->
+	<select id="getRegion" parameterType="java.util.Map" resultType="com.openmate.frmwrk.mapapp.dao.RegionVO">
+	<![CDATA[
+		select shape GEOMETRY, full_name from tbregion where rgn_clss = 'H1'
+	]]>
+	</select>
+
+
+
+	<select id="getQ001" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT
+		       B.NM  --행정동명
+		     , SUM(SALE_AMT) AS SALE_AMT  --금액(원)
+		  FROM
+		       TBADMI_VISIT_UPJONG_INFO_D A
+		     , TBREGION B
+		 WHERE 1=1
+		   AND A.ADMI_CD = B.ID
+		   AND B.RGN_CLSS ='H4'
+		   AND A.STDR_DATE BETWEEN '20161201' AND '20161202'
+		   AND ADMI_CD LIKE '1114%'
+		GROUP BY NM
+		ORDER BY 2 DESC
+	]]>
+	</select>
+
+
+	<select id="getQ002" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+SELECT
+       B.CD_NM  --중분류 업종명
+     , ROUND((SUM(SALE_AMT)/MAX(T_SALE_AMT))*100,1)   AS PERCENT
+     , SUM(SALE_AMT) AS SALE_AMT  --금액 (원)
+  FROM
+       TBADMI_VISIT_UPJONG_INFO_D A
+     , TBCOMM_CODE B
+     , (
+         SELECT SUM(SALE_AMT) AS T_SALE_AMT
+           FROM
+                TBADMI_VISIT_UPJONG_INFO_D
+          WHERE 1=1
+            AND STDR_DATE BETWEEN '20161201' AND '20161202'
+            AND ADMI_CD LIKE '1114%'
+        ) C
+ WHERE 1=1
+   AND A.UPJONG2_CD = B.CODE
+   AND B.CD_ID ='UPJONG2_CD'
+   AND A.STDR_DATE BETWEEN '20161201' AND '20161202'
+   AND ADMI_CD LIKE '1114%'
+GROUP BY CD_NM
+ORDER BY 2 DESC
+	]]>
+	</select>
+
+
+
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

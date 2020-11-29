@@ -1,0 +1,113 @@
+.panel_search {
+	position: fixed;
+	width:280px;
+	height: 77px;
+	top: 0;
+	left: 86px;
+	font-size: 12px;
+	background-color: #e8eced;
+}
+
+.panel_search .boxSearch {
+	position: fixed;
+	height: 21px;
+	margin: 10px 20px 0 18px;
+	padding: 6px 6px 0;
+	border: 1px solid #D3D4D6;
+	border-radius: 5px;
+	width:227px;
+	background-color: #fff;
+}
+
+.panel_search .searchQuery {
+	width: 100%;
+	border: 0;
+	border-radius: 2px;
+	font-size: .93em;
+	line-height: 16px;
+	background-color: transparent;
+	color: #000;
+	vertical-align: top;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.panel_search .btnDummySearch {
+	position: absolute;
+	top: -1px;
+	right: -2px;
+	display: block;
+	float: left;
+	width: 30px;
+	height: 30px;
+	border: 0;
+	font-size: 0;
+	line-height: 0;
+	background-color: transparent;
+	cursor: default;
+	text-align: center;
+}
+
+.panel_search .ico_sch {
+	display: block;
+	width: 17px;
+	height: 17px;
+	margin: 6px auto 1px;
+	background: url(http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/search_icon.png) 0 1px no-repeat;
+}
+
+.submenu {
+	position: fixed;
+	width: 280px;
+	left: 86px;
+	top: 77px;
+	bottom: 0;
+	overflow: auto;
+	font-size: 12px;
+	background-color: #e8eced;
+}
+
+.submenu strong {
+	display: block;
+	font-size: 14px;
+	margin: 15px 25px 0;
+}
+
+.submenu ul {
+	margin: 4px 25px 25px;
+	padding: 0;
+}
+
+.submenu li {
+	padding: 5px 0 6px;
+	line-height: 1.3;
+	list-style: none;
+}
+
+.submenu a {
+	position: relative;
+	display: inline-block;
+	white-space: nowrap;
+	margin-right: 20px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.submenu li a:after {
+	position: absolute;
+	content: '';
+	width: 0;
+	left: 50%;
+	bottom: 0;
+	border-bottom: 1px solid #489ebf;
+}
+
+.submenu li a.on:after, .submenu li a:hover:after {
+	width: 100%;
+	left:0;
+}
+
+.submenu li a.on, .submenu li a:hover {
+	color: #489ebf;
+}

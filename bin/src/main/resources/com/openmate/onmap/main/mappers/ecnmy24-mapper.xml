@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openmate.onmap.main.dao.Ecnmy24Dao">	
+
+	<resultMap id="layerFeatureType" type="java.util.HashMap">
+		<result property="geometry" column="GEOMETRY" javaType="com.vividsolutions.jts.geom.Geometry"/>
+	</resultMap>	 
+
+	<!-- 경제24 : graph-top -->
+	<select id="getEcnmy24TimeGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		  SELECT 
+		         TIMEZON_CD
+		       , SUM(TOTAL_CNT) AS TOTAL_CNT   
+		       , SUM(WEEK_DAYS_CNT) AS WEEK_DAYS_CNT 
+		       , SUM(WEEK_END_CNT)  AS WEEK_END_CNT 
+		    FROM
+		         TBCTY_TIMEZON_INFO
+		   WHERE 1=1
+		     AND STDR_YM = #{date}
+		     AND CTY_CD like #{ctyCd}||'%'
+		  GROUP BY TIMEZON_CD
+		  ORDER BY 1
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 BLOCK -->
+	<select id="getAdmi24Map" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM
+		     , B.SHAPE AS GEOMETRY
+		  FROM 
+		       TBREGION B 
+		 WHERE 1=1  
+		   AND B.ID like #{ctyCd}||'%'
+		   AND B.RGN_CLSS = #{rgnClss} 
+		   
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 BLOCK -->
+	<select id="getBlockMap" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		SELECT BAS_ID AS ID
+		     , '' AS BAS_NM
+		     , GEOM AS GEOMETRY
+		  FROM 
+		       tbshp_bsizon 
+		 WHERE 1=1  
+		   AND SIG_CD like #{ctyCd}||'%'
+		   
+	]]>	
+	</select>
+	
+	<!-- 경제24 : 지도 -->
+	<select id="getEcnmy24Map" parameterType="java.util.Map" resultMap="layerFeatureType">
+	<![CDATA[
+		  SELECT bas_id AS ID
+		       , '' as bas_NM  
+		       , ROUND(SUM(TOTAL_CNT))  AS TOTAL_CNT 
+		       , ROUND(SUM(WEEK_DAYS_CNT))  AS WEEK_DAYS_CNT
+		       , ROUND(SUM(WEEK_END_CNT))  AS WEEK_END_CNT    
+		    FROM 
+		         TBBAS_TIMEZON_INFO A
+		   WHERE 1=1       
+		     AND STDR_YM = #{date} 
+		     AND A.CTY_CD like #{ctyCd}||'%'
+
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		   AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[    
+		GROUP BY bas_id
+	]]>	
+	</select>
+	
+	<!-- 경제24 : graph in map -->
+	<select id="getEcnmy24MapGraph" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT B.ID
+		     , B.NM   --행정동명
+		     , ROUND(SUM(E_CNT)/ (SUM(SUM(TOTAL_CNT)) OVER())*100,1)  AS TOTAL_CNT_E
+		     , ROUND(SUM(WD_E_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER())*100,1)  AS WEEK_DAYS_CNT_E
+		     , ROUND(SUM(WE_E_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER())*100,1)  AS WEEK_END_CNT_E 
+		     , ROUND(SUM(H_CNT)/(SUM(SUM(TOTAL_CNT)) OVER())*100,1)  AS TOTAL_CNT_H
+		     , ROUND(SUM(WD_H_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER())*100,1)  AS WEEK_DAYS_CNT_H
+		     , ROUND(SUM(WE_H_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER())*100,1)  AS WEEK_END_CNT_H
+		  FROM 
+		       TBADMI_TIMEZON_INFO A
+		     , TBREGION B 
+		 WHERE 1=1       
+		   AND STDR_YM = #{date}
+		   AND CTY_CD like #{ctyCd}||'%'
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		   AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[
+		   AND B.RGN_CLSS = 'H4'
+		   AND A.ADMI_CD = B.ID
+		GROUP BY  B.ID, B.NM 
+	
+	]]>	
+	</select>
+
+	<!-- 경제24 : 지도범례 -->
+	<select id="getEcnmy24MapLegend" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		WITH TMP AS (
+				  SELECT BAS_ID
+				       , '' AS BAS_NM   
+				       , ROUND(SUM(${valColumn}))  AS TOTAL_CNT 
+				       , NTILE(4) OVER( ORDER BY SUM(${valColumn}) DESC) AS GRD 
+				    FROM 
+				         TBBAS_TIMEZON_INFO A
+				   WHERE 1=1       
+				     AND STDR_YM = #{date}
+				     AND A.CTY_CD = #{ctyCd}
+				     AND A.BLK_CD = B.BLK_CD
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		 			 AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[  
+				GROUP BY BAS_ID
+				HAVING SUM(TOTAL_CNT) <>0
+				UNION ALL
+				  SELECT BAS_ID
+				       , '' AS BAS_NM   
+				       , ROUND(SUM(${valColumn}))  AS TOTAL_CNT
+				       , 5 AS GRD      
+				    FROM 
+				         TBBAS_TIMEZON_INFO A
+				   WHERE 1=1       
+				     AND STDR_YM = #{date}
+				     AND A.CTY_CD = #{ctyCd}
+	]]>	
+	<if test = "period != null"><if test="period != ''">
+	<![CDATA[
+		 			 AND TIMEZON_CD IN (${period})
+	]]>	
+	</if></if>
+	<![CDATA[    
+				GROUP BY BAS_ID
+				HAVING SUM(TOTAL_CNT) =0
+				)
+		SELECT MAX(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MAX_VALUE1
+		     , MIN(CASE WHEN GRD =1 THEN TOTAL_CNT END) AS MIN_VALUE1
+		     , MAX(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MAX_VALUE2
+		     , MIN(CASE WHEN GRD =2 THEN TOTAL_CNT END) AS MIN_VALUE2
+		     , MAX(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MAX_VALUE3
+		     , MIN(CASE WHEN GRD =3 THEN TOTAL_CNT END) AS MIN_VALUE3
+		     , MAX(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MAX_VALUE4
+		     , MIN(CASE WHEN GRD =4 THEN TOTAL_CNT END) AS MIN_VALUE4
+		     , MAX(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MAX_VALUE5
+		     , MIN(CASE WHEN GRD =5 THEN TOTAL_CNT END) AS MIN_VALUE5
+		FROM TMP 
+
+	]]>	
+	</select>
+	
+	<!-- EXCEL DOWN DATA -->
+	<select id="excelData" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT  ID, NM, CODE AS TIMEZONE_CD,
+				coalesce(TOTAL_CNT_E,0) AS TOTAL_CNT_E,
+				coalesce(WEEK_DAYS_CNT_E,0) AS WEEK_DAYS_CNT_E,
+				coalesce(WEEK_END_CNT_E,0) AS WEEK_END_CNT_E,
+				coalesce(TOTAL_CNT_H,0) AS TOTAL_CNT_H,
+				coalesce(WEEK_DAYS_CNT_H,0) AS WEEK_DAYS_CNT_H,
+				coalesce(WEEK_END_CNT_H,0) AS WEEK_END_CNT_H
+		FROM (
+			SELECT CODE, ID,NM 
+			FROM 
+				(SELECT CODE FROM TBCOMM_CODE WHERE CD_ID='TIMEZON_CD') A
+			, 	(SELECT ID,NM FROM TBREGION WHERE PARENT_ID = substr(#{ctyCd},1,4) ) B
+		) B
+		LEFT OUTER JOIN 
+		(
+			SELECT  ADMI_CD, A.TIMEZON_CD,
+					case
+						when (sum(sum(TOTAL_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(E_CNT)/ (sum(sum(TOTAL_CNT)) over(partition by admi_cd)), 3), 0)
+					end as TOTAL_CNT_E ,
+					case
+						when (sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WD_E_CNT)/(sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_DAYS_CNT_E ,
+					case
+						when (sum(sum(WEEK_END_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WE_E_CNT)/(sum(sum(WEEK_END_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_END_CNT_E ,
+					case
+						when (sum(sum(TOTAL_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(H_CNT)/(sum(sum(TOTAL_CNT)) over(partition by admi_cd)), 3), 0)
+					end as TOTAL_CNT_H ,
+					case
+						when (sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WD_H_CNT)/(sum(sum(WEEK_DAYS_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_DAYS_CNT_H ,
+					case
+						when (sum(sum(WEEK_END_CNT)) over(partition by admi_cd)) = 0 then 0
+						else coalesce(round(sum(WE_H_CNT)/(sum(sum(WEEK_END_CNT)) over(partition by admi_cd)), 3), 0)
+					end as WEEK_END_CNT_H
+			FROM TBADMI_TIMEZON_INFO A
+			WHERE 1 = 1
+			AND STDR_YM = #{date}
+			AND CTY_CD like #{ctyCd}||'%'
+			AND A.TIMEZON_CD IS NOT NULL
+			GROUP BY ADMI_CD, A.TIMEZON_CD
+		) R1
+		ON B.ID = R1.ADMI_CD AND B.CODE = R1.TIMEZON_CD
+		ORDER BY NM, R1.TIMEZON_CD ASC
+	]]>
+	</select>
+	
+	<select id="excelTotalData" parameterType="java.util.Map" resultType="java.util.Map">
+	<![CDATA[
+		SELECT TIMEZON_CD
+             , ROUND(SUM(E_CNT)/ (SUM(SUM(TOTAL_CNT)) OVER()),3)  AS TOTAL_CNT_E
+             , ROUND(SUM(WD_E_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER()),3)  AS WEEK_DAYS_CNT_E
+             , ROUND(SUM(WE_E_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER()),3)  AS WEEK_END_CNT_E 
+             , ROUND(SUM(H_CNT)/(SUM(SUM(TOTAL_CNT)) OVER()),3)  AS TOTAL_CNT_H
+             , ROUND(SUM(WD_H_CNT)/(SUM(SUM(WEEK_DAYS_CNT)) OVER()),3)  AS WEEK_DAYS_CNT_H
+             , ROUND(SUM(WE_H_CNT)/(SUM(SUM(WEEK_END_CNT)) OVER()),3)  AS WEEK_END_CNT_H
+          FROM TBADMI_TIMEZON_INFO A
+         WHERE 1=1       
+           AND STDR_YM = #{date}
+           AND CTY_CD like #{ctyCd}||'%'
+           AND TIMEZON_CD IS NOT NULL
+        GROUP BY TIMEZON_CD 
+        order by TIMEZON_CD  asc
+	]]>
+	</select>
+</mapper>

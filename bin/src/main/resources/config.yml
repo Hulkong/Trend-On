@@ -1,0 +1,55 @@
+---
+config:
+  report:
+   path: report
+   
+  phantomjs:
+   host: http://dev.openmate-on.com:47000
+   
+  trendOn:
+   title: (TEST) Trend-ON
+   host: http://www.trend-on.co.kr
+   
+  vworld:
+   host: http://xdworld.vworld.kr:8080
+    
+  jdbc:
+   postgisdb:
+     driverClassName: org.postgresql.Driver
+     url: jdbc:postgresql://10.150.108.19:25432/trendondb_new?stringtype=unspecified
+     username: postgres
+     password: "@dnsdud395&%$)"
+     
+  email:
+   host: smtp.office365.com
+   portNumber: "587"
+   senderAddress: sales@openmate-on.co.kr
+   username: sales@openmate-on.co.kr
+   password: "@dnsdud395&%$)"
+   salesId: sales@openmate-on.co.kr;
+   
+  auth:
+   login: #로그인 페이지 정보
+    url: /onmap/login/login.do #url 
+    jspPath: redirect:/onmap/main.do #jsp 파일 위치
+   ajaxlogin: #ajax로그인 페이지 정보
+    url: /onmap/ajax-login.json #url 
+    jspPath: void
+   encStr: #문자열 암호화
+    url: /onmap/login/gen-pw.do #url 
+    jspPath: void
+   info: #로그인 정보 샘플
+    url: /onmap/login-info.do #url 
+    jspPath: onmap/user_info #jsp 파일 위치
+  
+  service:
+   url: http://localhost:8070
+   
+  fileUpload:
+   path: C:\\open_work\\eclipse\\workspace\\cctv\\src\\main\\webapp\\images\\upload
+   path-url: /images/upload/
+   
+  excelFile:
+   path: C:\\excel\\
+  
+  version: ${timestamp}

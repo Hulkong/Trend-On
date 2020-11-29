@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evntEff-page12" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e3f3a557-8669-4c57-9861-029c4f58c42e">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="event-k"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="endDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.endDate]]></fieldDescription>
+	</field>
+	<field name="lastEndDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.lastEndDate]]></fieldDescription>
+	</field>
+	<field name="ctyCd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.ctyCd]]></fieldDescription>
+	</field>
+	<field name="admiCd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.admiCd]]></fieldDescription>
+	</field>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="admiNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].admi_nm]]></fieldDescription>
+	</field>
+	<field name="startDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.startDate]]></fieldDescription>
+	</field>
+	<field name="lastStartDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.lastStartDate]]></fieldDescription>
+	</field>
+	<field name="phantomJsHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.phantomJsHost]]></fieldDescription>
+	</field>
+	<field name="period" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].period]]></fieldDescription>
+	</field>
+	<field name="days" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-005-001[0].days]]></fieldDescription>
+	</field>
+	<field name="013-001-dow1" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[0].dow]]></fieldDescription>
+	</field>
+	<field name="013-001-rate1" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[0].rate]]></fieldDescription>
+	</field>
+	<field name="013-001-rate1_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[0].rate]]></fieldDescription>
+	</field>
+	<field name="013-001-dow2" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[1].dow]]></fieldDescription>
+	</field>
+	<field name="013-001-rate2" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[1].rate]]></fieldDescription>
+	</field>
+	<field name="013-001-rate2_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[1].rate]]></fieldDescription>
+	</field>
+	<field name="013-001-dow3" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[2].dow]]></fieldDescription>
+	</field>
+	<field name="013-001-rate3" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[2].rate]]></fieldDescription>
+	</field>
+	<field name="013-001-rate3_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-001[2].rate]]></fieldDescription>
+	</field>
+	<field name="013-002-dow" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-002[0].dow]]></fieldDescription>
+	</field>
+	<field name="013-005-cdNm1" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[0].cd_nm]]></fieldDescription>
+	</field>
+	<field name="013-005-rate1" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[0].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-005-rate1_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[0].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-005-cdNm2" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[1].cd_nm]]></fieldDescription>
+	</field>
+	<field name="013-005-rate2" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[1].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-005-rate2_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[1].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-005-cdNm3" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[2].cd_nm]]></fieldDescription>
+	</field>
+	<field name="013-005-rate3" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[2].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-005-rate3_num" class="java.lang.Float">
+		<fieldDescription><![CDATA[rpt-evntEff-013-005[2].e_total_cnt]]></fieldDescription>
+	</field>
+	<field name="013-004-cdNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-evntEff-013-004[0].cd_nm]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="842" splitType="Stretch">
+			<image>
+				<reportElement x="176" y="245" width="379" height="170" uuid="59d6d5e7-9a25-4340-9d84-bc046f1ea261">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost} + "/d3/groupedbar_chart.jsp?w=568.5&h=255&t=pdf&o=%7B%22ticks%22%3A4%2C%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22" + $F{ctyCd} + "%22%2C%22admiCd%22%3A%22" + $F{admiCd} + "%22%2C%22dataId%22%3A%22rpt-evntEff%22%2C%22pageId%22%3A%22rpt-evntEff-013-001%22%2C%22lastStartDate%22%3A%22" + $F{lastStartDate} + "%22%2C%22lastEndDate%22%3A%22" + $F{lastEndDate} + "%22%2C%22startDate%22%3A%22" + $F{startDate} + "%22%2C%22endDate%22%3A%22" + $F{endDate} + "%22%2C%22gubun%22%3A%22days%22%7D"]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="176" y="599" width="379" height="170" uuid="3260f58d-8e7b-4243-b349-4a93fd15903a">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost} + "/d3/groupedbar_chart.jsp?w=568.5&h=255&t=pdf&o=%7B%22ticks%22%3A4%2C%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22" + $F{ctyCd} + "%22%2C%22admiCd%22%3A%22" + $F{admiCd} + "%22%2C%22dataId%22%3A%22rpt-evntEff%22%2C%22pageId%22%3A%22rpt-evntEff-013-005%22%2C%22lastStartDate%22%3A%22" + $F{lastStartDate} + "%22%2C%22lastEndDate%22%3A%22" + $F{lastEndDate} + "%22%2C%22startDate%22%3A%22" + $F{startDate} + "%22%2C%22endDate%22%3A%22" + $F{endDate} + "%22%2C%22gubun%22%3A%22time%22%7D"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="40" y="604" width="131" height="37" uuid="ee9fa762-002f-40c6-9219-c79455b9ae7a">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 14] 
+시간대별 유입인구 소비]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="176" y="157" width="379" height="93" uuid="e53d8b5f-1cd1-4219-8d04-711d87ad9078">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Top">
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["이벤트 기간("+$F{period}+", 총 "+$F{days}+"일) 동안 " + $F{admiNm}+ " 유입인구의 소비가 가장 활발하게 일어난 요일은 " 
++ ( $F{013-001-rate1_num}  > 0 ?  $F{013-001-dow1} + "(" + $F{013-001-rate1} + "%)" : " - " ) + ", "
++ ( $F{013-001-rate2_num}  > 0 ?  $F{013-001-dow2} + "(" + $F{013-001-rate2} + "%)" : " - " ) + ", "
++ ( $F{013-001-rate3_num}  > 0 ?  $F{013-001-dow3} + "(" + $F{013-001-rate3} + "%)" : " - " ) + " 순으로 나타남\n\n" 
++ "상주인구와 유입인구의 소비 비율 차이가 가장 큰 요일은 " + $F{013-002-dow} + "로 나타남"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="176" y="491" width="379" height="114" uuid="8063af5c-4dd4-4744-9b79-86a0360541cc">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["이벤트 기간("+$F{period}+", 총 "+$F{days}+"일) 동안 "+$F{admiNm}+"에서 유입인구의 소비가 가장 활발하게 일어난 시간은 " 
++ ($F{013-005-rate1_num} > 0 ? $F{013-005-cdNm1}.trim() + "(" + $F{013-005-rate1} + "%)" : " - " ) + ", " 
++ ($F{013-005-rate2_num} > 0 ? $F{013-005-cdNm2}.trim() + "(" + $F{013-005-rate2} + "%)" : " - " ) + ", " 
++ ($F{013-005-rate3_num} > 0 ? $F{013-005-cdNm3}.trim() + "(" + $F{013-005-rate3} + "%)" : " - " ) + " 순으로 나타남\n\n"
++"상주인구와 유입인구의 소비 비율 차이가 가장 큰 시간대는 " + $F{013-004-cdNm}.trim() + "로 나타남"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="250" width="131" height="35" uuid="8456e49b-b39d-4cc8-8594-ea5e4532dd73">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 13] 
+요일별 유입인구 소비
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="24" width="515" height="16" forecolor="#666666" uuid="67cb5593-8dad-4b50-b5a7-c3c7fb131499">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["빅데이터를 활용한 " + $F{megaNm} + " " + $F{ctyNm} + " " + $F{admiNm} + " 이벤트효과 보고서"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="e5bdd852-7bed-4f1c-b462-bd2d9dbb6814">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="40" y="157" width="131" height="42" forecolor="#E28864" uuid="1006801e-6e20-4c28-83f9-f607867d8933">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="10.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["5. 요일별 유입인구 소비"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="491" width="131" height="21" forecolor="#E28864" uuid="4f60983c-a7b3-4354-94b7-64344d3fff2c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[6. 시간대별 유입인구 소비]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="802" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="cf59ca97-e51b-479c-a95a-f1aae5d98447">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="36" y="801" width="140" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="2b90c198-03d9-40f2-a634-64fe8e85c52a"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#666666" uuid="cd3ad4f3-27ee-40e8-828d-fdc821469e3d">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="40" y="802" width="515" height="40" uuid="30bddd7a-6f45-4c14-a625-ea8fa5e47db3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[- 10 -]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

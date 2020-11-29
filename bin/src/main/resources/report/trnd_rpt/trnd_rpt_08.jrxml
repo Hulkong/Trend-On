@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="trnd_rpt_08" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="64380948-45f8-49e1-b4ce-eb07a30add9b">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="trend-k"/>
+	<queryString language="JSON">
+		<![CDATA[]]>
+	</queryString>
+	<field name="endDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.endDate]]></fieldDescription>
+	</field>
+	<field name="ctyCd" class="java.lang.String">
+		<fieldDescription><![CDATA[common.ctyCd]]></fieldDescription>
+	</field>
+	<field name="ctyNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].cty_nm]]></fieldDescription>
+	</field>
+	<field name="megaNm" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].mega_nm]]></fieldDescription>
+	</field>
+	<field name="startDate" class="java.lang.String">
+		<fieldDescription><![CDATA[common.startDate]]></fieldDescription>
+	</field>
+	<field name="phantomJsHost" class="java.lang.String">
+		<fieldDescription><![CDATA[common.phantomJsHost]]></fieldDescription>
+	</field>
+	<field name="period" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].period]]></fieldDescription>
+	</field>
+	<field name="chideH3Cnt" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].cnt]]></fieldDescription>
+	</field>
+	<field name="days" class="java.lang.String">
+		<fieldDescription><![CDATA[rpt-trnd-005-001[0].days]]></fieldDescription>
+	</field>
+	<field name="007-001-cd_nm0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[0].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-001-saleAmt0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[0].sale_amt]]></fieldDescription>
+	</field>
+	<field name="007-001-rate0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[0].rate]]></fieldDescription>
+	</field>
+	<field name="007-001-cd_nm1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[1].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-001-saleAmt1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[1].sale_amt]]></fieldDescription>
+	</field>
+	<field name="007-001-rate1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[1].rate]]></fieldDescription>
+	</field>
+	<field name="007-001-cd_nm2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[2].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-001-saleAmt2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[2].sale_amt]]></fieldDescription>
+	</field>
+	<field name="007-001-rate2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-001[2].rate]]></fieldDescription>
+	</field>
+	<field name="007-003-cd_nm0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[0].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-003-totalCnt0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[0].total_cnt]]></fieldDescription>
+	</field>
+	<field name="007-003-rate0" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[0].rate]]></fieldDescription>
+	</field>
+	<field name="007-003-cd_nm1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[1].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-003-totalCnt1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[1].total_cnt]]></fieldDescription>
+	</field>
+	<field name="007-003-rate1" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[1].rate]]></fieldDescription>
+	</field>
+	<field name="007-003-cd_nm2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[2].cd_nm]]></fieldDescription>
+	</field>
+	<field name="007-003-totalCnt2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[2].total_cnt]]></fieldDescription>
+	</field>
+	<field name="007-003-rate2" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression"/>
+		<fieldDescription><![CDATA[rpt-trnd-007-003[2].rate]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="842" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="40" y="145" width="131" height="21" forecolor="#E28864" uuid="a3235d67-043e-49de-9c50-c5b72c0d2f74">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3. 업종별 매출액]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="802" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="7ebeb8e5-a0c0-4d44-afd5-a8d8cc8a21a0">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="36" y="801" width="140" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#FFFFFF" uuid="d9f76e62-5b8e-41f1-a03e-8d6ccd0a4ab6"/>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="40" y="40" width="136" height="4" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#E28864" uuid="4b14b76c-bf3b-43c9-8c9f-e7d011b8f0e6">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<frame>
+				<reportElement x="176" y="485" width="379" height="275" uuid="8b53c3d8-2f9e-4828-9f52-850dff70b2c1">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<image>
+					<reportElement x="0" y="68" width="379" height="186" uuid="c72133bf-8824-45a6-902e-6e7d6e7e5b2d">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<imageExpression><![CDATA[$F{phantomJsHost}+"/d3/line_chart.jsp?w=568.5&h=279&t=pdf&o=%7B%22ticks%22%3A6%2C%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22" + $F{ctyCd} + "%22%2C%22dataId%22%3A%22rpt-trnd%22%2C%22pageId%22%3A%22rpt-trnd-007-004%22%2C%22choroColumn%22%3A%22rate%22%2C%22startDate%22%3A%22" + $F{startDate} + "%22%2C%22endDate%22%3A%22" + $F{endDate} + "%22%7D"]]></imageExpression>
+				</image>
+				<textField>
+					<reportElement x="0" y="0" width="379" height="57" uuid="66ad2cde-65d2-44f3-aa14-4aa0abcc4191">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Top" markup="styled">
+						<font fontName="나눔고딕" size="10"/>
+						<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+					</textElement>
+					<textFieldExpression><![CDATA["분석 기간(" + $F{period} + ", 총 " + $F{days} + "일) 동안 " + $F{ctyNm} + "에서  소비가 가장 활발했던 시간은 " 
++ $F{007-003-cd_nm0} + "(" + $F{007-003-rate0} + "%), " 
++ $F{007-003-cd_nm1} + "(" + $F{007-003-rate1} + "%), " 
++ $F{007-003-cd_nm2} + "(" + $F{007-003-rate2} + "%) 순으로 나타남"]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement x="40" y="223" width="131" height="57" uuid="79a19a86-f066-44c4-b3f4-e9dcf9b876c6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 6] 
+업종별 매출액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="553" width="131" height="47" uuid="ecd75619-fda3-44a6-97b4-9477205b215b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="나눔고딕" size="8"/>
+				</textElement>
+				<text><![CDATA[[그림 7] 
+시간대별 거래량 변화]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="485" width="131" height="21" forecolor="#E28864" uuid="745e9f5e-b02f-4e9c-a371-36b98ce66e6a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="나눔고딕" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[4. 시간대별 거래량 변화]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="40" y="23" width="515" height="16" forecolor="#666666" uuid="00589678-b06c-46e6-9432-8e56530a4362">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="나눔고딕" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["빅데이터를 활용한 " + $F{megaNm} + " " + $F{ctyNm} + " 경제트렌드 보고서"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement positionType="Float" x="309" y="40" width="246" height="1" forecolor="rgba(0, 0, 0, 0.0)" backcolor="#666666" uuid="a57fea7f-9ef8-4654-b2c4-cd4db51d4428">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.0" lineColor="rgba(255, 255, 255, 0.0)"/>
+				</graphicElement>
+			</rectangle>
+			<image>
+				<reportElement x="176" y="223" width="379" height="186" uuid="8cf781fe-9f72-4f1b-bd08-5bcc9b65e9ec">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<imageExpression><![CDATA[$F{phantomJsHost}+"/d3/bar_chart.jsp?w=568.5&h=279&t=pdf&o=%7B%22ticks%22%3A6%2C%22selectedRgnClss%22%3A%22H4%22%2C%22ctyCd%22%3A%22" + $F{ctyCd} + "%22%2C%22dataId%22%3A%22rpt-trnd%22%2C%22pageId%22%3A%22rpt-trnd-007-002%22%2C%22choroColumn%22%3A%22sale_amt%22%2C%22startDate%22%3A%22" + $F{startDate} + "%22%2C%22endDate%22%3A%22" + $F{endDate} + "%22%7D"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="176" y="145" width="379" height="57" uuid="d50733e7-3611-47ae-ab27-079402498e44">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="styled">
+					<font fontName="나눔고딕" size="10"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="12.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["분석 기간("+$F{period}+", 총 "+$F{days}+"일) 동안 "+$F{ctyNm}+"에서 가장 많은 매출액을 기록한 업종은 "
++$F{007-001-cd_nm0}+"업종("+KR_WON_ROUND(   Long.valueOf($F{007-001-saleAmt0}) ,"8","1")+"원, "+$F{007-001-rate0}+"%)이며, "
++$F{007-001-cd_nm1}+"업종("+KR_WON_ROUND(   Long.valueOf($F{007-001-saleAmt1}) ,"8","1")+"원, "+$F{007-001-rate1}+"%), "
++$F{007-001-cd_nm2}+"업종("+KR_WON_ROUND(   Long.valueOf($F{007-001-saleAmt2}) ,"8","1")+"원, "+$F{007-001-rate2}+"%) 순으로 많은 매출이 발생함"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="802" width="515" height="40" uuid="26e52149-c592-4a8f-b1c9-302a26a967ea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="나눔고딕"/>
+				</textElement>
+				<text><![CDATA[- 8 -]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>
